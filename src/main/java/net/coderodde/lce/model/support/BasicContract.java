@@ -5,6 +5,7 @@ import static net.coderodde.lce.Utils.checkCompoundingPeriods;;
 import static net.coderodde.lce.Utils.checkInterestRate;
 import static net.coderodde.lce.Utils.checkPrincipal;
 import static net.coderodde.lce.Utils.checkTimestamp;
+import static net.coderodde.lce.Utils.checkDebtCut;
 
 /**
  * This class models a contract with periodical compounding scheme.
@@ -115,5 +116,9 @@ public class BasicContract extends Contract {
     @Override
     protected void applyDebtCut(final double debtCut, final double time) {
         checkTimestamp(this.timestamp, time);
+        double equityAtTime = this.evaluate(time);
+        checkDebtCut(debtCut, equityAtTime);
+        this.principal = equityAtTime - debtCut;
+        this.timestamp = time;
     }
 }

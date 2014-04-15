@@ -14,6 +14,20 @@ import net.coderodde.lce.model.Node;
  */
 public class Utils {
     
+    private static double EPSILON = 0.001;
+    private static double MAX_EPSILON = 1.0;
+    
+    public static final void setEpsilon(final double epsilon) {
+        if (Double.isInfinite(epsilon)
+                || Double.isNaN(epsilon)
+                || epsilon > MAX_EPSILON
+                || epsilon <= 0.0) {
+            return;
+        }
+        
+        EPSILON = epsilon;
+    }
+    
     public static final void checkNotNull
         (final Object o, final String message) {
         if (o == null) {
@@ -115,5 +129,22 @@ public class Utils {
         }
     }
         
-   
+    public static final void checkDebtCut
+        (final double debtCut, final double equity) {
+        checkNotNaN(debtCut, "The debt cut is NaN.");
+        checkNotInfinite(debtCut, "The debt cut is infinite.");
+        checkNotNegative(debtCut, "The debt cut is negative.");
+        
+        checkNotNaN(equity, "The equity is NaN.");
+        checkNotInfinite(equity, "The equity is infinite.");
+        checkNotNegative(equity, "The equity is negative.");
+        
+        if (debtCut > equity) {
+            throw new IllegalArgumentException("The debt cut exceeds equity.");
+        }
+    }
+        
+    public static final boolean epsilonEquals(final double a, final double b) {
+        return Math.abs(a - b) <= EPSILON;
+    }
 }

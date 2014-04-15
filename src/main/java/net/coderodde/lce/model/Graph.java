@@ -2,8 +2,9 @@ package net.coderodde.lce.model;
 
 import java.util.HashMap;
 import java.util.Map;
-import static net.coderodde.lce.Utils.checkNotNull;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
+import static net.coderodde.lce.Utils.checkNotNull;
+import static net.coderodde.lce.Utils.epsilonEquals;
 
 /**
  * This class models the financial graph in which nodes may lease loan contracts
@@ -66,11 +67,12 @@ public class Graph {
         checkUnique(node);
         node.clear();
         node.setOwnerGraph(this);
+        this.map.put(node.getName(), node);
     }
     
     public boolean contains(final Node node) {
         checkNotNull(node, "The node is null.");
-        return map.containsKey(node);
+        return map.containsKey(node.getName());
     }
     
     public Node getNode(final String name) {
@@ -78,14 +80,19 @@ public class Graph {
         return map.get(name);
     }
     
+    public Node getNode(final Node node) {
+        checkNotNull(node, "The node is null.");
+        return map.get(node.getName());
+    }
+    
     public void remove(final Node node) {
         checkNotNull(node, "The node is null.");
         
-        if (map.containsKey(node)) {
+        if (map.containsKey(node.getName())) {
             node.clear();
         }
         
-        map.remove(node);
+        map.remove(node.getName());
     }
     
     /**
@@ -97,6 +104,16 @@ public class Graph {
         return null;
     }
     
+    public boolean isInEquilibriumAt(final double time) {
+        for (Node node : map.values()) {
+            if (epsilonEquals(node.equity(time), 0.0) == false) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+        
     public int size() {
         return map.size();
     }
