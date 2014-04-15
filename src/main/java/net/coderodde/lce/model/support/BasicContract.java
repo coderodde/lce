@@ -12,7 +12,7 @@ import static net.coderodde.lce.Utils.checkTimestamp;
  * @author Rodion Efremov
  * @version 1.6
  */
-public class BasicContract implements Contract {
+public class BasicContract extends Contract {
 
     /**
      * The principal investment.
@@ -110,5 +110,10 @@ public class BasicContract implements Contract {
     public void setTimestamp(final double timestamp) {
         checkTimestamp(timestamp);
         this.timestamp = timestamp;
+    }
+    
+    @Override
+    protected void applyDebtCut(final double debtCut, final double time) {
+        checkTimestamp(this.timestamp, time);
     }
 }

@@ -1,6 +1,8 @@
 package net.coderodde.lce;
 
 import java.util.Map;
+import net.coderodde.lce.model.Contract;
+import net.coderodde.lce.model.DebtCutAssignment;
 import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
 
@@ -46,12 +48,22 @@ public class Utils {
         }
     }
         
+    /**
+     * Checks that a is less than b.
+     * 
+     * @param a first time point.
+     * @param b second time point.
+     */
     public static final void checkTimestamp
-        (final double cmp, final double timestamp) {
-        checkNotNaN(cmp, "'cmp' is NaN.");
-        checkNotNaN(timestamp, "'timestamp' is NaN.");
-        checkNotInfinite(cmp, "'cmp' is infinite.");
-        checkNotInfinite(timestamp, "'timestamp' is infinite.");
+        (final double a, final double b) {
+        checkNotNaN(a, "'cmp' is NaN.");
+        checkNotNaN(b, "'timestamp' is NaN.");
+        checkNotInfinite(a, "'cmp' is infinite.");
+        checkNotInfinite(b, "'timestamp' is infinite.");
+        
+        if (a > b) {
+            throw new IllegalStateException("");
+        }
     }
     
     public static final void checkPrincipal(final double principal) {
@@ -93,4 +105,15 @@ public class Utils {
             }
         }
     }
+        
+    public static final void checkContract
+        (final Contract contract, final DebtCutAssignment debtCutAssignment) {
+        checkNotNull(contract, "Contract is null.");
+        checkNotNull(debtCutAssignment, "Debt cut assignment is null.");
+        if (debtCutAssignment.getContracts().contains(contract) == false) {
+            throw new IllegalStateException("The contract is missing.");
+        }
+    }
+        
+   
 }

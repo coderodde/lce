@@ -35,6 +35,9 @@ public class Node {
      */
     private double maximumTimestamp;
     
+    /**
+     * The graph to which this node belongs.
+     */
     private Graph ownerGraph;
     
     /**
@@ -49,13 +52,25 @@ public class Node {
         this.out = new HashMap<>();
     }
     
+    /**
+     * Returns the name of this node.
+     * 
+     * @return the name of this node.
+     */
     public final String getName() {
         return name;
     }
     
+    /**
+     * Adds a contract from this node to <code>debtor</code>.
+     * 
+     * @param debtor the receiving party.
+     * @param contract the contract.
+     */
     public final void addDebtor(final Node debtor, final Contract contract) {
         checkNotNull(debtor, "The lender is null.");
         checkNotNull(contract, "The contract is null.");
+        checkOwnerGraph();
         
         if (maximumTimestamp < contract.getTimestamp()) {
             maximumTimestamp = contract.getTimestamp();
@@ -64,7 +79,7 @@ public class Node {
         List<Contract> contractList = out.get(debtor);
         
         if (contractList == null) {
-            this.ownerGraph.edgeAmount++;
+            this.ownerGraph.setEdgeAmount(this.ownerGraph.getEdgeAmount() + 1);
             contractList = new ArrayList<>();
             contractList.add(contract);
             out.put(debtor, contractList);
@@ -76,9 +91,8 @@ public class Node {
             debtor.in.put(this, contractList);
         }
         
-        if (this.ownerGraph != null) {
-            this.ownerGraph.contractAmount++;
-        }
+        this.ownerGraph.setContractAmount(
+                this.ownerGraph.getContractAmount() + 1);
     }
     
     public final double equity(final double time) {
@@ -103,5 +117,40 @@ public class Node {
         in.clear();
         out.clear();
         this.ownerGraph = graph;
+    }
+    
+    final void clear() {
+        int edges = 0;
+        int contracts = 0;
+        
+        for (Node borrower : out.keySet()) {
+            ++edges;
+            contracts += borrower.in.get(this).size();
+            borrower.in.remove(this);
+        }
+        
+        out.clear();
+        
+        for (Node lender : in.keySet()) {
+            ++edges;
+            contracts += lender.out.get(this).size();
+            lender.out.remove(this);
+        }
+        
+        in.clear();
+        
+        if (ownerGraph != null) {
+            ownerGraph.setContractAmount( 
+                    ownerGraph.getContractAmount() - contracts);
+            ownerGraph.setEdgeAmount(ownerGraph.getEdgeAmount() - edges);
+        }
+    }
+    
+    private void checkOwnerGraph() {
+        if (this.ownerGraph == null) {
+            throw new IllegalStateException(
+                    "The node '" + this.getName() + 
+                    "' does not belong to any graph.");
+        }
     }
 }

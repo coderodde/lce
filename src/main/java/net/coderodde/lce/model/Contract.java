@@ -1,12 +1,12 @@
 package net.coderodde.lce.model;
 
 /**
- * This interface defines the common API for contracts.
+ * This abstract class defines the common API for contracts.
  * 
  * @author Rodion Efremov
  * @version 1.6
  */
-public interface Contract {
+public abstract class Contract {
     
     /**
      * Evaluates the equity of this contract at time <code>time</code>.
@@ -15,12 +15,20 @@ public interface Contract {
      * 
      * @return the equity of this contract at time <code>time</code>.
      */
-    public double evaluate(final double time);
+    public abstract double evaluate(final double time);
     
     /**
      * Returns the time stamp at which this contract was granted.
      * 
      * @return the time stamp at which this contract was granted. 
      */
-    public double getTimestamp();
+    public abstract double getTimestamp();
+    
+    /**
+     * Applies a debt cut to this contract.
+     * 
+     * @param debtCutAssignment the debt cut assignment object.
+     */
+    protected abstract void applyDebtCut
+        (final double debtCut, final double time);
 }

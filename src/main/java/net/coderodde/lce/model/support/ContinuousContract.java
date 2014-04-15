@@ -1,9 +1,10 @@
 package net.coderodde.lce.model.support;
 
-import net.coderodde.lce.model.Contract;
-import static net.coderodde.lce.Utils.checkTimestamp;
-import static net.coderodde.lce.Utils.checkPrincipal;
 import static net.coderodde.lce.Utils.checkInterestRate;
+import static net.coderodde.lce.Utils.checkPrincipal;
+import static net.coderodde.lce.Utils.checkTimestamp;
+import net.coderodde.lce.model.Contract;
+import net.coderodde.lce.model.DebtCutAssignment;
 
 /**
  * This class models the contracts having continuous compounding scheme.
@@ -11,7 +12,7 @@ import static net.coderodde.lce.Utils.checkInterestRate;
  * @author Rodion Efremov
  * @version 1.6
  */
-public class ContinuousContract implements Contract {
+public class ContinuousContract extends Contract {
 
     /**
      * The principal investment;
@@ -83,5 +84,10 @@ public class ContinuousContract implements Contract {
     public void setTimestamp(final double timestamp) {
         checkTimestamp(timestamp);
         this.timestamp = timestamp;
+    }
+
+    @Override
+    protected void applyDebtCut(double debtCut, double time) {
+        
     }
 }
