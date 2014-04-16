@@ -147,4 +147,8 @@ public class Utils {
     public static final boolean epsilonEquals(final double a, final double b) {
         return Math.abs(a - b) <= EPSILON;
     }
+    
+    public static final boolean epsilonEquals(final double a, final double b, final double e) {
+        return Math.abs(a - b) <= e;
+    }
 }

@@ -3,6 +3,7 @@ package net.coderodde.lce.model.support;
 import static net.coderodde.lce.Utils.checkInterestRate;
 import static net.coderodde.lce.Utils.checkPrincipal;
 import static net.coderodde.lce.Utils.checkTimestamp;
+import static net.coderodde.lce.Utils.epsilonEquals;
 import net.coderodde.lce.model.Contract;
 import net.coderodde.lce.model.DebtCutAssignment;
 
@@ -37,10 +38,31 @@ public class ContinuousContract extends Contract {
      * @param interestRate the annual interest rate.
      * @param timestamp the timestamp of this contract.
      */
-    public ContinuousContract(final double principal,
+    public ContinuousContract(final String name,
+                              final double principal,
                               final double interestRate,
                               final double timestamp) {
+        super(name);
+        setPrincipal(principal);
+        setInterestRate(interestRate);
+        setTimestamp(timestamp);
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
         
+        if (!(o instanceof ContinuousContract)) {
+            return false;
+        }
+        
+        ContinuousContract other = (ContinuousContract) o;
+        
+        return epsilonEquals(this.principal, other.principal)
+                && epsilonEquals(this.interestRate, other.interestRate)
+                && epsilonEquals(this.timestamp, other.timestamp);
     }
     
     /**
@@ -52,7 +74,7 @@ public class ContinuousContract extends Contract {
      */
     @Override
     public double evaluate(double time) {
-        checkTimestamp(time, timestamp);
+        checkTimestamp(timestamp, time);
         return principal * Math.pow(Math.E, interestRate * (time - timestamp));
     }
     

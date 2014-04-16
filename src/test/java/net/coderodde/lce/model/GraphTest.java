@@ -114,6 +114,25 @@ public class GraphTest {
         graph.add(b);
         graph.add(c);
         
+        Contract contract = ContractFactory
+                            .newContract()
+                            .withPrincipal(10.0)
+                            .withInterestRate(0.15)
+                            .withCompoundingPeriods(Double.POSITIVE_INFINITY)
+                            .withTimestamp(3.0)
+                            .create("MyContract");
+        
+        graph.getNode(a).addDebtor(graph.getNode(b), contract);
+        graph.getNode(b).addDebtor(graph.getNode(c), contract);
+        graph.getNode(c).addDebtor(graph.getNode(a), contract);
+        
+        assertTrue(graph.isInEquilibriumAt(5.0));
+        assertTrue(graph.isInEquilibriumAt(7.0));
+        
+        graph.remove(b);
+        
+        assertFalse(graph.isInEquilibriumAt(5.0));
+        assertFalse(graph.isInEquilibriumAt(7.0));
     }
 
     @Test

@@ -12,8 +12,6 @@ import net.coderodde.lce.model.support.ContinuousContract;
  */
 public class ContractFactory {
     
-    private Node lender;
-    private Node debtor;
     private double principal;
     private double interestRate;
     private double compoundingPeriods;
@@ -22,19 +20,7 @@ public class ContractFactory {
     public static ContractFactory newContract() {
         return new ContractFactory();
     }
-    
-    public ContractFactory from(final Node lender) {
-        checkNotNull(lender, "The lender node is null.");
-        this.lender = lender;
-        return this;
-    }
-    
-    public ContractFactory to(final Node debtor) {
-        checkNotNull(debtor, "The debtor node is null.");
-        this.debtor = debtor;
-        return this;
-    }
-          
+         
     public ContractFactory withPrincipal(final double principal) {
         this.principal = principal;
         return this;
@@ -56,13 +42,17 @@ public class ContractFactory {
         return this;
     }
     
-    public Contract create() {
+    public Contract create(final String name) {
         Contract c = null;
         
         if (Double.isInfinite(compoundingPeriods) && compoundingPeriods > 0.0) {
-            c = new ContinuousContract(principal, interestRate, timestamp);
+            c = new ContinuousContract(name, 
+                                       principal, 
+                                       interestRate, 
+                                       timestamp);
         } else {
-            c = new BasicContract(principal, 
+            c = new BasicContract(name,
+                                  principal, 
                                   interestRate, 
                                   compoundingPeriods,
                                   timestamp);

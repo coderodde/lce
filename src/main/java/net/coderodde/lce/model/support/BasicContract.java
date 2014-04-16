@@ -44,10 +44,12 @@ public class BasicContract extends Contract {
      * @param compoundingPeriods the amount of compounding periods.
      * @param timestamp the timestamp of this contract.
      */
-    public BasicContract(final double principal,
+    public BasicContract(final String name,
+                         final double principal,
                          final double interestRate,
                          final double compoundingPeriods,
                          final double timestamp) {
+        super(name);
         setPrincipal(principal);
         setInterestRate(interestRate);
         setCompoundingPeriods(compoundingPeriods);
