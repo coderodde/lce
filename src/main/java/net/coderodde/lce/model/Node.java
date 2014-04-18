@@ -71,6 +71,7 @@ public class Node {
         checkNotNull(debtor, "The lender is null.");
         checkNotNull(contract, "The contract is null.");
         checkOwnerGraph();
+        checkOtherNode(debtor);
         
         if (maximumTimestamp < contract.getTimestamp()) {
             maximumTimestamp = contract.getTimestamp();
@@ -151,6 +152,14 @@ public class Node {
             throw new IllegalStateException(
                     "The node '" + this.getName() + 
                     "' does not belong to any graph.");
+        }
+    }
+    
+    private void checkOtherNode(final Node node) {
+        if (node.ownerGraph != this.ownerGraph) {
+            throw new IllegalStateException(
+                    "The node '" + node.getName() + "' is not in the same " +
+                    "graph with the node '" + this.getName() + "'.");
         }
     }
 }

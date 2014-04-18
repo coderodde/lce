@@ -1,5 +1,6 @@
 package net.coderodde.lce.model;
 
+import static net.coderodde.lce.Utils.checkCompoundingPeriods;;
 import static net.coderodde.lce.Utils.checkInterestRate;
 import static net.coderodde.lce.Utils.checkNotNull;
 import static net.coderodde.lce.Utils.checkPrincipal;
@@ -39,7 +40,13 @@ public abstract class Contract {
             return false;
         }
         
-        return getName().equals(((Contract) o).getName());
+        Contract c = (Contract) o;
+        final double e = 0.001;
+        
+        return epsilonEquals(principal, c.principal, e) 
+                && epsilonEquals(interestRate, c.interestRate, e)
+                && epsilonEquals(compoundingPeriods, c.compoundingPeriods, e)
+                && epsilonEquals(timestamp, c.timestamp, e);
     }
     
     @Override
@@ -67,6 +74,11 @@ public abstract class Contract {
         this.interestRate = interestRate;
     }
     
+    public void setCompoundingPeriods(final double compoundingPeriods) {
+        checkCompoundingPeriods(compoundingPeriods);
+        this.compoundingPeriods = compoundingPeriods;
+    }
+    
     /**
      * Sets the timestamp of this contract.
      * 
@@ -76,6 +88,7 @@ public abstract class Contract {
         checkTimestamp(timestamp);
         this.timestamp = timestamp;
     }
+    
     /**
      * Evaluates the equity of this contract at time <code>time</code>.
      * 

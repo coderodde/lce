@@ -37,6 +37,11 @@ public class ContractFactory {
         return this;
     }
         
+    public ContractFactory withContiguous() {
+        this.compoundingPeriods = Double.POSITIVE_INFINITY;
+        return this;
+    }
+        
     public ContractFactory withTimestamp(final double timestamp) {
         this.timestamp = timestamp;
         return this;

@@ -16,6 +16,7 @@ public class GraphTest {
     private Node a;
     private Node b;
     private Node c;
+    private Contract contract;
     
     @Before
     public void before() {
@@ -23,6 +24,12 @@ public class GraphTest {
         a = new Node("A");
         b = new Node("B");
         c = new Node("C");
+        contract = ContractFactory
+                   .newContract().withPrincipal(10.0)
+                                 .withContiguous()
+                                 .withInterestRate(0.12)
+                                 .withTimestamp(1.0)
+                                 .create("Default contract");
     }
     
     @Test
@@ -136,23 +143,49 @@ public class GraphTest {
     }
 
     @Test
-    public void testSize() {
-    }
-
-    @Test
     public void testGetEdgeAmount() {
-    }
-
-    @Test
-    public void testGetContractAmount() {
-    }
-
-    @Test
-    public void testSetEdgeAmount() {
-    }
-
-    @Test
-    public void testSetContractAmount() {
-    }
+        assertEquals(0, graph.getEdgeAmount());
+        assertEquals(0, graph.getContractAmount());
+        graph.add(c);
+        assertEquals(0, graph.getEdgeAmount());
+        assertEquals(0, graph.getContractAmount());
+        graph.add(a);
+        assertEquals(0, graph.getEdgeAmount());
+        assertEquals(0, graph.getContractAmount());
+        
+        graph.getNode(a).addDebtor(graph.getNode(c), contract);
+        
+        assertEquals(1, graph.getEdgeAmount());
+        assertEquals(1, graph.getContractAmount());
+        
+        graph.getNode(c).addDebtor(graph.getNode(a),
+                ContractFactory.newContract()
+                               .withPrincipal(4.0)
+                               .withCompoundingPeriods(2.0)
+                               .withInterestRate(0.04)
+                               .withTimestamp(1.4)
+                               .create("Another contract"));
+        
+        assertEquals(2, graph.getEdgeAmount());
+        assertEquals(2, graph.getContractAmount());
+        
+        graph.getNode(c).addDebtor(graph.getNode(a),
+                ContractFactory.newContract()
+                               .withPrincipal(2.5)
+                               .withInterestRate(0.034)
+                               .withCompoundingPeriods(4.0)
+                               .withTimestamp(0.8)
+                               .create("Another contract 2"));
+        
+        assertEquals(2, graph.getEdgeAmount());
+        assertEquals(3, graph.getContractAmount());
+    }    
     
+    @Test(expected = IllegalStateException.class)
+    public void testNodesMustBeInTheSameGraph() {
+        Graph other = new Graph("Another graph");
+        other.add(a);
+        graph.add(b);
+        other.getNode(a).addDebtor(graph.getNode(b), contract);
+    }
 }
