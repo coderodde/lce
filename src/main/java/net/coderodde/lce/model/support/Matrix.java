@@ -18,11 +18,39 @@ class Matrix {
     private static final double DEFAULT_EPSILON = 0.001;
     private static final int ROW_NOT_FOUND = -1;
     
+    /**
+     * The matrix of double-precision floating-point entries.
+     */
     private final double m[][];
+    
+    /**
+     * The amount of rows;
+     */
     private final int rows;
+    
+    /**
+     * The total amount of columns (with the augmentation column).
+     */
     private final int columns;
+    
+    /**
+     * The epsilon value used for comparing.
+     */
     private double epsilon;
     
+    /**
+     * Keeps track whether reduction is the most recent (modifying) operation on
+     * this matrix.
+     */
+    private boolean solved;
+    
+    /**
+     * Constructs a matrix with <code>rowAmount</code> rows and
+     * <code>columnAmount</code> columns (with the augmentation column).
+     * 
+     * @param rowAmount the row amount in this matrix.
+     * @param columnAmount the column amount in this matrix.
+     */
     Matrix(final int rowAmount, final int columnAmount) {
         this.m = new double[rowAmount][columnAmount];
         this.rows = rowAmount;
@@ -30,6 +58,11 @@ class Matrix {
         this.epsilon = DEFAULT_EPSILON;
     }
     
+    /**
+     * Constructs the matrix adapted to hold the input 2D-array.
+     * 
+     * @param m the input 2D-array.
+     */
     Matrix(final double[][] m) {
         this.rows = m.length;
         int cols = 0;
@@ -48,15 +81,40 @@ class Matrix {
         }
     }
     
+    /**
+     * Retrieves the entry at (<code>x</code>, <code>y</code>).
+     * 
+     * @param x the column coordinate starting from 0.
+     * @param y the row coordinate starting from 0.
+     * 
+     * @return returns the entry at (x, y). 
+     */
     double get(final int x, final int y) {
         return m[y][x];
     }
     
+    /**
+     * Sets the entry at (<code>x</code>, <code>y</code>) to <code>value</code>.
+     * 
+     * @param x the column coordinate starting from 0.
+     * @param y the row coordinate starting from 0.
+     * @param value the value to set.
+     */
     void set(final int x, final int y, final double value) {
+        solved = false;
         m[y][x] = value;
     }
     
+    /**
+     * Checks whether the linear system represented by this matrix
+     * @return 
+     */
     boolean hasSolution() {
+        if (solved == false) {
+            throw new IllegalStateException(
+                    "Solution check is allowed only straight after reduction.");
+        }
+        
         outer:
         for (double[] row : m) {
             for (int i = 0; i != row.length - 1; ++i) {
@@ -73,6 +131,13 @@ class Matrix {
         return true;
     }
     
+    /**
+     * Performs the Gauss-Jordan elimination as to solve the linear system 
+     * represented by this matrix.
+     * 
+     * @return the rank, i.e., the amount of non-zero rows (also amount of
+     * dependent variables) in this matrix.
+     */
     int reduceToReducedRowEchelonForm() {
         int rowsProcessed = 0;
         
@@ -99,9 +164,18 @@ class Matrix {
             ++rowsProcessed;
         }
         
+        solved = true;
         return rowsProcessed;
     }
     
+    /**
+     * Row operation: add to row <code>targetRow</code> the multiple of 
+     * the row <code>targetRow</code>, runs in time O(rows).
+     * 
+     * @param targetRow the target row.
+     * @param sourceRow the source row.
+     * @param factor the factor scaling the source row.
+     */
     void addToRowMultipleOfAnotherRow(final int targetRow, 
                                       final int sourceRow,
                                       final double factor) {
@@ -111,12 +185,24 @@ class Matrix {
         }
     }
     
+    /**
+     * Swaps to rows, <code>r1</code> and <code>r2</code>, in O(1).
+     * 
+     * @param r1 the index of a row.
+     * @param r2 the index of another row.
+     */
     void swapRows(final int r1, final int r2) {
         double[] tmp = m[r1];
         m[r1] = m[r2];
         m[r2] = tmp;
     }
     
+    /**
+     * Scales the row <code>rowNumber</code> by <code>factor</code>.
+     * 
+     * @param rowNumber the y-coordinate of the row to scale.
+     * @param factor the scaling factor.
+     */
     void scaleRow(final int rowNumber, final double factor) {
         checkFactor(factor);
         double[] row = m[rowNumber];
@@ -125,6 +211,16 @@ class Matrix {
         }
     }
     
+    /**
+     * Finds the upmost row index having non-zero entry at column
+     * <code>columnIndex</code>. First <code>after</code> rows are skipped.
+     * 
+     * @param columnIndex the column being checked.
+     * @param after the amount of topmost rows being skipped.
+     * 
+     * @return the row index if an entry is found, <code>ROW_NOT_FOUND</code> 
+     * otherwise.
+     */
     int findUpmostRowWithAPivotAtColumn(final int columnIndex,
                                         final int after) {
         for (int i = after; i < rows; ++i) {
@@ -136,6 +232,11 @@ class Matrix {
         return ROW_NOT_FOUND;
     }
     
+    /**
+     * Sets a new epsilon value for comparisons.
+     * 
+     * @param epsilon the epsilon value to set.
+     */
     void setEpsilon(final double epsilon) {
         checkNotNaN(epsilon, "'epsilon' is NaN.");
         checkNotInfinite(epsilon, "'epsilon' is infinite in absolute value.");
@@ -143,11 +244,19 @@ class Matrix {
         this.epsilon = epsilon;
     }
     
+    /**
+     * Checks the factor against infinity and NaN.
+     * 
+     * @param factor the factor to check.
+     */
     private final void checkFactor(final double factor) {
         checkNotNaN(factor, "'factor' is NaN.");
         checkNotInfinite(factor, "'factor' is infinite.");
     }
     
+    /**
+     * Pretty-print this matrix.
+     */
     public void debugPrint() {
         for (int r = 0; r < rows; ++r) {
             for (int c = 0; c < columns; ++c) {
