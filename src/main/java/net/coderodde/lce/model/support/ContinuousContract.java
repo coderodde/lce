@@ -1,11 +1,8 @@
 package net.coderodde.lce.model.support;
 
-import static net.coderodde.lce.Utils.checkInterestRate;
-import static net.coderodde.lce.Utils.checkPrincipal;
 import static net.coderodde.lce.Utils.checkTimestamp;
 import static net.coderodde.lce.Utils.epsilonEquals;
 import net.coderodde.lce.model.Contract;
-import net.coderodde.lce.model.DebtCutAssignment;
 
 /**
  * This class models the contracts having continuous compounding scheme.
@@ -14,22 +11,6 @@ import net.coderodde.lce.model.DebtCutAssignment;
  * @version 1.6
  */
 public class ContinuousContract extends Contract {
-
-    /**
-     * The principal investment;
-     */
-    private double principal;
-    
-    /**
-     * The interest rate.
-     */
-    private double interestRate;
-    
-    /**
-     * The moment at which the contract was admitted. One unit corresponds to
-     * one year.
-     */
-    private double timestamp;
     
     /**
      * Constructs a new contract with contiguous compounding scheme.
@@ -59,10 +40,11 @@ public class ContinuousContract extends Contract {
         }
         
         ContinuousContract other = (ContinuousContract) o;
+        final double e = 0.001;
         
-        return epsilonEquals(this.principal, other.principal)
-                && epsilonEquals(this.interestRate, other.interestRate)
-                && epsilonEquals(this.timestamp, other.timestamp);
+        return epsilonEquals(this.principal, other.principal, e)
+                && epsilonEquals(this.interestRate, other.interestRate, e)
+                && epsilonEquals(this.timestamp, other.timestamp, e);
     }
     
     /**
@@ -79,37 +61,7 @@ public class ContinuousContract extends Contract {
     }
     
     @Override
-    public final double getTimestamp() {
-        return timestamp;
-    }
-    
-    /**
-     * Sets the principal of this contract.
-     * 
-     * @param principal the principal to set.
-     */
-    public void setPrincipal(final double principal) {
-        checkPrincipal(principal);
-        this.principal = principal;
-    }
-    
-    /**
-     * Sets the interest rate of this contract.
-     * 
-     * @param interestRate the interest rate to set. 
-     */
-    public void setInterestRate(final double interestRate) {
-        checkInterestRate(interestRate);
-        this.interestRate = interestRate;
-    }
-    
-    public void setTimestamp(final double timestamp) {
-        checkTimestamp(timestamp);
-        this.timestamp = timestamp;
-    }
-
-    @Override
-    protected void applyDebtCut(double debtCut, double time) {
-        
+    public boolean isContiguous() {
+        return true;
     }
 }

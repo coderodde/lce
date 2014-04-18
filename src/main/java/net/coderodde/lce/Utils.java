@@ -83,7 +83,7 @@ public class Utils {
     public static final void checkPrincipal(final double principal) {
         checkNotNaN(principal, "The principal may not be NaN.");
         checkNotInfinite(principal, "The principal may not be infinite.");
-        checkPositive(principal, "The principal must be above 0.");
+        checkNotNegative(principal, "The principal must be at least 0.");
     }
         
     public static final void checkInterestRate(final double interestRate) {

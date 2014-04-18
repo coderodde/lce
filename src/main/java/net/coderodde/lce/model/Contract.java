@@ -1,6 +1,7 @@
 package net.coderodde.lce.model;
 
-import static net.coderodde.lce.Utils.checkCompoundingPeriods;;
+import static net.coderodde.lce.Utils.checkCompoundingPeriods;import static net.coderodde.lce.Utils.checkDebtCut;
+;
 import static net.coderodde.lce.Utils.checkInterestRate;
 import static net.coderodde.lce.Utils.checkNotNull;
 import static net.coderodde.lce.Utils.checkPrincipal;
@@ -15,14 +16,34 @@ import static net.coderodde.lce.Utils.epsilonEquals;
  */
 public abstract class Contract {
     
+    /**
+     * The name of this contract.
+     */
     protected final String name;
+    
+    /**
+     * The principal investment.
+     */
     protected double principal;
+    
+    /**
+     * The interest rate.
+     */
     protected double interestRate;
+    
+    /**
+     * The amount of compounding periods per year.
+     */
     protected double compoundingPeriods;
+    
+    /**
+     * The moment at which the contract was admitted. One unit corresponds to
+     * one year.
+     */
     protected double timestamp;
     
     public Contract(final String name) {
-        checkNotNull(name, "The name of contract is null.");
+        checkNotNull(name, "The name of a contract is null.");
         this.name = name;
     }
     
@@ -54,6 +75,24 @@ public abstract class Contract {
         return name.hashCode();
     }
     
+    public double getPrincipal() {
+        return this.principal;
+    }
+    
+    public double getInterestRate() {
+        return this.interestRate;
+    }
+    
+    public double getCompoundingPeriods() {
+        return this.compoundingPeriods;
+    }
+    
+    public double getTimestamp() {
+        return this.timestamp;
+    }
+    
+    public abstract boolean isContiguous();
+    
     /**
      * Sets the principal of this contract.
      * 
@@ -74,6 +113,11 @@ public abstract class Contract {
         this.interestRate = interestRate;
     }
     
+    /**
+     * Sets the compounding periods of this contract.
+     * 
+     * @param compoundingPeriods the compounding periods.
+     */
     public void setCompoundingPeriods(final double compoundingPeriods) {
         checkCompoundingPeriods(compoundingPeriods);
         this.compoundingPeriods = compoundingPeriods;
@@ -90,6 +134,19 @@ public abstract class Contract {
     }
     
     /**
+     * Applies a debt cut to this contract.
+     * @param debtCut
+     * @param time 
+     */
+    public void applyDebtCut(final double debtCut, final double time) {
+        checkTimestamp(this.timestamp, time);
+        double equityAtTime = this.evaluate(time);
+        checkDebtCut(debtCut, equityAtTime);
+        setPrincipal(equityAtTime - debtCut);
+        setTimestamp(time);
+    }
+    
+    /**
      * Evaluates the equity of this contract at time <code>time</code>.
      * 
      * @param time the time at which to evaluate equity.
@@ -97,19 +154,4 @@ public abstract class Contract {
      * @return the equity of this contract at time <code>time</code>.
      */
     public abstract double evaluate(final double time);
-    
-    /**
-     * Returns the time stamp at which this contract was granted.
-     * 
-     * @return the time stamp at which this contract was granted. 
-     */
-    public abstract double getTimestamp();
-    
-    /**
-     * Applies a debt cut to this contract.
-     * 
-     * @param debtCutAssignment the debt cut assignment object.
-     */
-    protected abstract void applyDebtCut
-        (final double debtCut, final double time);
 }
