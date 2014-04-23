@@ -2,9 +2,10 @@ package net.coderodde.lce;
 
 import java.util.Map;
 import net.coderodde.lce.model.Contract;
-import net.coderodde.lce.model.DebtCutAssignment;
+import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
 import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
+import net.coderodde.lce.model.TimeAssignment;
 
 /**
  * This class contains the bear necessities.
@@ -106,22 +107,23 @@ public class Utils {
     }
     
     public static final void checkTimeMap
-        (final Graph graph, final Map<Node, Double> timeMap) {
-        if (timeMap.size() != graph.size()) {
+        (final Graph graph, final TimeAssignment timeAssignment) {
+        if (timeAssignment.size() != graph.size()) {
             throw new IllegalArgumentException(
                     "The size of time map and graph differ.");
         }
         
-        for (Node node : timeMap.keySet()) {
+        for (Node node : timeAssignment.getNodes()) {
             if (!graph.contains(node)) {
                 throw new IllegalArgumentException(
                     "The key set of the time map differs from graph.");
             }
         }
+        
     }
         
     public static final void checkContract
-        (final Contract contract, final DebtCutAssignment debtCutAssignment) {
+        (final Contract contract, final DefaultDebtCutAssignment debtCutAssignment) {
         checkNotNull(contract, "Contract is null.");
         checkNotNull(debtCutAssignment, "Debt cut assignment is null.");
         if (debtCutAssignment.getContracts().contains(contract) == false) {

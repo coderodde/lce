@@ -133,6 +133,9 @@ public class GraphTest {
         graph.getNode(b).addDebtor(graph.getNode(c), contract);
         graph.getNode(c).addDebtor(graph.getNode(a), contract);
         
+        assertEquals(30.0, graph.getTotalFlowAt(3.0), 0.001);
+        assertEquals(40.4957642273, graph.getTotalFlowAt(5.0), 0.001);
+        
         assertTrue(graph.isInEquilibriumAt(5.0));
         assertTrue(graph.isInEquilibriumAt(7.0));
         

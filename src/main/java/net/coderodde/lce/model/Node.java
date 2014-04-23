@@ -114,6 +114,18 @@ public class Node {
         return equity;
     }
  
+    public final double getOutgoingFlowAt(final double time) {
+        double d = 0;
+        
+        for (final List<Contract> contractList : out.values()) {
+            for (final Contract contract : contractList) {
+                d += contract.evaluate(time);
+            }
+        }
+        
+        return d;
+    }
+    
     final void setOwnerGraph(Graph graph) {
         in.clear();
         out.clear();

@@ -2,6 +2,7 @@ package net.coderodde.lce.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 import static net.coderodde.lce.Utils.checkNotNull;
 import static net.coderodde.lce.Utils.epsilonEquals;
@@ -99,7 +100,7 @@ public class Graph {
      * Computes the debt cut assingment f
      * @return 
      */
-    public DebtCutAssignment findEquilibrialDebtCuts
+    public final DebtCutAssignment findEquilibrialDebtCuts
         (final double equilibriumTime) {
         return null;
     }
@@ -114,6 +115,16 @@ public class Graph {
         return true;
     }
         
+    public final double getTotalFlowAt(final double time) {
+        double d = 0;
+        
+        for (final Node node : map.values()) {
+            d += node.getOutgoingFlowAt(time);
+        }
+        
+        return d;
+    }
+    
     public int size() {
         return map.size();
     }

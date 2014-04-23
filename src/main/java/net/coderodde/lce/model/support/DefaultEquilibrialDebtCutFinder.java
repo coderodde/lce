@@ -1,11 +1,12 @@
 package net.coderodde.lce.model.support;
 
 import java.util.Map;
+import static net.coderodde.lce.Utils.checkTimeMap;
 import net.coderodde.lce.model.Contract;
 import net.coderodde.lce.model.EquilibrialDebtCutFinder;
 import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
-import static net.coderodde.lce.Utils.checkTimeMap;
+import net.coderodde.lce.model.TimeAssignment;
 
 /**
  * This class implements the default equilibrial debt cut finder, which relies
@@ -28,9 +29,9 @@ implements EquilibrialDebtCutFinder {
      * to the global equilibrium.
      */
     @Override
-    public Map<Contract, Double> compute
-        (final Graph graph, final Map<Node, Double> timeMap) {
-        checkTimeMap(graph, timeMap);
+    public DefaultDebtCutAssignment compute
+        (final Graph graph, final TimeAssignment timeAssignment) {
+        checkTimeMap(graph, timeAssignment);
         
         return null;
     }
