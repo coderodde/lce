@@ -1,11 +1,12 @@
 package net.coderodde.lce.model;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
-import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 import static net.coderodde.lce.Utils.checkNotNull;
 import static net.coderodde.lce.Utils.epsilonEquals;
+import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 
 /**
  * This class models the financial graph in which nodes may lease loan contracts
@@ -96,8 +97,13 @@ public class Graph {
         map.remove(node.getName());
     }
     
+    public final Collection<Node> getNodes() {
+        return Collections.unmodifiableCollection(this.map.values());
+    }
+    
     /**
-     * Computes the debt cut assingment f
+     * Computes the debt cut assingment object.
+     * 
      * @return 
      */
     public final DebtCutAssignment findEquilibrialDebtCuts
@@ -125,6 +131,11 @@ public class Graph {
         return d;
     }
     
+    /**
+     * Returns the amount of nodes in this graph.
+     * 
+     * @return the amount of nodes in this graph.
+     */
     public int size() {
         return map.size();
     }

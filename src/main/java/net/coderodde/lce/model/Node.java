@@ -1,6 +1,8 @@
 package net.coderodde.lce.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +98,10 @@ public class Node {
                 this.ownerGraph.getContractAmount() + 1);
     }
     
+    public final double getMaximumTimestamp() {
+        return maximumTimestamp;
+    }
+    
     public final double equity(final double time) {
         double equity = 0;
         
@@ -114,6 +120,38 @@ public class Node {
         return equity;
     }
  
+    public final Collection<Node> getDebtors() {
+        return Collections.<Node>unmodifiableSet(this.out.keySet());
+    }
+    
+    public final Collection<Node> getLenders() {
+        return Collections.<Node>unmodifiableSet(this.in.keySet());
+    }
+    
+    public final Collection<Contract> getContractsTo(final Node debtor) {
+        return Collections.unmodifiableCollection(this.out.get(debtor));
+    }
+    
+    public final Collection<Contract> getOutgoingContracts() {
+        List<Contract> contracts = new ArrayList<Contract>();
+        
+        for (List<Contract> tmp : this.out.values()) {
+            contracts.addAll(tmp);
+        }
+        
+        return Collections.<Contract>unmodifiableList(contracts);
+    }
+    
+    public final Collection<Contract> getIngoingContracts() {
+        List<Contract> contracts = new ArrayList<Contract>();
+        
+        for (List<Contract> tmp : this.in.values()) {
+            contracts.addAll(tmp);
+        }
+        
+        return Collections.<Contract>unmodifiableList(contracts);
+    }
+    
     public final double getOutgoingFlowAt(final double time) {
         double d = 0;
         

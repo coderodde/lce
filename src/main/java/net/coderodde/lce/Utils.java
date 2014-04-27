@@ -106,7 +106,7 @@ public class Utils {
         checkNotInfinite(timestamp, "The timestamp is infinite.");
     }
     
-    public static final void checkTimeMap
+    public static final void checkTimeAssignment
         (final Graph graph, final TimeAssignment timeAssignment) {
         if (timeAssignment.size() != graph.size()) {
             throw new IllegalArgumentException(
@@ -120,6 +120,12 @@ public class Utils {
             }
         }
         
+        for (Node node : graph.getNodes()) {
+            if (!timeAssignment.containsNode(node)) {
+                throw new IllegalArgumentException(
+                    "The graph has a node not in the time assignment object.");
+            }
+        }
     }
         
     public static final void checkContract

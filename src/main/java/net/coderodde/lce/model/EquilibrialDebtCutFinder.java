@@ -19,6 +19,7 @@ public interface EquilibrialDebtCutFinder {
      * 
      * @return the debt cut assignment object.
      */
-    public DefaultDebtCutAssignment compute
-        (final Graph graph, final TimeAssignment timeAssignment);    
+    public DefaultDebtCutAssignment compute(final Graph graph,
+                                            final TimeAssignment timeAssignment, 
+                                            final double time);    
 }

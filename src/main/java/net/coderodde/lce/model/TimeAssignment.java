@@ -21,6 +21,8 @@ public class TimeAssignment {
      */
     private final Map<Node, Double> map;
     
+    private double minTimestamp;
+    
     /**
      * Constructs an empty time assignment object.
      */
@@ -47,6 +49,8 @@ public class TimeAssignment {
         checkNotNull(node, "Node is null.");
         checkTimestamp(time);
         this.map.put(node, time);
+        this.minTimestamp = Math.max(this.minTimestamp,
+                                     node.getMaximumTimestamp());
     }
     
     /**
@@ -86,7 +90,17 @@ public class TimeAssignment {
      * 
      * @return an unmodifiable view of all the nodes in this assignment.
      */
-    public Collection<Node> getNodes() {
+    public final Collection<Node> getNodes() {
         return Collections.<Node>unmodifiableCollection(this.map.keySet());
+    }
+    
+    /**
+     * Returns the timestamp no less than the maximum timestamp in this 
+     * object.
+     * 
+     * @return the timestamp.
+     */
+    public final double getMinimumTimestamp() {
+        return this.minTimestamp;
     }
 }
