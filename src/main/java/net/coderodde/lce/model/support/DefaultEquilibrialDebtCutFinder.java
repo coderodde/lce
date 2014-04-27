@@ -9,6 +9,7 @@ import net.coderodde.lce.model.EquilibrialDebtCutFinder;
 import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
+import org.apache.commons.math3.optim.PointValuePair;
 
 /**
  * This class implements the default equilibrial debt cut finder, which relies
@@ -102,6 +103,8 @@ implements EquilibrialDebtCutFinder {
         }
         
         m.debugPrint();
+        
+        PointValuePair pvp = null;
         
         return null;
     }
