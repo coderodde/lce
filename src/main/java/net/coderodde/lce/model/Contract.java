@@ -154,4 +154,6 @@ public abstract class Contract {
      * @return the equity of this contract at time <code>time</code>.
      */
     public abstract double evaluate(final double time);
+    
+    public abstract double getGrowthFactor(final double time);
 }

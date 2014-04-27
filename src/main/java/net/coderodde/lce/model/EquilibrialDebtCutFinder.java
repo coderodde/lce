@@ -16,10 +16,14 @@ public interface EquilibrialDebtCutFinder {
      * 
      * @param graph the graph to work on.
      * @param timeAssignment the time assignment object.
+     * @param equilibriumTime the time at which the graph should be in
+     * equilibrium.
      * 
      * @return the debt cut assignment object.
      */
-    public DefaultDebtCutAssignment compute(final Graph graph,
-                                            final TimeAssignment timeAssignment, 
-                                            final double time);    
+    public DebtCutAssignment compute(final Graph graph,
+                                     final TimeAssignment timeAssignment, 
+                                     final double equilibriumTime);
+    
+    public long getMatrixReductionTime();
 }

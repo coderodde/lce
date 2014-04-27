@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import static net.coderodde.lce.Utils.checkTimeAssignment;
 import net.coderodde.lce.model.Contract;
+import net.coderodde.lce.model.DebtCutAssignment;
 import net.coderodde.lce.model.EquilibrialDebtCutFinder;
 import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
@@ -19,6 +20,12 @@ import net.coderodde.lce.model.TimeAssignment;
 public class DefaultEquilibrialDebtCutFinder 
 implements EquilibrialDebtCutFinder {
 
+    /**
+     * This is a sentinel value to denote the fact that no solution found.
+     */
+    public static final DebtCutAssignment NO_SOLUTION =
+            new DefaultDebtCutAssignment();
+    
     /**
      * The graph this finder is working on.
      */
@@ -45,10 +52,21 @@ implements EquilibrialDebtCutFinder {
     private Map<Integer, Contract> mcii;
     
     /**
+     * The duration of matrix reduction.
+     */
+    private long matrixReductionDuration;
+    
+    /**
+     * The duration of minimization the cuts.
+     */
+    private long minimizationDuration;
+    
+    /**
      * Constructs this finder.
      */
     public DefaultEquilibrialDebtCutFinder() {
         this.mci = new HashMap<>();
+        this.mcii = new HashMap<>();
     }
     
     /**
@@ -64,7 +82,7 @@ implements EquilibrialDebtCutFinder {
      * to the global equilibrium.
      */
     @Override
-    public DefaultDebtCutAssignment compute(final Graph graph, 
+    public DebtCutAssignment compute(final Graph graph, 
                                             final TimeAssignment timeAssignment,
                                             final double equilibriumTime) {
         checkTimeAssignment(graph, timeAssignment);
@@ -72,8 +90,31 @@ implements EquilibrialDebtCutFinder {
         this.timeAssignment = timeAssignment;
         this.equilibriumTime = equilibriumTime;
         this.buildMaps();
+        Matrix m = loadMatrix();
+        
+        long ta = System.currentTimeMillis();
+        int rank = m.reduceToReducedRowEchelonForm();
+        long tb = System.currentTimeMillis();
+        this.matrixReductionDuration = tb - ta;
+        
+        if (m.hasSolution() == false) {
+            return NO_SOLUTION;
+        }
+        
+        m.debugPrint();
         
         return null;
+    }
+    
+    /**
+     * Returns the time spent reducing the matrix. The return value makes
+     * sense only after at least one run of this finder.
+     * 
+     * @return the time spent reducing the matrix.
+     */
+    @Override
+    public final long getMatrixReductionTime() {
+        return this.matrixReductionDuration;
     }
     
     private final void buildMaps() {
@@ -106,7 +147,19 @@ implements EquilibrialDebtCutFinder {
         row[row.length - 1] = computeConstantEntry(node);
         
         // Compute everything else.
-        
+        for (final Node n : this.graph.getNodes()) {
+            for (final Contract c : node.getOutgoingContracts()) {
+                row[mci.get(c)] += 
+                        c.getGrowthFactor(this.equilibriumTime - 
+                                          this.timeAssignment.get(n));
+            }
+            
+            for (final Contract c : node.getIncomingContracts()) {
+                row[mci.get(c)] -=
+                        c.getGrowthFactor(this.equilibriumTime -
+                                          this.timeAssignment.get(node));
+            }
+        }
     }
     
     private final double computeConstantEntry(final Node node) {

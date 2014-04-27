@@ -142,7 +142,7 @@ public class Node {
         return Collections.<Contract>unmodifiableList(contracts);
     }
     
-    public final Collection<Contract> getIngoingContracts() {
+    public final Collection<Contract> getIncomingContracts() {
         List<Contract> contracts = new ArrayList<Contract>();
         
         for (List<Contract> tmp : this.in.values()) {

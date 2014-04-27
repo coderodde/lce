@@ -2,7 +2,6 @@ package net.coderodde.lce.model.support;
 
 import net.coderodde.lce.model.Contract;
 import static net.coderodde.lce.Utils.checkTimestamp;
-import static net.coderodde.lce.Utils.checkDebtCut;
 
 /**
  * This class models a contract with periodical compounding scheme.
@@ -41,10 +40,17 @@ public class BasicContract extends Contract {
      * @return the value of this contract at time <code>time</code>. 
      */
     @Override
-    public final double evaluate(double time) {
-        checkTimestamp(time, timestamp);
+    public final double evaluate(final double time) {
+//        checkTimestamp(time, timestamp);
         return principal * Math.pow(1.0 + interestRate / compoundingPeriods, 
-                           Math.floor(compoundingPeriods * (time - timestamp)));
+                           Math.floor(compoundingPeriods * time));
+    }
+    
+    @Override
+    public final double getGrowthFactor(final double time) {
+        return Math.pow(1.0 + this.getInterestRate() / 
+                              this.getCompoundingPeriods(),
+                              Math.floor(this.getCompoundingPeriods() * time));
     }
     
     @Override

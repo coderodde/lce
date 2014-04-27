@@ -55,9 +55,14 @@ public class ContinuousContract extends Contract {
      * @return the value of this contract at time <code>time</code>.
      */
     @Override
-    public double evaluate(double time) {
+    public final double evaluate(final double time) {
         checkTimestamp(timestamp, time);
-        return principal * Math.pow(Math.E, interestRate * (time - timestamp));
+        return principal * Math.pow(Math.E, interestRate * time);
+    }
+    
+    @Override
+    public final double getGrowthFactor(final double time) {
+        return Math.pow(Math.E, this.getInterestRate() * time);
     }
     
     @Override

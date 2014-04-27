@@ -1,11 +1,14 @@
 package net.coderodde.lce;
 
 import java.util.Map;
+import java.util.Random;
 import net.coderodde.lce.model.Contract;
-import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
 import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
+import net.coderodde.lce.model.support.BasicContract;
+import net.coderodde.lce.model.support.ContinuousContract;
+import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
 
 /**
  * This class contains the bear necessities.
@@ -158,5 +161,66 @@ public class Utils {
     
     public static final boolean epsilonEquals(final double a, final double b, final double e) {
         return Math.abs(a - b) <= e;
+    }
+    
+    public static final Graph createRandomGraph(int size,
+                                                final long seed,
+                                                final float edgeLoadFactor) {
+        if (size < 1) {
+            size = 1;
+        }
+        
+        Graph g = new Graph("Random graph");
+        
+        for (int i = 0; i != size; ++i) {
+            g.add(new Node("" + i));
+        }
+        
+        Random r = new Random(seed);
+        int contractCount = 0;
+        
+        for (final Node lender : g.getNodes()) {
+            for (final Node debtor : g.getNodes()) {
+                int contracts = r.nextInt(4);
+                for (int i = 0; i != contracts; ++i) {
+                    lender.addDebtor(debtor,
+                                     createRandomContract(r, 
+                                                          "" + contractCount));
+                    ++contractCount;
+                }
+            }
+        }
+        
+        return g;
+    }
+    
+    public static final Contract createRandomContract(final Random r, 
+                                                      final String name) {
+        if (r.nextFloat() < 0.75f) {
+            // Basic contract.
+            return new BasicContract(name,
+                                     10.0 * r.nextDouble(),
+                                     0.25 * r.nextDouble(),
+                                     12.0 * r.nextDouble(),
+                                     5.0 * r.nextDouble());
+        } else {
+            // Contiguous contract.
+            return new ContinuousContract(name,
+                                          10.0 * r.nextDouble(),
+                                          0.25 * r.nextDouble(),
+                                          5.0 * r.nextDouble());
+        }
+    }
+    
+    public static final TimeAssignment 
+    createRandomTimeAssignment(final long seed, final Graph graph) {
+        final Random r = new Random(seed);
+        final TimeAssignment ta = new TimeAssignment();
+
+        for (final Node node : graph.getNodes()) {
+            ta.put(node, 10 * r.nextDouble());
+        }
+
+        return ta;
     }
 }
