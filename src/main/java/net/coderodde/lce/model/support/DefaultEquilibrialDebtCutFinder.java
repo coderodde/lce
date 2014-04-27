@@ -1,5 +1,6 @@
 package net.coderodde.lce.model.support;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import static net.coderodde.lce.Utils.checkTimeAssignment;
@@ -9,7 +10,10 @@ import net.coderodde.lce.model.EquilibrialDebtCutFinder;
 import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
+import org.apache.commons.math3.optim.OptimizationData;
 import org.apache.commons.math3.optim.PointValuePair;
+import org.apache.commons.math3.optim.linear.LinearOptimizer;
+import org.apache.commons.math3.optim.linear.SimplexSolver;
 
 /**
  * This class implements the default equilibrial debt cut finder, which relies
@@ -104,9 +108,12 @@ implements EquilibrialDebtCutFinder {
         
         m.debugPrint();
         
-        PointValuePair pvp = null;
+        OptimizationData[] lp = convertMatrixToLinearProgram(m);
+        PointValuePair pvp = new SimplexSolver().optimize(lp);
         
-        return null;
+        
+        
+        return extractDebtCuts(pvp);
     }
     
     /**
@@ -118,6 +125,15 @@ implements EquilibrialDebtCutFinder {
     @Override
     public final long getMatrixReductionTime() {
         return this.matrixReductionDuration;
+    }
+    
+    private final DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
+        return null;
+    }
+    
+    private final OptimizationData[]
+        convertMatrixToLinearProgram(final Matrix m) {
+            return null;
     }
     
     private final void buildMaps() {
