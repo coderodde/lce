@@ -1,6 +1,5 @@
 package net.coderodde.lce.model.support;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import static net.coderodde.lce.Utils.checkTimeAssignment;
@@ -12,7 +11,6 @@ import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
 import org.apache.commons.math3.optim.OptimizationData;
 import org.apache.commons.math3.optim.PointValuePair;
-import org.apache.commons.math3.optim.linear.LinearOptimizer;
 import org.apache.commons.math3.optim.linear.SimplexSolver;
 
 /**
@@ -109,9 +107,14 @@ implements EquilibrialDebtCutFinder {
         m.debugPrint();
         
         OptimizationData[] lp = convertMatrixToLinearProgram(m);
+        
+        ta = System.currentTimeMillis();
+        
         PointValuePair pvp = new SimplexSolver().optimize(lp);
         
+        tb = System.currentTimeMillis();
         
+        minimizationDuration = tb - ta;
         
         return extractDebtCuts(pvp);
     }
@@ -166,18 +169,18 @@ implements EquilibrialDebtCutFinder {
         row[row.length - 1] = computeConstantEntry(node);
         
         // Compute everything else.
-        for (final Node n : this.graph.getNodes()) {
-            for (final Contract c : node.getOutgoingContracts()) {
+        for (final Node debtor : node.getDebtors()) {
+            for (final Contract c : node.getContractsTo(debtor)) {
                 row[mci.get(c)] += 
-                        c.getGrowthFactor(this.equilibriumTime - 
-                                          this.timeAssignment.get(n));
+                        c.getGrowthFactor(equilibriumTime -
+                                          timeAssignment.get(debtor));
             }
-            
-            for (final Contract c : node.getIncomingContracts()) {
-                row[mci.get(c)] -=
-                        c.getGrowthFactor(this.equilibriumTime -
-                                          this.timeAssignment.get(node));
-            }
+        }
+        
+        for (final Contract c : node.getIncomingContracts()) {
+            row[mci.get(c)] -=
+                        c.getGrowthFactor(equilibriumTime -
+                                          timeAssignment.get(node));
         }
     }
     

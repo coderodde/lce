@@ -98,10 +98,22 @@ public class Node {
                 this.ownerGraph.getContractAmount() + 1);
     }
     
+    /**
+     * Returns the largest timestamp in this node.
+     * 
+     * @return the largest timestamp in this node. 
+     */
     public final double getMaximumTimestamp() {
         return maximumTimestamp;
     }
     
+    /**
+     * Computes the equity of this node at moment <code>time</code>.
+     * 
+     * @param time the time at which to compute equity.
+     * 
+     * @return equity at moment <code>time</code>.
+     */
     public final double equity(final double time) {
         double equity = 0;
         
@@ -120,18 +132,42 @@ public class Node {
         return equity;
     }
  
+    /**
+     * Returns unmodifiable view of this node's debtor nodes.
+     * 
+     * @return unmodifiable view of this node's debtor nodes.
+     */
     public final Collection<Node> getDebtors() {
         return Collections.<Node>unmodifiableSet(this.out.keySet());
     }
     
+    /**
+     * Returns unmodifiable view of this node's lender nodes.
+     * 
+     * @return unmodifiable view of this node's lender nodes.
+     */
     public final Collection<Node> getLenders() {
         return Collections.<Node>unmodifiableSet(this.in.keySet());
     }
     
+    /**
+     * Return unmodifiable view of all the contracts from this node to
+     * <code>debtor</code>.
+     * 
+     * @param debtor the debtor node.
+     * 
+     * @return unmodifiable view of all the contracts from this node to
+     * <code>debtor</code>.
+     */
     public final Collection<Contract> getContractsTo(final Node debtor) {
         return Collections.unmodifiableCollection(this.out.get(debtor));
     }
     
+    /**
+     * Returns unmodifiable view of all the contracts given by this node.
+     * 
+     * @return view of outgoing contracts.
+     */
     public final Collection<Contract> getOutgoingContracts() {
         List<Contract> contracts = new ArrayList<Contract>();
         
@@ -142,6 +178,11 @@ public class Node {
         return Collections.<Contract>unmodifiableList(contracts);
     }
     
+    /**
+     * Returns unmodifiable view of all the contracts received by this node.
+     * 
+     * @return view of incoming contracts.
+     */
     public final Collection<Contract> getIncomingContracts() {
         List<Contract> contracts = new ArrayList<Contract>();
         
@@ -152,6 +193,13 @@ public class Node {
         return Collections.<Contract>unmodifiableList(contracts);
     }
     
+    /**
+     * Computes outgoing flow at the moment <code>time</code>.
+     * 
+     * @param time the time at which to calculate the flow.
+     * 
+     * @return outgoing flow at the moment <code>time</code>.
+     */
     public final double getOutgoingFlowAt(final double time) {
         double d = 0;
         
@@ -164,12 +212,20 @@ public class Node {
         return d;
     }
     
+    /**
+     * Sets the owner graph of this node.
+     * 
+     * @param graph the graph to set as an owner.
+     */
     final void setOwnerGraph(Graph graph) {
         in.clear();
         out.clear();
         this.ownerGraph = graph;
     }
     
+    /**
+     * Removes all contracts having something to do with this node.
+     */
     final void clear() {
         int edges = 0;
         int contracts = 0;
@@ -197,6 +253,9 @@ public class Node {
         }
     }
     
+    /**
+     * Checks whether this node has an owner graph.
+     */
     private void checkOwnerGraph() {
         if (this.ownerGraph == null) {
             throw new IllegalStateException(
@@ -205,6 +264,11 @@ public class Node {
         }
     }
     
+    /**
+     * Checks whether the two nodes are in the same graph.
+     * 
+     * @param node the second node.
+     */
     private void checkOtherNode(final Node node) {
         if (node.ownerGraph != this.ownerGraph) {
             throw new IllegalStateException(

@@ -64,6 +64,11 @@ public class Graph {
         this(name, new DefaultEquilibrialDebtCutFinder());
     }
     
+    /**
+     * Adds a node to this graph.
+     * 
+     * @param node the node to add.
+     */
     public void add(final Node node) {
         checkNotNull(node, "The node is null.");
         checkUnique(node);
@@ -72,21 +77,50 @@ public class Graph {
         this.map.put(node.getName(), node);
     }
     
+    /**
+     * Checks whether a node is in this graph.
+     * 
+     * @param node the node to query.
+     * 
+     * @return <code>true</code> if <code>node</code> is in this graph;
+     * <code>false</code> otherwise.
+     */
     public boolean contains(final Node node) {
         checkNotNull(node, "The node is null.");
         return map.containsKey(node.getName());
     }
     
+    /**
+     * Gets a node by its name.
+     * 
+     * @param name the name of a node to fetch.
+     * 
+     * @return the node or <code>null</code> if there is no node with name
+     * <code>name</code> in this graph.
+     */
     public Node getNode(final String name) {
         checkNotNull(name, "The name for a node is null.");
         return map.get(name);
     }
     
+    /**
+     * Gets a node in this graph with the same name as <code>node</code>.
+     * 
+     * @param node the node to query.
+     * 
+     * @return the node with the same name as <code>node</code>, or 
+     * <code>null</code> if there is no such.
+     */
     public Node getNode(final Node node) {
         checkNotNull(node, "The node is null.");
         return map.get(node.getName());
     }
     
+    /**
+     * Removes a node from this graph.
+     * 
+     * @param node the node to remove. 
+     */
     public void remove(final Node node) {
         checkNotNull(node, "The node is null.");
         
@@ -97,20 +131,35 @@ public class Graph {
         map.remove(node.getName());
     }
     
+    /**
+     * Returns unmodifiable view of this graph's nodes.
+     * 
+     * @return unmodifiable view of this graph's nodes.
+     */
     public final Collection<Node> getNodes() {
         return Collections.unmodifiableCollection(this.map.values());
     }
     
     /**
-     * Computes the debt cut assingment object.
+     * Computes the debt cut assignment object.
      * 
-     * @return 
+     * @param equilibriumTime the moment at which to attain equilibrium.
+     * 
+     * @return the debt cut assignment object.
      */
     public final DebtCutAssignment findEquilibrialDebtCuts
         (final double equilibriumTime) {
         return null;
     }
     
+    /**
+     * Checks whether this graph is in equilibrium at time <code>time</code>.
+     * 
+     * @param time the time to query.
+     * 
+     * @return <code>true</code> if this graph attains equilibrium at moment
+     * <code>time</code>.
+     */
     public boolean isInEquilibriumAt(final double time) {
         for (Node node : map.values()) {
             if (epsilonEquals(node.equity(time), 0.0) == false) {
@@ -121,6 +170,13 @@ public class Graph {
         return true;
     }
         
+    /**
+     * Returns the total flow of this graph at moment <code>time</code>.
+     * 
+     * @param time the moment to calculate the flow at.
+     * 
+     * @return the total flow of this graph at moment <code>time</code>.
+     */
     public final double getTotalFlowAt(final double time) {
         double d = 0;
         
@@ -140,22 +196,49 @@ public class Graph {
         return map.size();
     }
     
+    /**
+     * Returns the amount of edges in this graph.
+     * 
+     * @return the amount of edges in this graph.
+     */
     public int getEdgeAmount() {
         return edgeAmount;
     }
     
+    /**
+     * Returns the amount of contracts in this graph.
+     * 
+     * @return the amount of contracts in this graph.
+     */
     public int getContractAmount() {
         return contractAmount;
     }
     
+    /**
+     * Sets the edge amount in this graph.
+     * 
+     * @param edgeAmount the edge amount to set.
+     */
     final void setEdgeAmount(final int edgeAmount) {
         this.edgeAmount = edgeAmount;
     }
     
+    /**
+     * Sets the contract amount in this graph.
+     * 
+     * @param contractAmount the contract amount to set.
+     */
     final void setContractAmount(final int contractAmount) {
         this.contractAmount = contractAmount;
     }
     
+    /**
+     * Checks the uniqueness of the node <code>node</code>.
+     * 
+     * @param node the node to check.
+     * 
+     * @throws IllegalArgumentException in case the node is no unique.
+     */
     private void checkUnique(Node node) {
         if (map.containsKey(node.getName())) {
             throw new IllegalArgumentException("Nodes must be unique.");
