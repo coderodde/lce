@@ -181,12 +181,14 @@ public class Utils {
         
         for (final Node lender : g.getNodes()) {
             for (final Node debtor : g.getNodes()) {
-                int contracts = r.nextInt(4);
-                for (int i = 0; i != contracts; ++i) {
-                    lender.addDebtor(debtor,
-                                     createRandomContract(r, 
-                                                          "" + contractCount));
-                    ++contractCount;
+                if (r.nextFloat() < edgeLoadFactor) {
+                    int contracts = r.nextInt(4);
+                    for (int i = 0; i != contracts; ++i) {
+                        lender.addDebtor(debtor,
+                                         createRandomContract(r, 
+                                                              "" + contractCount));
+                        ++contractCount;
+                    }
                 }
             }
         }

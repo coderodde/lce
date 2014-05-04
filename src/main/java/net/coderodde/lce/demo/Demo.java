@@ -17,7 +17,7 @@ public class Demo {
     
     public static void main(final String... args) {
         final long SEED = 313L;
-        Graph graph = Utils.createRandomGraph(5, SEED, 0.75f);
+        Graph graph = Utils.createRandomGraph(5, SEED, 0.4f);
         
         System.out.println("Contract amount: " + graph.getContractAmount());
         

@@ -26,4 +26,6 @@ public interface EquilibrialDebtCutFinder {
                                      final double equilibriumTime);
     
     public long getMatrixReductionTime();
+    
+    public long getMinimizationTime();
 }
