@@ -81,6 +81,14 @@ class Matrix {
         }
     }
     
+    int getRowAmount() {
+        return m.length;
+    }
+    
+    int getColumnAmount() {
+        return m[0].length;
+    }
+    
     /**
      * Retrieves the entry at (<code>x</code>, <code>y</code>).
      * 

@@ -11,6 +11,9 @@ import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
 import org.apache.commons.math3.optim.OptimizationData;
 import org.apache.commons.math3.optim.PointValuePair;
+import org.apache.commons.math3.optim.linear.LinearConstraintSet;
+import org.apache.commons.math3.optim.linear.LinearObjectiveFunction;
+import org.apache.commons.math3.optim.linear.NonNegativeConstraint;
 import org.apache.commons.math3.optim.linear.SimplexSolver;
 
 /**
@@ -47,12 +50,12 @@ implements EquilibrialDebtCutFinder {
     /**
      * This map maps contract to unique (column) indices.
      */
-    private Map<Contract, Integer> mci;
+    private final Map<Contract, Integer> mci;
     
     /**
      * This is the inverse map of <code>mci</code>.
      */
-    private Map<Integer, Contract> mcii;
+    private final Map<Integer, Contract> mcii;
     
     /**
      * The duration of matrix reduction.
@@ -134,11 +137,45 @@ implements EquilibrialDebtCutFinder {
         return null;
     }
     
+    /**
+     * Converts the matrix to a linear program.
+     * 
+     * @param m the matrix to extract from.
+     * 
+     * @return a linear program.
+     */
     private final OptimizationData[]
         convertMatrixToLinearProgram(final Matrix m) {
-            return null;
+        final LinearObjectiveFunction lof = getObjectiveFunction(m);
+        final LinearConstraintSet lcs = getConstraintSet(m);
+        final NonNegativeConstraint nnc = new NonNegativeConstraint(true);
+        
+        return new OptimizationData[]{lof, lcs, nnc};
     }
     
+    /**
+     * Extracts objective function from matrix <code>m</code>.
+     * 
+     * @param m the matrix to extract from.
+     * 
+     * @return an objective function.
+     */
+    private final LinearObjectiveFunction getObjectiveFunction(final Matrix m) {
+        double[] coefficients = new double[m.getColumnAmount() - 1];
+        
+        
+        
+        return new LinearObjectiveFunction(coefficients, 0.0);
+    }
+    
+    private final LinearConstraintSet getConstraintSet(final Matrix m) {
+        final LinearConstraintSet lcs = new LinearConstraintSet();
+        
+        
+        
+        return lcs;
+    }
+        
     private final void buildMaps() {
         this.mci.clear();
         this.mcii.clear();
@@ -164,6 +201,12 @@ implements EquilibrialDebtCutFinder {
         return new Matrix(m);
     }
     
+    /**
+     * Loads a row for node <code>node</code>.
+     * 
+     * @param node the node whose row to fill up.
+     * @param row the row to fill.
+     */
     private final void loadRow(final Node node, final double[] row) {
         // Compute the constant factor.
         row[row.length - 1] = computeConstantEntry(node);
@@ -184,6 +227,14 @@ implements EquilibrialDebtCutFinder {
         }
     }
     
+    /**
+     * Computes the constant entry of the matrix' row corresponding to
+     * <code>node</code>
+     * 
+     * @param node the node.
+     * 
+     * @return the constant entry belonging the node <code>node</code>.
+     */
     private final double computeConstantEntry(final Node node) {
         double sum = 0;
         
@@ -205,6 +256,7 @@ implements EquilibrialDebtCutFinder {
         
         return sum;
     }
+    
     
     private final Map<Contract, Integer> loadMap(final Graph graph) {
         final Map<Contract, Integer> map = new HashMap<>(graph.size());
