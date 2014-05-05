@@ -8,7 +8,7 @@ import java.util.Collection;
  * @author Rodion Efremov
  * @version 1.6
  */
-public interface DebtCutAssignment {
+public abstract class DebtCutAssignment {
     
     /**
      * Gets the debt cut associated with the specified contract.
@@ -17,12 +17,20 @@ public interface DebtCutAssignment {
      * 
      * @return the debt cut for <code>contract</code>.
      */
-    public double get(final Contract contract);
+    public abstract double get(final Contract contract);
     
     /**
      * Gets the unmodifiable view of contracts.
      * 
      * @return the unmodifiable view of contracts.
      */
-    public Collection<Contract> getContracts();
+    public abstract Collection<Contract> getContracts();
+    
+    /**
+     * Maps the contract <code>contract</code> to the debt cut <code>cut</code>.
+     * 
+     * @param contract the contract to map.
+     * @param cut the debt cut to associate with <code>contract</code>.
+     */
+    public abstract void put(final Contract contract, final double cut);
 }

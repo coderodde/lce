@@ -18,7 +18,7 @@ import net.coderodde.lce.model.DebtCutAssignment;
  * @author Rodion Efremov
  * @version 1.6
  */
-public class DefaultDebtCutAssignment implements DebtCutAssignment {
+public class DefaultDebtCutAssignment extends DebtCutAssignment {
     
     private final Map<Contract, Double> map;
     
@@ -64,7 +64,7 @@ public class DefaultDebtCutAssignment implements DebtCutAssignment {
      * @param contract the contract as a key.
      * @param debtCut the debt cut as a value.
      */
-    final void put(final Contract contract, final double debtCut) {
+    public final void put(final Contract contract, final double debtCut) {
         checkNotNull(contract, "The contract may not be null.");
         checkNotNaN(debtCut, "The debt cut may not be NaN.");
         checkNotInfinite(debtCut, "The debt cut may not be infinite.");

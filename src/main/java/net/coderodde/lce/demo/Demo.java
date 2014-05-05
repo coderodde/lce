@@ -1,8 +1,12 @@
 package net.coderodde.lce.demo;
 
 import net.coderodde.lce.Utils;
+import net.coderodde.lce.model.Contract;
+import net.coderodde.lce.model.ContractFactory;
+import net.coderodde.lce.model.DebtCutAssignment;
 import net.coderodde.lce.model.EquilibrialDebtCutFinder;
 import net.coderodde.lce.model.Graph;
+import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 
@@ -17,16 +21,63 @@ public class Demo {
     
     public static void main(final String... args) {
         final long SEED = 313L;
-        Graph graph = Utils.createRandomGraph(5, SEED, 0.4f);
+//        Graph graph = Utils.createRandomGraph(5, SEED, 0.4f);
         
-        System.out.println("Contract amount: " + graph.getContractAmount());
+//        System.out.println("Contract amount: " + graph.getContractAmount());
         
+        Graph easy = getVeryEasyGraph();
         EquilibrialDebtCutFinder finder = new DefaultEquilibrialDebtCutFinder();
-        TimeAssignment ta = Utils.createRandomTimeAssignment(SEED, graph);
+        TimeAssignment ta = Utils.createRandomTimeAssignment(SEED, easy);
         
-        finder.compute(graph, ta, 20.4);
+        DebtCutAssignment dca = finder.compute(easy, ta, ta.getMinimumTimestamp() + 10.0);
         
         System.out.println(
                 "Reduced in " + finder.getMatrixReductionTime() + " ms.");
+        
+        System.out.println(
+                "Optimized in " + finder.getMinimizationTime() + " ms.");
+    }
+    
+    public static final Graph getVeryEasyGraph() {
+        Graph g = new Graph("Easy graph");
+        
+        g.add(new Node("A"));
+        g.add(new Node("B"));
+        g.add(new Node("C"));
+        
+        Contract cab = ContractFactory.newContract()
+                                      .withPrincipal(3.0)
+                                      .withInterestRate(0.14)
+                                      .withContiguous()
+                                      .withTimestamp(1.0)
+                                      .create("cAB");
+        
+        Contract cbc = ContractFactory.newContract()
+                                      .withPrincipal(2.0)
+                                      .withInterestRate(0.11)
+                                      .withCompoundingPeriods(4.0)
+                                      .withTimestamp(1.4)
+                                      .create("cBC");
+        
+        Contract cca = ContractFactory.newContract()
+                                      .withPrincipal(2.5)
+                                      .withInterestRate(0.05)
+                                      .withCompoundingPeriods(6.0)
+                                      .withTimestamp(0.5)
+                                      .create("cCA");
+        
+        Contract cca2 = ContractFactory.newContract()
+                                      .withPrincipal(1.0)
+                                      .withInterestRate(0.27)
+                                      .withContiguous()
+                                      .withTimestamp(1.7)
+                                      .create("cCA2");
+        
+        g.getNode("A").addDebtor(g.getNode("B"), cab);
+        g.getNode("B").addDebtor(g.getNode("C"), cbc);
+        g.getNode("C").addDebtor(g.getNode("A"), cca);
+        g.getNode("C").addDebtor(g.getNode("A"), cca2);
+        
+        return g;
     }
 }

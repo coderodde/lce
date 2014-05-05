@@ -74,7 +74,11 @@ implements EquilibrialDebtCutFinder {
      */
     private final Map<Integer, Integer> mivii;
     
+    /**
+     * Maps a contract to the node it was issued to.
+     */
     private final Map<Contract, Node> c2n;
+    
     /**
      * The duration of matrix reduction.
      */
@@ -89,6 +93,16 @@ implements EquilibrialDebtCutFinder {
      * The rank of the underlying matrix.
      */
     private int rank;
+    
+    /**
+     * The amount of variables.
+     */
+    private int variableAmount;
+    
+    /** 
+     * The matrix for current graph.
+     */
+    private Matrix m;
     
     /**
      * Constructs this finder.
@@ -123,7 +137,8 @@ implements EquilibrialDebtCutFinder {
         this.equilibriumTime = equilibriumTime;
         this.buildMaps();
         
-        Matrix m = loadMatrix();
+        this.m = loadMatrix();
+        this.variableAmount = m.getColumnAmount() - 1;
         
         long ta = System.currentTimeMillis();
         rank = m.reduceToReducedRowEchelonForm();
@@ -166,7 +181,35 @@ implements EquilibrialDebtCutFinder {
     }
     
     private final DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
-        return null;
+        final DebtCutAssignment dca = new DefaultDebtCutAssignment();
+        
+        // Process independent variables. mivii maps appearance index to
+        // column index.
+        for (final Map.Entry<Integer, Integer> e : this.mivii.entrySet()) {
+            dca.put(this.mcii.get(e.getValue()), pvp.getPointRef()[e.getKey()]);
+        }
+        
+        // Process dependent variables.
+        for (int r = 0; r != rank; ++r) {
+            double cut = m.get(variableAmount, r);
+            int leadingEntryIndex = -1;
+            
+            for (int x = r; x != variableAmount; ++x) {
+                if (leadingEntryIndex == -1) {
+                    if (epsilonEquals(m.get(x, r), 1)) {
+                        leadingEntryIndex = x;
+                    }
+                } else {
+                    if (epsilonEquals(m.get(x, r), 0) == false) {
+                        cut -= pvp.getPointRef()[this.mivi.get(x)] * m.get(x, r);
+                    }
+                }
+            }
+            
+            dca.put(this.mcii.get(leadingEntryIndex), cut);
+        }
+        
+        return dca;
     }
     
     /**
@@ -191,7 +234,6 @@ implements EquilibrialDebtCutFinder {
      * @return an objective function.
      */
     private final OptimizationData[] getLPData(final Matrix m) {
-        final int VARIABLE_AMOUNT = m.getColumnAmount() - 1;
         int index = 0;
         
         this.mivi.clear();
@@ -200,7 +242,7 @@ implements EquilibrialDebtCutFinder {
         for (int r = 0; r != rank; ++r) {
             boolean leadingEntryFound = false;
             
-            for (int c = r; c != VARIABLE_AMOUNT; ++c) {
+            for (int c = r; c != variableAmount; ++c) {
                 if (leadingEntryFound == false) {
                     if (epsilonEquals(m.get(c, r), 1)) {
                         leadingEntryFound = true;
@@ -234,7 +276,7 @@ implements EquilibrialDebtCutFinder {
             int leadingEntryIndex = -1;
             double[] constraintCoefficients = new double[mivi.size()];
 
-            for (int x = y; x != VARIABLE_AMOUNT; ++x) {
+            for (int x = y; x != variableAmount; ++x) {
                 if (epsilonEquals(m.get(x, y), 0)) {
                     continue;
                 }
@@ -252,7 +294,7 @@ implements EquilibrialDebtCutFinder {
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
                                    Relationship.LEQ,
-                                   m.get(VARIABLE_AMOUNT, y)));
+                                   m.get(variableAmount, y)));
             
             double[] constraintCoefficients2 = constraintCoefficients.clone();
             Contract contract = mcii.get(leadingEntryIndex);
@@ -263,7 +305,7 @@ implements EquilibrialDebtCutFinder {
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients2,
                                    Relationship.GEQ,
-                                   m.get(VARIABLE_AMOUNT, y) - 
+                                   m.get(variableAmount, y) - 
                                    contract.evaluate(duration)));
         }
         
@@ -273,10 +315,16 @@ implements EquilibrialDebtCutFinder {
             
             constraintCoefficients[mivi.get(i)] = 1.0;
             
+            final Contract c = mcii.get(i);
+            final Node node = c2n.get(c);
+            
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
                                    Relationship.LEQ,
-                                   ));
+                                   c.evaluate(timeAssignment.get(node) -
+                                              c.getTimestamp())));
+            
+            coefficients[mivi.get(i)] += 1.0;
         }
         
         // Build the objective function.
@@ -289,14 +337,6 @@ implements EquilibrialDebtCutFinder {
         };
     }
     
-    private final LinearConstraintSet getConstraintSet(final Matrix m) {
-        final LinearConstraintSet lcs = new LinearConstraintSet();
-        
-        
-        
-        return lcs;
-    }
-        
     private final void buildMaps() {
         this.mci.clear();
         this.mcii.clear();

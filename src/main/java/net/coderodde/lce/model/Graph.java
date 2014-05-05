@@ -64,6 +64,16 @@ public class Graph {
         this(name, new DefaultEquilibrialDebtCutFinder());
     }
     
+    public Graph(final Graph toCopy) {
+        checkNotNull(toCopy, "The input graph is null.");
+        this.name = toCopy.name;
+        this.map = new HashMap<>();
+        
+        for (final Node node : toCopy.getNodes()) {
+            this.map.put(node.getName(), new Node(node.getName()));
+        }
+    }
+    
     /**
      * Adds a node to this graph.
      * 
@@ -152,6 +162,14 @@ public class Graph {
         return null;
     }
     
+    public final Graph applyDebtCuts(final DebtCutAssignment dca) {
+        Graph other = new Graph(this);
+        
+        // Apply debt cuts.
+        
+        return other;
+    }
+        
     /**
      * Checks whether this graph is in equilibrium at time <code>time</code>.
      * 
