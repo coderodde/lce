@@ -29,13 +29,69 @@ public class Demo {
         EquilibrialDebtCutFinder finder = new DefaultEquilibrialDebtCutFinder();
         TimeAssignment ta = Utils.createRandomTimeAssignment(SEED, easy);
         
-        DebtCutAssignment dca = finder.compute(easy, ta, ta.getMinimumTimestamp() + 10.0);
+        ta = new TimeAssignment();
+        
+        ta.put(easy.getNode("A"), 4.0);
+        ta.put(easy.getNode("B"), 6.0);
+        ta.put(easy.getNode("C"), 7.0);
+        
+        double eqtime = ta.getMinimumTimestamp() + 10.0;
+        DebtCutAssignment dca = finder.compute(easy, ta, eqtime);
         
         System.out.println(
                 "Reduced in " + finder.getMatrixReductionTime() + " ms.");
         
         System.out.println(
                 "Optimized in " + finder.getMinimizationTime() + " ms.");
+        
+        Graph other = easy.applyDebtCuts(dca, ta);
+        
+        System.out.println("Equilibrium at " + (eqtime - 0.1) + ": " + other.isInEquilibriumAt(eqtime - 0.1));
+        System.out.println("Equilibrium at " + eqtime + ": " + other.isInEquilibriumAt(eqtime));
+        System.out.println("Equilibrium at " + (eqtime + 0.1) + ": " + other.isInEquilibriumAt(eqtime + 0.1));
+    }
+    
+    public static final Graph getVeryEasyGraphOld() {
+        Graph g = new Graph("Easy graph");
+        
+        g.add(new Node("A"));
+        g.add(new Node("B"));
+        g.add(new Node("C"));
+        
+        Contract cab = ContractFactory.newContract()
+                                      .withPrincipal(3.0)
+                                      .withInterestRate(0.14)
+                                      .withContiguous()
+                                      .withTimestamp(1.0)
+                                      .create("cAB");
+        
+        Contract cbc = ContractFactory.newContract()
+                                      .withPrincipal(2.0)
+                                      .withInterestRate(0.11)
+                                      .withCompoundingPeriods(4.0)
+                                      .withTimestamp(1.4)
+                                      .create("cBC");
+        
+        Contract cca = ContractFactory.newContract()
+                                      .withPrincipal(2.5)
+                                      .withInterestRate(0.05)
+                                      .withCompoundingPeriods(6.0)
+                                      .withTimestamp(0.5)
+                                      .create("cCA");
+        
+        Contract cca2 = ContractFactory.newContract()
+                                      .withPrincipal(1.0)
+                                      .withInterestRate(0.27)
+                                      .withContiguous()
+                                      .withTimestamp(1.7)
+                                      .create("cCA2");
+        
+        g.getNode("A").addDebtor(g.getNode("B"), cab);
+        g.getNode("B").addDebtor(g.getNode("C"), cbc);
+        g.getNode("C").addDebtor(g.getNode("A"), cca);
+        g.getNode("C").addDebtor(g.getNode("A"), cca2);
+        
+        return g;
     }
     
     public static final Graph getVeryEasyGraph() {
@@ -68,7 +124,7 @@ public class Demo {
         
         Contract cca2 = ContractFactory.newContract()
                                       .withPrincipal(1.0)
-                                      .withInterestRate(0.27)
+                                      .withInterestRate(0.07)
                                       .withContiguous()
                                       .withTimestamp(1.7)
                                       .create("cCA2");

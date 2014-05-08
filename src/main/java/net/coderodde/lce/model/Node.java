@@ -63,6 +63,11 @@ public class Node {
         return name;
     }
     
+    @Override
+    public final String toString() {
+        return "[Node " + getName() + "]";
+    }
+    
     /**
      * Adds a contract from this node to <code>debtor</code>.
      * 

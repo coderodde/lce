@@ -27,6 +27,7 @@ public class ContinuousContract extends Contract {
         setPrincipal(principal);
         setInterestRate(interestRate);
         setTimestamp(timestamp);
+        setCompoundingPeriods(Double.POSITIVE_INFINITY);
     }
     
     @Override

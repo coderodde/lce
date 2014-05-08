@@ -21,9 +21,11 @@ import net.coderodde.lce.model.DebtCutAssignment;
 public class DefaultDebtCutAssignment extends DebtCutAssignment {
     
     private final Map<Contract, Double> map;
+    private final double equilibriumTime;
     
-    DefaultDebtCutAssignment() {
+    DefaultDebtCutAssignment(final double equilibriumTime) {
         this.map = new HashMap<>();
+        this.equilibriumTime = equilibriumTime;
     }
     
     /**
@@ -70,5 +72,13 @@ public class DefaultDebtCutAssignment extends DebtCutAssignment {
         checkNotInfinite(debtCut, "The debt cut may not be infinite.");
         checkNotNegative(debtCut, "The debt cut may not be negative.");
         this.map.put(contract, debtCut);
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public final double getEquilibriumTime() {
+        return equilibriumTime;
     }
 }

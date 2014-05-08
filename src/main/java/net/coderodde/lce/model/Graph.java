@@ -70,7 +70,8 @@ public class Graph {
         this.map = new HashMap<>();
         
         for (final Node node : toCopy.getNodes()) {
-            this.map.put(node.getName(), new Node(node.getName()));
+            final Node other = new Node(node.getName());
+            this.add(other);
         }
     }
     
@@ -162,10 +163,23 @@ public class Graph {
         return null;
     }
     
-    public final Graph applyDebtCuts(final DebtCutAssignment dca) {
+    public final Graph applyDebtCuts
+        (final DebtCutAssignment dca, final TimeAssignment ta) {
         Graph other = new Graph(this);
         
         // Apply debt cuts.
+        for (final Node node : this.getNodes()) {
+            final Node target = other.getNode(node.getName());
+            
+            for (final Node debtorOfNode : node.getDebtors()) {
+                final Node targetDebtor = other.getNode(debtorOfNode.getName());
+                
+                for (final Contract c : node.getContractsTo(debtorOfNode)) {
+                    target.addDebtor(targetDebtor,
+                                     c.applyDebtCut(dca, ta.get(debtorOfNode)));
+                }
+            }
+        }
         
         return other;
     }

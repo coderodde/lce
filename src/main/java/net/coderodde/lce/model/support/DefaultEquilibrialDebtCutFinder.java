@@ -35,7 +35,7 @@ implements EquilibrialDebtCutFinder {
      * This is a sentinel value to denote the fact that no solution found.
      */
     public static final DebtCutAssignment NO_SOLUTION =
-            new DefaultDebtCutAssignment();
+            new DefaultDebtCutAssignment(Double.NEGATIVE_INFINITY);
     
     /**
      * The graph this finder is working on.
@@ -138,6 +138,7 @@ implements EquilibrialDebtCutFinder {
         this.buildMaps();
         
         this.m = loadMatrix();
+        m.debugPrint();
         this.variableAmount = m.getColumnAmount() - 1;
         
         long ta = System.currentTimeMillis();
@@ -148,6 +149,8 @@ implements EquilibrialDebtCutFinder {
         if (m.hasSolution() == false) {
             return NO_SOLUTION;
         }
+        
+        // OK until here.
         
         m.debugPrint();
         
@@ -181,7 +184,8 @@ implements EquilibrialDebtCutFinder {
     }
     
     private final DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
-        final DebtCutAssignment dca = new DefaultDebtCutAssignment();
+        final DebtCutAssignment dca = 
+                new DefaultDebtCutAssignment(equilibriumTime);
         
         // Process independent variables. mivii maps appearance index to
         // column index.
@@ -269,10 +273,13 @@ implements EquilibrialDebtCutFinder {
         
         // The length of the objective function is exactly the amount of
         // independent variables.
+        double constantEntry = 0.0;
         final double[] coefficients = new double[mivi.size()];
         final List<LinearConstraint> constraintList = new ArrayList<>(2 * rank);
         
+        // Create constraints for dependent variables.
         for (int y = 0; y != rank; ++y) {
+            constantEntry += m.get(variableAmount, y);
             int leadingEntryIndex = -1;
             double[] constraintCoefficients = new double[mivi.size()];
 
@@ -287,28 +294,28 @@ implements EquilibrialDebtCutFinder {
                 } else {
                     int i = mivi.get(x);
                     coefficients[i] -= m.get(x, y);
-                    constraintCoefficients[i] = m.get(x, y);
+                    constraintCoefficients[i] = -m.get(x, y);
                 }
             }
             
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
-                                   Relationship.LEQ,
-                                   m.get(variableAmount, y)));
+                                   Relationship.GEQ,
+                                   -m.get(variableAmount, y)));
             
             double[] constraintCoefficients2 = constraintCoefficients.clone();
             Contract contract = mcii.get(leadingEntryIndex);
             Node node = c2n.get(contract);
-            double duration = timeAssignment.get(node) - 
-                              contract.getTimestamp();
+            double duration = this.equilibriumTime - timeAssignment.get(node);
             
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients2,
-                                   Relationship.GEQ,
-                                   m.get(variableAmount, y) - 
-                                   contract.evaluate(duration)));
+                                   Relationship.LEQ,
+                                   contract.evaluate(duration) -
+                                   m.get(variableAmount, y)));
         }
         
+        // Create constraints for independent variables.
         for (Integer i : mivi.keySet()) {
             final double[] constraintCoefficients = 
                     new double[mivi.size()];
@@ -321,15 +328,15 @@ implements EquilibrialDebtCutFinder {
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
                                    Relationship.LEQ,
-                                   c.evaluate(timeAssignment.get(node) -
-                                              c.getTimestamp())));
+                                   c.evaluate(this.equilibriumTime -
+                                              timeAssignment.get(node))));
             
             coefficients[mivi.get(i)] += 1.0;
         }
         
         // Build the objective function.
         final LinearObjectiveFunction of = 
-                new LinearObjectiveFunction(coefficients, 0.0);
+                new LinearObjectiveFunction(coefficients, constantEntry);
         
         return new OptimizationData[]{
             new LinearConstraintSet(constraintList), 

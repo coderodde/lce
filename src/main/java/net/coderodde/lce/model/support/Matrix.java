@@ -268,7 +268,7 @@ class Matrix {
     public void debugPrint() {
         for (int r = 0; r < rows; ++r) {
             for (int c = 0; c < columns; ++c) {
-                System.out.printf("% 4.2f ", m[r][c]);
+                System.out.printf("% 4.5f ", m[r][c]);
             }
             
             System.out.println();

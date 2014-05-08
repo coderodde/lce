@@ -33,4 +33,11 @@ public abstract class DebtCutAssignment {
      * @param cut the debt cut to associate with <code>contract</code>.
      */
     public abstract void put(final Contract contract, final double cut);
+    
+    /**
+     * Returns the equilibrium time of this debt cut assignment.
+     * 
+     * @return the equilibrium time.
+     */
+    public abstract double getEquilibriumTime();
 }

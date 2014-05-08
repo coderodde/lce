@@ -47,6 +47,11 @@ public abstract class Contract {
         this.name = name;
     }
     
+    @Override
+    public final String toString() {
+        return "[Contract " + getName() + "]";
+    }
+    
     public final String getName() {
         return name;
     }
@@ -73,6 +78,19 @@ public abstract class Contract {
     @Override
     public int hashCode() {
         return name.hashCode();
+    }
+    
+    public Contract applyDebtCut(final DebtCutAssignment dca, 
+                                 final double time) {
+        Contract c;
+        c = ContractFactory.newContract()
+                           .withCompoundingPeriods(this.compoundingPeriods)
+                           .withInterestRate(this.interestRate)
+                           .withTimestamp(time)
+                           .withPrincipal(this.evaluate(time - this.getTimestamp()) - dca.get(this))
+                           .create("Copy of " + this.getName());
+        
+        return c;
     }
     
     public double getPrincipal() {
