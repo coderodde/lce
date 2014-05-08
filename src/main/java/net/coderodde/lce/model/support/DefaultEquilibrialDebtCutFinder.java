@@ -187,9 +187,17 @@ implements EquilibrialDebtCutFinder {
         final DebtCutAssignment dca = 
                 new DefaultDebtCutAssignment(equilibriumTime);
         
+        System.out.println("Funkeeh values: ");
+        for (double d : pvp.getPointRef()) {
+            System.out.println(d);
+        }
+        System.out.println("End of funkeeh values.");
+        
         // Process independent variables. mivii maps appearance index to
         // column index.
         for (final Map.Entry<Integer, Integer> e : this.mivii.entrySet()) {
+            // e.key ~ appearance index,
+            // e.value ~ column index
             dca.put(this.mcii.get(e.getValue()), pvp.getPointRef()[e.getKey()]);
         }
         
