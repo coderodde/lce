@@ -9,6 +9,7 @@ import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
+import net.coderodde.lce.model.support.TrivialEquilibrialDebtCutFinder;
 
 /**
  * This class comprises the demo showing the performance of loan cut equilibrium
@@ -26,7 +27,7 @@ public class Demo {
 //        System.out.println("Contract amount: " + graph.getContractAmount());
         
         Graph easy = getVeryEasyGraph();
-        EquilibrialDebtCutFinder finder = new DefaultEquilibrialDebtCutFinder();
+        EquilibrialDebtCutFinder finder = new TrivialEquilibrialDebtCutFinder();//new DefaultEquilibrialDebtCutFinder();
         TimeAssignment ta = Utils.createRandomTimeAssignment(SEED, easy);
         
         ta = new TimeAssignment();
@@ -51,6 +52,12 @@ public class Demo {
         System.out.println("Equilibrium at " + (eqtime + 0.1) + ": " + other.isInEquilibriumAt(eqtime + 0.1));
     }
     
+    /**
+     * Apparently, scattered timing might produce situations where there is no
+     * equilibrium.
+     * 
+     * @return 
+     */
     public static final Graph getVeryEasyGraphOld() {
         Graph g = new Graph("Easy graph");
         

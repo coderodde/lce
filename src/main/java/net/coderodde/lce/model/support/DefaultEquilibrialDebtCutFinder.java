@@ -155,15 +155,10 @@ implements EquilibrialDebtCutFinder {
         m.debugPrint();
         
         OptimizationData[] lp = convertMatrixToLinearProgram(m);
-        
         ta = System.currentTimeMillis();
-        
         PointValuePair pvp = new SimplexSolver().optimize(lp);
-        
         tb = System.currentTimeMillis();
-        
         minimizationDuration = tb - ta;
-        
         return extractDebtCuts(pvp);
     }
     
