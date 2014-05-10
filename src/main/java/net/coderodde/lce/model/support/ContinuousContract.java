@@ -1,6 +1,6 @@
 package net.coderodde.lce.model.support;
 
-import static net.coderodde.lce.Utils.checkTimestamp;
+import static net.coderodde.lce.Utils.checkNotNegative;
 import static net.coderodde.lce.Utils.epsilonEquals;
 import net.coderodde.lce.model.Contract;
 
@@ -57,7 +57,7 @@ public class ContinuousContract extends Contract {
      */
     @Override
     public final double evaluate(final double time) {
-        checkTimestamp(timestamp, time);
+        checkNotNegative(time, "Duration is not allowed to be negative.");
         return principal * Math.pow(Math.E, interestRate * time);
     }
     

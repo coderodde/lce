@@ -48,7 +48,9 @@ public class Demo {
         Graph other = easy.applyDebtCuts(dca, ta);
         
         System.out.println("Equilibrium at " + (eqtime - 0.1) + ": " + other.isInEquilibriumAt(eqtime - 0.1));
+        System.out.println("Equilibrium at " + (eqtime - 0.01) + ": " + other.isInEquilibriumAt(eqtime - 0.01));
         System.out.println("Equilibrium at " + eqtime + ": " + other.isInEquilibriumAt(eqtime));
+        System.out.println("Equilibrium at " + (eqtime + 0.01) + ": " + other.isInEquilibriumAt(eqtime + 0.01));
         System.out.println("Equilibrium at " + (eqtime + 0.1) + ": " + other.isInEquilibriumAt(eqtime + 0.1));
     }
     

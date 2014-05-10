@@ -124,13 +124,13 @@ public class Node {
         
         for (List<Contract> contractList : out.values()) {
             for (Contract contract : contractList) {
-                equity += contract.evaluate(time);
+                equity += contract.evaluate(time - contract.getTimestamp());
             }
         }
         
         for (List<Contract> contractList : in.values()) {
             for (Contract contract : contractList) {
-                equity -= contract.evaluate(time);
+                equity -= contract.evaluate(time - contract.getTimestamp());
             }
         }
         

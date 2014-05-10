@@ -1,6 +1,5 @@
 package net.coderodde.lce;
 
-import java.util.Map;
 import java.util.Random;
 import net.coderodde.lce.model.Contract;
 import net.coderodde.lce.model.Graph;

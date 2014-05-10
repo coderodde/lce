@@ -1,7 +1,7 @@
 package net.coderodde.lce.model.support;
 
 import net.coderodde.lce.model.Contract;
-import static net.coderodde.lce.Utils.checkTimestamp;
+import static net.coderodde.lce.Utils.checkNotNegative;
 
 /**
  * This class models a contract with periodical compounding scheme.
@@ -41,7 +41,7 @@ public class BasicContract extends Contract {
      */
     @Override
     public final double evaluate(final double time) {
-//        checkTimestamp(time, timestamp);
+        checkNotNegative(time, "Duration is not allowed to be negative.");
         return principal * Math.pow(1.0 + interestRate / compoundingPeriods, 
                            Math.floor(compoundingPeriods * time));
     }
