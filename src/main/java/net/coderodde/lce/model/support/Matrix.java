@@ -170,11 +170,13 @@ class Matrix {
             swapRows(ur, rowsProcessed);
             scaleRow(rowsProcessed, 1.0 / m[rowsProcessed][k]);
             
-            for (int r = rowsProcessed + 1; r < rows; ++r) {
-                addToRowMultipleOfAnotherRow(
-                        r,             
-                        rowsProcessed,
-                        -m[r][k] / m[rowsProcessed][k]);
+            for (int r = 0; r != rows; ++r) {
+                if (r != rowsProcessed) {
+                    addToRowMultipleOfAnotherRow(
+                            r,             
+                            rowsProcessed,
+                            -m[r][k] / m[rowsProcessed][k]);
+                }
             }
             
             ++rowsProcessed;

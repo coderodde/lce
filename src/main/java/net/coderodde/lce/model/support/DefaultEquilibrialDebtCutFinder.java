@@ -152,6 +152,7 @@ implements EquilibrialDebtCutFinder {
         
         // OK until here.
         
+        System.out.println("---");
         m.debugPrint();
         
         OptimizationData[] lp = convertMatrixToLinearProgram(m);
@@ -211,6 +212,10 @@ implements EquilibrialDebtCutFinder {
                         cut -= pvp.getPointRef()[this.mivi.get(x)] * m.get(x, r);
                     }
                 }
+            }
+            
+            if (epsilonEquals(cut, 0)) {
+                cut = 0;
             }
             
             dca.put(this.mcii.get(leadingEntryIndex), cut);

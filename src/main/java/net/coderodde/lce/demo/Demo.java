@@ -9,7 +9,6 @@ import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
-import net.coderodde.lce.model.support.TrivialEquilibrialDebtCutFinder;
 
 /**
  * This class comprises the demo showing the performance of loan cut equilibrium
@@ -21,6 +20,7 @@ import net.coderodde.lce.model.support.TrivialEquilibrialDebtCutFinder;
 public class Demo {
     
     public static void main(final String... args) {
+        profileLarge();
         final long SEED = 313L;
 //        Graph graph = Utils.createRandomGraph(5, SEED, 0.4f);
         
@@ -36,7 +36,7 @@ public class Demo {
         ta.put(easy.getNode("B"), 6.0);
         ta.put(easy.getNode("C"), 7.0);
         
-        double eqtime = ta.getMinimumTimestamp() + 10.0;
+        double eqtime = ta.getMaximumTimestamp() + 10.0;
         DebtCutAssignment dca = finder.compute(easy, ta, eqtime);
         
         System.out.println(
@@ -144,5 +144,23 @@ public class Demo {
         g.getNode("C").addDebtor(g.getNode("A"), cca2);
         
         return g;
+    }
+    
+    private static final void profileLarge() {
+        final Graph g = Utils.createRandomGraph(10, 313L, 0.45f);
+        final TimeAssignment ta = Utils.createRandomTimeAssignment(313L, g);
+        final double eqtime = g.getMaximumTimestamp() + 10;
+        final EquilibrialDebtCutFinder finder = 
+                new DefaultEquilibrialDebtCutFinder();
+        
+        g.setDebtCutFinder(finder);
+        
+        final DebtCutAssignment dca = g.findEquilibrialDebtCuts(eqtime, ta);
+        
+        final Graph other = g.applyDebtCuts(dca, ta);
+        
+        System.out.println("Graph in equilibrium: " + other.isInEquilibriumAt(eqtime));
+        System.out.println("Reduced in " + finder.getMatrixReductionTime() + " ms.");
+        System.out.println("Optimized in " + finder.getMinimizationTime() + " ms.");
     }
 }

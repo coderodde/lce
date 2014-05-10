@@ -52,6 +52,7 @@ public class Node {
         this.name = name;
         this.in = new HashMap<>();
         this.out = new HashMap<>();
+        this.maximumTimestamp = Double.NEGATIVE_INFINITY;
     }
     
     /**
@@ -101,6 +102,10 @@ public class Node {
         
         this.ownerGraph.setContractAmount(
                 this.ownerGraph.getContractAmount() + 1);
+        
+        this.ownerGraph.setMaximumTimestamp(
+                Math.max(contract.getTimestamp(),
+                         ownerGraph.getMaximumTimestamp()));
     }
     
     /**

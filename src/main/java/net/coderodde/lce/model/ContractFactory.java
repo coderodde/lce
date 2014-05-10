@@ -1,6 +1,6 @@
 package net.coderodde.lce.model;
 
-import static net.coderodde.lce.Utils.checkNotNull;
+import static net.coderodde.lce.Utils.epsilonEquals;
 import net.coderodde.lce.model.support.BasicContract;
 import net.coderodde.lce.model.support.ContinuousContract;
 
@@ -22,7 +22,7 @@ public class ContractFactory {
     }
          
     public ContractFactory withPrincipal(final double principal) {
-        this.principal = principal;
+        this.principal = (epsilonEquals(principal, 0) ? 0 : principal);
         return this;
     }
     

@@ -42,6 +42,8 @@ public class Graph {
      */
     private EquilibrialDebtCutFinder finder;
     
+    private double maximumTimestamp;
+    
     /**
      * Constructs a graph with the specified name and finder.
      * 
@@ -151,16 +153,22 @@ public class Graph {
         return Collections.unmodifiableCollection(this.map.values());
     }
     
+    public final Graph setDebtCutFinder(final EquilibrialDebtCutFinder finder) {
+        this.finder = finder;
+        return this;
+    }
+    
     /**
      * Computes the debt cut assignment object.
      * 
      * @param equilibriumTime the moment at which to attain equilibrium.
+     * @param ta the time assignment.
      * 
      * @return the debt cut assignment object.
      */
     public final DebtCutAssignment findEquilibrialDebtCuts
-        (final double equilibriumTime) {
-        return null;
+        (final double equilibriumTime, final TimeAssignment ta) {
+        return finder.compute(this, ta, equilibriumTime);
     }
     
     public final Graph applyDebtCuts
@@ -244,6 +252,14 @@ public class Graph {
      */
     public int getContractAmount() {
         return contractAmount;
+    }
+    
+    public final double getMaximumTimestamp() {
+        return this.maximumTimestamp;
+    }
+    
+    final void setMaximumTimestamp(final double timestamp) {
+        this.maximumTimestamp = timestamp;
     }
     
     /**

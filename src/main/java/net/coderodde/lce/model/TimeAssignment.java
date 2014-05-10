@@ -21,13 +21,17 @@ public class TimeAssignment {
      */
     private final Map<Node, Double> map;
     
-    private double minTimestamp;
+    /**
+     * Caches the maximum timestamp.
+     */
+    private double maxTimestamp;
     
     /**
      * Constructs an empty time assignment object.
      */
     public TimeAssignment() {
         this.map = new HashMap<>();
+        this.maxTimestamp = Double.NEGATIVE_INFINITY;
     }
     
     /**
@@ -49,8 +53,7 @@ public class TimeAssignment {
         checkNotNull(node, "Node is null.");
         checkTimestamp(time);
         this.map.put(node, time);
-        this.minTimestamp = Math.max(this.minTimestamp,
-                                     node.getMaximumTimestamp());
+        this.maxTimestamp = Math.max(this.maxTimestamp, time);
     }
     
     /**
@@ -100,7 +103,7 @@ public class TimeAssignment {
      * 
      * @return the timestamp.
      */
-    public final double getMinimumTimestamp() {
-        return this.minTimestamp;
+    public final double getMaximumTimestamp() {
+        return this.maxTimestamp;
     }
 }
