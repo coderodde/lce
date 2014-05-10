@@ -181,12 +181,12 @@ implements EquilibrialDebtCutFinder {
     private final DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
         final DebtCutAssignment dca = 
                 new DefaultDebtCutAssignment(equilibriumTime);
-        
-        System.out.println("Funkeeh values: ");
-        for (double d : pvp.getPointRef()) {
-            System.out.println(d);
-        }
-        System.out.println("End of funkeeh values.");
+//        
+//        System.out.println("Funkeeh values: ");
+//        for (double d : pvp.getPointRef()) {
+//            System.out.println(d);
+//        }
+//        System.out.println("End of funkeeh values.");
         
         // Process independent variables. mivii maps appearance index to
         // column index.
