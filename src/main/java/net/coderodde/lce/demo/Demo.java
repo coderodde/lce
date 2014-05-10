@@ -26,8 +26,8 @@ public class Demo {
         
 //        System.out.println("Contract amount: " + graph.getContractAmount());
         
-        Graph easy = getVeryEasyGraph();
-        EquilibrialDebtCutFinder finder = new TrivialEquilibrialDebtCutFinder();//new DefaultEquilibrialDebtCutFinder();
+        Graph easy = getVeryEasyGraphOld();
+        EquilibrialDebtCutFinder finder = new DefaultEquilibrialDebtCutFinder();
         TimeAssignment ta = Utils.createRandomTimeAssignment(SEED, easy);
         
         ta = new TimeAssignment();

@@ -73,6 +73,7 @@ class Matrix {
         
         this.m = new double[rows][cols];
         this.columns = cols;
+        this.epsilon = DEFAULT_EPSILON;
         
         for (int r = 0; r < rows; ++r) {
             for (int c = 0; c < columns; ++c) {
@@ -81,10 +82,20 @@ class Matrix {
         }
     }
     
+    /** 
+     * Returns the amount of rows in this matrix.
+     * 
+     * @return the amount of rows in this matrix. 
+     */
     int getRowAmount() {
         return m.length;
     }
     
+    /**
+     * Returns the amount of columns in this matrix.
+     * 
+     * @return the amount of columns in this matrix.
+     */
     int getColumnAmount() {
         return m[0].length;
     }
@@ -159,14 +170,11 @@ class Matrix {
             swapRows(ur, rowsProcessed);
             scaleRow(rowsProcessed, 1.0 / m[rowsProcessed][k]);
             
-            for (int r = 0; r < rows; ++r) {
-                if (r != rowsProcessed) {
-                    addToRowMultipleOfAnotherRow(
-                            r,             
-                            rowsProcessed,
-                            -m[r][k] / m[rowsProcessed][k]);
-                    
-                }
+            for (int r = rowsProcessed + 1; r < rows; ++r) {
+                addToRowMultipleOfAnotherRow(
+                        r,             
+                        rowsProcessed,
+                        -m[r][k] / m[rowsProcessed][k]);
             }
             
             ++rowsProcessed;

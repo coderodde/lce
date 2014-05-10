@@ -278,7 +278,8 @@ implements EquilibrialDebtCutFinder {
         // independent variables.
         double constantEntry = 0.0;
         final double[] coefficients = new double[mivi.size()];
-        final List<LinearConstraint> constraintList = new ArrayList<>(2 * rank);
+        final List<LinearConstraint> constraintList = 
+                new ArrayList<>(2 * variableAmount);
         
         // Create constraints for dependent variables.
         for (int y = 0; y != rank; ++y) {
@@ -297,14 +298,14 @@ implements EquilibrialDebtCutFinder {
                 } else {
                     int i = mivi.get(x);
                     coefficients[i] -= m.get(x, y);
-                    constraintCoefficients[i] = -m.get(x, y);
+                    constraintCoefficients[i] = m.get(x, y);
                 }
             }
             
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
-                                   Relationship.GEQ,
-                                   -m.get(variableAmount, y)));
+                                   Relationship.LEQ,
+                                   m.get(variableAmount, y)));
             
             double[] constraintCoefficients2 = constraintCoefficients.clone();
             Contract contract = mcii.get(leadingEntryIndex);
@@ -313,9 +314,9 @@ implements EquilibrialDebtCutFinder {
             
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients2,
-                                   Relationship.LEQ,
-                                   contract.evaluate(duration) -
-                                   m.get(variableAmount, y)));
+                                   Relationship.GEQ,
+                                   m.get(variableAmount, y) -
+                                   contract.evaluate(duration)));
         }
         
         // Create constraints for independent variables.
@@ -416,20 +417,25 @@ implements EquilibrialDebtCutFinder {
      */
     private final double computeConstantEntry(final Node node) {
         double sum = 0;
+        Contract tmp;
         
         for (final Node debtor : node.getDebtors()) {
             for (final Contract contract : node.getContractsTo(debtor)) {
-                sum += contract
-                      .evaluate(equilibriumTime - 
-                                this.timeAssignment.get(debtor));
+                tmp = contract.clone();
+                tmp.setPrincipal(contract.evaluate(timeAssignment.get(debtor) - 
+                                                   contract.getTimestamp()));
+                sum += tmp.evaluate(equilibriumTime - 
+                                    timeAssignment.get(debtor));
             }
         }
         
         for (final Node lender : node.getLenders()) {
             for (final Contract contract : lender.getContractsTo(node)) {
-                sum -= contract
-                      .evaluate(equilibriumTime -
-                                this.timeAssignment.get(node));
+                tmp = contract.clone();
+                tmp.setPrincipal(contract.evaluate(timeAssignment.get(node) -
+                                                   contract.getTimestamp()));
+                
+                sum -= tmp.evaluate(equilibriumTime - timeAssignment.get(node));
             }
         }
         

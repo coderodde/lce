@@ -164,6 +164,15 @@ public abstract class Contract {
         setTimestamp(time);
     }
     
+    public Contract clone() {
+        return ContractFactory.newContract()
+                              .withPrincipal(this.getPrincipal())
+                              .withInterestRate(this.getInterestRate())
+                              .withCompoundingPeriods(this.getCompoundingPeriods())
+                              .withTimestamp(this.getTimestamp())
+                              .create("Clone of " + this.getName());
+    }
+    
     /**
      * Evaluates the equity of this contract at time <code>time</code>.
      * 
