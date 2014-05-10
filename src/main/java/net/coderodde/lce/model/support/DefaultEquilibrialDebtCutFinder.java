@@ -298,25 +298,25 @@ implements EquilibrialDebtCutFinder {
                 } else {
                     int i = mivi.get(x);
                     coefficients[i] -= m.get(x, y);
-                    constraintCoefficients[i] = m.get(x, y);
+                    constraintCoefficients[i] = -m.get(x, y);
                 }
             }
             
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
-                                   Relationship.LEQ,
-                                   m.get(variableAmount, y)));
+                                   Relationship.GEQ,
+                                   -m.get(variableAmount, y)));
             
             double[] constraintCoefficients2 = constraintCoefficients.clone();
             Contract contract = mcii.get(leadingEntryIndex);
             Node node = c2n.get(contract);
-            double duration = this.equilibriumTime - timeAssignment.get(node);
+            double duration = timeAssignment.get(node) - contract.getTimestamp();
             
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients2,
-                                   Relationship.GEQ,
-                                   m.get(variableAmount, y) -
-                                   contract.evaluate(duration)));
+                                   Relationship.LEQ,
+                                   contract.evaluate(duration) -
+                                   m.get(variableAmount, y)));
         }
         
         // Create constraints for independent variables.
@@ -332,8 +332,8 @@ implements EquilibrialDebtCutFinder {
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
                                    Relationship.LEQ,
-                                   c.evaluate(this.equilibriumTime -
-                                              timeAssignment.get(node))));
+                                   c.evaluate(timeAssignment.get(node) -
+                                              c.getTimestamp())));
             
             coefficients[mivi.get(i)] += 1.0;
         }
