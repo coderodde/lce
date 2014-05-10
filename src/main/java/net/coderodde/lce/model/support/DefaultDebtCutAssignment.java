@@ -74,6 +74,10 @@ public class DefaultDebtCutAssignment extends DebtCutAssignment {
         this.map.put(contract, debtCut);
     }
     
+    public final boolean containsFor(final Contract contract) {
+        return map.containsKey(contract);
+    }
+    
     /**
      * 
      * @return 

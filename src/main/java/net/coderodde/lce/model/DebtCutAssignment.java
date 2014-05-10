@@ -34,6 +34,8 @@ public abstract class DebtCutAssignment {
      */
     public abstract void put(final Contract contract, final double cut);
     
+    public abstract boolean containsFor(final Contract contract);
+    
     /**
      * Returns the equilibrium time of this debt cut assignment.
      * 

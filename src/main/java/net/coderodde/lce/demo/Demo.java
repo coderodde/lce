@@ -159,7 +159,11 @@ public class Demo {
         
         final Graph other = g.applyDebtCuts(dca, ta);
         
-        System.out.println("Graph in equilibrium: " + other.isInEquilibriumAt(eqtime));
+        System.out.println("Equilibrium time: " + eqtime);
+        
+        System.out.println("Graph in equilibrium at " + (eqtime - 0.01) + ": " + other.isInEquilibriumAt(eqtime - 0.01));
+        System.out.println("Graph in equilibrium at " + eqtime + ": " + other.isInEquilibriumAt(eqtime));
+        System.out.println("Graph in equilibrium at " + (eqtime + 0.01) + ": " + other.isInEquilibriumAt(eqtime + 0.01));
         System.out.println("Reduced in " + finder.getMatrixReductionTime() + " ms.");
         System.out.println("Optimized in " + finder.getMinimizationTime() + " ms.");
     }

@@ -183,8 +183,11 @@ public class Graph {
                 final Node targetDebtor = other.getNode(debtorOfNode.getName());
                 
                 for (final Contract c : node.getContractsTo(debtorOfNode)) {
-                    target.addDebtor(targetDebtor,
-                                     c.applyDebtCut(dca, ta.get(debtorOfNode)));
+                    if (dca.containsFor(c)) {
+                        target.addDebtor(targetDebtor,
+                                         c.applyDebtCut(dca, 
+                                                        ta.get(debtorOfNode)));
+                    }
                 }
             }
         }
