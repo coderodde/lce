@@ -155,6 +155,15 @@ implements EquilibrialDebtCutFinder {
         PointValuePair pvp = new SimplexSolver().optimize(lp);
         tb = System.currentTimeMillis();
         minimizationDuration = tb - ta;
+        
+        double sum = 0;
+        
+        for (final double d : pvp.getPointRef()) {
+            sum += d;
+        }
+        
+        System.out.println("Minimum: " + sum);
+        
         return extractDebtCuts(pvp);
     }
     
@@ -282,14 +291,12 @@ implements EquilibrialDebtCutFinder {
         
         // The length of the objective function is exactly the amount of
         // independent variables.
-        double constantEntry = 0.0;
         final double[] coefficients = new double[mivi.size()];
         final List<LinearConstraint> constraintList = 
                 new ArrayList<>(2 * variableAmount);
         
         // Create constraints for dependent variables.
         for (int y = 0; y != rank; ++y) {
-            constantEntry += m.get(variableAmount, y);
             int leadingEntryIndex = -1;
             double[] constraintCoefficients = new double[mivi.size()];
 
@@ -344,9 +351,17 @@ implements EquilibrialDebtCutFinder {
             coefficients[mivi.get(i)] += 1.0;
         }
         
+        System.out.print("Obj. function factors: ");
+        
+        for (final double d : coefficients) {
+            System.out.print(d + " ");
+        }
+        
+        System.out.println();
+        
         // Build the objective function.
         final LinearObjectiveFunction of = 
-                new LinearObjectiveFunction(coefficients, constantEntry);
+                new LinearObjectiveFunction(coefficients, 0);
         
         return new OptimizationData[]{
             new LinearConstraintSet(constraintList), 

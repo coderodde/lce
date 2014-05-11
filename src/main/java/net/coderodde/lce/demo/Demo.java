@@ -20,8 +20,8 @@ import static net.coderodde.lce.Utils.title;
 public class Demo {
     
     public static void main(final String... args) {
-        profile();
-        profile2();
+//        profile();
+//        profile2();
         profileLarge();
     }
    
@@ -110,7 +110,7 @@ public class Demo {
      */
     private static final void profileLarge() {
         title("profileLarge()");
-        final long SEED = System.currentTimeMillis();
+        final long SEED = 1399819244048L;//System.currentTimeMillis();
         final int N = 10;
         
         System.out.println("Seed: " + SEED);
