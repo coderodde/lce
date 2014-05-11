@@ -1,5 +1,7 @@
 package net.coderodde.lce.demo;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.coderodde.lce.Utils;
 import net.coderodde.lce.model.DebtCutAssignment;
 import net.coderodde.lce.model.EquilibrialDebtCutFinder;
@@ -18,9 +20,56 @@ import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 public class Demo {
     
     public static void main(final String... args) {
-        profileLarge();
+        profile();
+//        profileLarge();
     }
    
+    private static final void profile() {
+        final long SEED = 1399796646348L; //System.currentTimeMillis();
+        final int N = 10;
+        
+        System.out.println("Seed: " + SEED);
+        
+        final EquilibrialDebtCutFinder finder = 
+                new DefaultEquilibrialDebtCutFinder();
+        
+        final List<Double> inlist = new ArrayList<>(10);
+        final List<Double> outlist = new ArrayList<>(10);
+        
+        
+        for (int i = 0; i != 10; ++i) {
+            System.out.println("Yo: " + i);
+            
+            final Graph input = Utils.createRandomGraph(N, SEED, 5.0f / N);
+            final TimeAssignment ta = 
+                    Utils.createRandomTimeAssignment(SEED, input);
+            final double equilibriumTime = 
+                    ta.getMaximumTimestamp() + 2 * (i + 1);
+            input.setDebtCutFinder(finder);
+            
+            final DebtCutAssignment dca = 
+                    input.findEquilibrialDebtCuts(equilibriumTime, ta);
+            
+            final Graph output = input.applyDebtCuts(dca, ta);
+            
+            if (output.isInEquilibriumAt(equilibriumTime) == false) {
+                System.out.println("---: " + output.funk(equilibriumTime));
+                System.out.println("Equilibrium failed: " + i);
+                return;
+            }
+            
+            inlist.add(input.getTotalFlowAt(equilibriumTime));
+            outlist.add(output.getTotalFlowAt(equilibriumTime));
+        }
+        
+        for (int i = 0; i != inlist.size(); ++i) {
+            System.out.printf("%2d %3.3f : %3.3f\n", 
+                              (i + 1), 
+                              outlist.get(i),
+                              inlist.get(i));
+        }
+    }
+    
     /**
      * Profiles the algorithm.
      */

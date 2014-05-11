@@ -212,6 +212,20 @@ public class Graph {
         
         return true;
     }
+    
+    public double funk(final double time) {
+        double d = Double.NEGATIVE_INFINITY;
+        
+        for (Node node : map.values()) {
+            if (epsilonEquals(node.equity(time), 0.0) == false) {
+                if (d < Math.abs(node.equity(time))) {
+                    d = Math.abs(node.equity(time));
+                }
+            }
+        }
+        
+        return d;
+    }
         
     public final TimeAssignment copy(final Graph g, final TimeAssignment ta) {
         final TimeAssignment ret = new TimeAssignment();
