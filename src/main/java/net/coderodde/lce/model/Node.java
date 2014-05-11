@@ -85,6 +85,11 @@ public class Node {
             maximumTimestamp = contract.getTimestamp();
         }
         
+        
+        if (debtor.getMaximumTimestamp() < contract.getTimestamp()) {
+            debtor.setMaximumTimestamp(maximumTimestamp);
+        }
+        
         List<Contract> contractList = out.get(debtor);
         
         if (contractList == null) {
@@ -279,6 +284,10 @@ public class Node {
                     ownerGraph.getContractAmount() - contracts);
             ownerGraph.setEdgeAmount(ownerGraph.getEdgeAmount() - edges);
         }
+    }
+    
+    final void setMaximumTimestamp(final double time) {
+        this.maximumTimestamp = time;
     }
     
     /**

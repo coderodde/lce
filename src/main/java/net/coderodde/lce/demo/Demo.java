@@ -1,8 +1,6 @@
 package net.coderodde.lce.demo;
 
 import net.coderodde.lce.Utils;
-import net.coderodde.lce.model.Contract;
-import net.coderodde.lce.model.ContractFactory;
 import net.coderodde.lce.model.DebtCutAssignment;
 import net.coderodde.lce.model.EquilibrialDebtCutFinder;
 import net.coderodde.lce.model.Graph;
@@ -24,12 +22,10 @@ public class Demo {
     }
    
     /**
-     * Breaks at seeds:
-     * 1399792714346
-     * 1399792831052
+     * Profiles the algorithm.
      */
     private static final void profileLarge() {
-        final long SEED = 313L; //System.currentTimeMillis();
+        final long SEED = System.currentTimeMillis();
         final int N = 10;
         
         System.out.println("Seed: " + SEED);

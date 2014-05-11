@@ -180,7 +180,7 @@ public class Utils {
         
         for (final Node lender : g.getNodes()) {
             for (final Node debtor : g.getNodes()) {
-                if (r.nextFloat() < edgeLoadFactor) {
+                if (r.nextFloat() < edgeLoadFactor && lender != debtor) {
                     int contracts = r.nextInt(4);
                     for (int i = 0; i != contracts; ++i) {
                         lender.addDebtor(debtor,
@@ -219,7 +219,7 @@ public class Utils {
         final TimeAssignment ta = new TimeAssignment();
 
         for (final Node node : graph.getNodes()) {
-            ta.put(node, +3 + 10 * r.nextDouble() + node.getMaximumTimestamp());
+            ta.put(node, 10 * r.nextDouble() + node.getMaximumTimestamp());
         }
 
         return ta;
