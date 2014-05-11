@@ -284,28 +284,4 @@ class Matrix {
             System.out.println();
         }
     }
-    
-    public static void main(String... args) {
-        Matrix m = new Matrix(new double[][] {
-            { 2,  1, -1,   8},
-            {-3, -1,  2, -11},
-            {-2,  1,  2,  -3}
-        });
-        
-        int rank = m.reduceToReducedRowEchelonForm();
-        m.debugPrint();
-        System.out.println("Has solution: " + m.hasSolution() + ", rank " + rank);
-        System.out.println("---");
-        
-        m = new Matrix(new double[][] {
-            {1,  3,  1,  9},
-            {1,  1, -1,  1},
-            {3, 11,  5, 35},
-            {3, 11,  5, 30}
-        });
-        
-        rank = m.reduceToReducedRowEchelonForm();
-        m.debugPrint();
-        System.out.println("Has solution: " + m.hasSolution() + ", rank " + rank);
-    }
 }

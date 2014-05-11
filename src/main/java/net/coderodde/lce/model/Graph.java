@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import net.coderodde.lce.Utils;
 import static net.coderodde.lce.Utils.checkNotNull;
 import static net.coderodde.lce.Utils.epsilonEquals;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
@@ -43,6 +42,9 @@ public class Graph {
      */
     private EquilibrialDebtCutFinder finder;
     
+    /**
+     * Caches the maximum timestamp of contracts.
+     */
     private double maximumTimestamp;
     
     /**
@@ -67,6 +69,11 @@ public class Graph {
         this(name, new DefaultEquilibrialDebtCutFinder());
     }
     
+    /**
+     * Copy constructs a new graph.
+     * 
+     * @param toCopy source object.
+     */
     public Graph(final Graph toCopy) {
         checkNotNull(toCopy, "The input graph is null.");
         this.name = toCopy.name;
@@ -154,6 +161,13 @@ public class Graph {
         return Collections.unmodifiableCollection(this.map.values());
     }
     
+    /**
+     * Sets the equilibrial debt cut finder.
+     * 
+     * @param finder the debt cut finder to set.
+     * 
+     * @return return this for chaining.
+     */
     public final Graph setDebtCutFinder(final EquilibrialDebtCutFinder finder) {
         this.finder = finder;
         return this;
@@ -172,6 +186,14 @@ public class Graph {
         return finder.compute(this, ta, equilibriumTime);
     }
     
+    /**
+     * Creates a clone graph and applies the debt cuts to it.
+     * 
+     * @param dca the debt cut assignment object.
+     * @param ta the time assignment object.
+     * 
+     * @return a new graph resulting from applying the cuts to this graph. 
+     */
     public final Graph applyDebtCuts
         (final DebtCutAssignment dca, final TimeAssignment ta) {
         Graph other = new Graph(this);
@@ -214,20 +236,14 @@ public class Graph {
         return true;
     }
     
-    public double funk(final double time) {
-        double d = Double.NEGATIVE_INFINITY;
-        
-        for (Node node : map.values()) {
-            if (epsilonEquals(node.equity(time), 0.0) == false) {
-                if (d < Math.abs(node.equity(time))) {
-                    d = Math.abs(node.equity(time));
-                }
-            }
-        }
-        
-        return d;
-    }
-        
+    /**
+     * Copies the input time assignment object to another graph <code>g</code>.
+     * 
+     * @param g the target graph.
+     * @param ta the source time assignment object.
+     * 
+     * @return a new time assignment object for graph <code>g</code>.
+     */
     public final TimeAssignment copy(final Graph g, final TimeAssignment ta) {
         final TimeAssignment ret = new TimeAssignment();
         
@@ -282,10 +298,22 @@ public class Graph {
         return contractAmount;
     }
     
+    /**
+     * Returns the maximum timestamp.
+     * 
+     * @return the maximum timestamp.
+     */
     public final double getMaximumTimestamp() {
         return maximumTimestamp;
     }
     
+    /**
+     * Returns textual description of this graph at the specified moment.
+     * 
+     * @param time the target time.
+     * 
+     * @return textual description of this graph.
+     */
     public final String describe(final double time) {
         final StringBuilder sb = new StringBuilder();
         
@@ -321,6 +349,11 @@ public class Graph {
         return sb.append('\n').toString();
     }
     
+    /**
+     * Sets the maximum timestamp.
+     * 
+     * @param timestamp the timestamp to set.
+     */
     final void setMaximumTimestamp(final double timestamp) {
         this.maximumTimestamp = timestamp;
     }

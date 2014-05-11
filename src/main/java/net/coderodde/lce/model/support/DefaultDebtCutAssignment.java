@@ -23,6 +23,11 @@ public class DefaultDebtCutAssignment extends DebtCutAssignment {
     private final Map<Contract, Double> map;
     private final double equilibriumTime;
     
+    /**
+     * Constructs a new debt cut assignment object.
+     * 
+     * @param equilibriumTime the equilibrium time.
+     */
     DefaultDebtCutAssignment(final double equilibriumTime) {
         this.map = new HashMap<>();
         this.equilibriumTime = equilibriumTime;
@@ -74,13 +79,22 @@ public class DefaultDebtCutAssignment extends DebtCutAssignment {
         this.map.put(contract, debtCut);
     }
     
+    /**
+     * Checks whether this debt cut assignment has a cut for
+     * <code>contract</code>.
+     * 
+     * @param contract the contract to query.
+     * 
+     * @return <code>true</code> or <code>false</code>.
+     */
     public final boolean containsFor(final Contract contract) {
         return map.containsKey(contract);
     }
     
     /**
+     * Returns the equilibrium time.
      * 
-     * @return 
+     * @return the equilibrium time.
      */
     public final double getEquilibriumTime() {
         return equilibriumTime;

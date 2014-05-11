@@ -64,6 +64,11 @@ public class Node {
         return name;
     }
     
+    /**
+     * Returns textual description of this node.
+     * 
+     * @return textual description.
+     */
     @Override
     public final String toString() {
         return "[Node " + getName() + "]";
@@ -147,24 +152,6 @@ public class Node {
         return equity;
     }
     
-    public final double equity2(final double duration) {
-        double equity = 0;
-        
-        for (final List<Contract> contractList : out.values()) {
-            for (final Contract c : contractList) {
-                equity += c.evaluate(duration);
-            }
-        }
-        
-        for (final List<Contract> contractList : in.values()) {
-            for (final Contract c : contractList) {
-                equity -= c.evaluate(duration);
-            }
-        }
-        
-        return equity;
-    }
- 
     /**
      * Returns unmodifiable view of this node's debtor nodes.
      * 
@@ -202,7 +189,7 @@ public class Node {
      * @return view of outgoing contracts.
      */
     public final Collection<Contract> getOutgoingContracts() {
-        List<Contract> contracts = new ArrayList<Contract>();
+        List<Contract> contracts = new ArrayList<>();
         
         for (List<Contract> tmp : this.out.values()) {
             contracts.addAll(tmp);
@@ -217,7 +204,7 @@ public class Node {
      * @return view of incoming contracts.
      */
     public final Collection<Contract> getIncomingContracts() {
-        List<Contract> contracts = new ArrayList<Contract>();
+        List<Contract> contracts = new ArrayList<>();
         
         for (List<Contract> tmp : this.in.values()) {
             contracts.addAll(tmp);
@@ -286,6 +273,11 @@ public class Node {
         }
     }
     
+    /**
+     * Sets the maximum timestamp.
+     * 
+     * @param time timestamp to set.
+     */
     final void setMaximumTimestamp(final double time) {
         this.maximumTimestamp = time;
     }

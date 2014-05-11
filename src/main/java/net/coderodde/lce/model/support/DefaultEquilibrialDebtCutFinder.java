@@ -140,17 +140,10 @@ implements EquilibrialDebtCutFinder {
         this.m = loadMatrix();
         this.variableAmount = m.getColumnAmount() - 1;
         
-        m.debugPrint();
-        System.out.println("");
-        
         long ta = System.currentTimeMillis();
         rank = m.reduceToReducedRowEchelonForm();
         long tb = System.currentTimeMillis();
         this.matrixReductionDuration = tb - ta;
-        
-        m.debugPrint();
-        
-        System.out.println("");
         
         if (m.hasSolution() == false) {
             // This should not happen.
@@ -186,6 +179,13 @@ implements EquilibrialDebtCutFinder {
         return minimizationDuration;
     }
     
+    /**
+     * Extracts the debt cuts from the solution of a linear program.
+     * 
+     * @param pvp the solution vector.
+     * 
+     * @return debt cut assignment object.
+     */
     private final DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
         final DebtCutAssignment dca = 
                 new DefaultDebtCutAssignment(equilibriumTime);

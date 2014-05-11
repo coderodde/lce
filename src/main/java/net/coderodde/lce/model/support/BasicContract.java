@@ -46,16 +46,18 @@ public class BasicContract extends Contract {
                            Math.floor(compoundingPeriods * time));
     }
     
+    /**
+     * Returns the growth factor of this contract at <code>time</code>.
+     * 
+     * @param time the target moment.
+     * 
+     * @return the growth factor. 
+     */
     @Override
     public final double getGrowthFactor(final double time) {
         return Math.pow(1.0 + this.getInterestRate() / 
                               this.getCompoundingPeriods(),
                               Math.floor(this.getCompoundingPeriods() * time));
-    }
-    
-    @Override
-    public final double getTimestamp() {
-        return timestamp;
     }
    
     @Override

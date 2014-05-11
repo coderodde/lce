@@ -30,6 +30,14 @@ public class ContinuousContract extends Contract {
         setCompoundingPeriods(Double.POSITIVE_INFINITY);
     }
     
+    /**
+     * Redefines the equality test to suit the continuous contracts.
+     * 
+     * @param o the object to test against.
+     * 
+     * @return <code>true</code> if the two objects are of the same type and 
+     * share the same state.
+     */
     @Override
     public boolean equals(Object o) {
         if (o == null) {
@@ -61,6 +69,13 @@ public class ContinuousContract extends Contract {
         return principal * Math.pow(Math.E, interestRate * time);
     }
     
+    /**
+     * Returns the growth factor at specified moment.
+     * 
+     * @param time the target moment.
+     * 
+     * @return the growth factor. 
+     */
     @Override
     public final double getGrowthFactor(final double time) {
         return Math.pow(Math.E, this.getInterestRate() * time);

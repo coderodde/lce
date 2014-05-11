@@ -34,7 +34,16 @@ public abstract class DebtCutAssignment {
      */
     public abstract void put(final Contract contract, final double cut);
     
-    public abstract boolean containsFor(final Contract contract);
+    /**
+     * Checks whether this debt cut assignment contains a cut for 
+     * <code>contract</code>.
+     * 
+     * @param contract the contract to query.
+     * 
+     * @return <code>true</code> if this debt cut assignment contains a cut
+     * for <code>contract</code>; <code>false</code> otherwise.
+     */
+    public abstract boolean containsFor(final Contract contract); 
     
     /**
      * Returns the equilibrium time of this debt cut assignment.

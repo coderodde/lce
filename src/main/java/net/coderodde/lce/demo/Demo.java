@@ -6,7 +6,6 @@ import net.coderodde.lce.Utils;
 import net.coderodde.lce.model.DebtCutAssignment;
 import net.coderodde.lce.model.EquilibrialDebtCutFinder;
 import net.coderodde.lce.model.Graph;
-import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 
@@ -21,7 +20,7 @@ public class Demo {
     
     public static void main(final String... args) {
         profile();
-//        profileLarge();
+        profileLarge();
     }
    
     private static final void profile() {
@@ -54,7 +53,6 @@ public class Demo {
             
             if (output.isInEquilibriumAt(equilibriumTime) == false) {
                 // Should not happen.
-                System.out.println("Error: " + output.funk(equilibriumTime));
                 System.out.println("Equilibrium failed: " + i);
                 return;
             }
@@ -104,39 +102,11 @@ public class Demo {
         
         System.out.println(other.describe(eqtime));
         
-        System.out.println("--- Equities ---");
-        
-        final TimeAssignment myta = g.copy(other, ta);
-        showEquities(other, ta, eqtime);
         
         System.out.println("Total flow in the input graph at " + eqtime + " " +
                            "is " + g.getTotalFlowAt(eqtime));
         
         System.out.println("Total flow in the output graph at " + eqtime + 
                            " is " + other.getTotalFlowAt(eqtime));
-    }
-    
-    private static final void showEquities
-        (final Graph g, final TimeAssignment ta, final double eqtime) {
-        double sum1 = 0;
-        double sum2 = 0;
-        
-        for (final Node node : g.getNodes()) {
-            double duration1 = ta.getMaximumTimestamp() - node.getMaximumTimestamp();
-            double duration2 = eqtime - node.getMaximumTimestamp();
-            
-            double e1 = node.equity2(duration1);
-            double e2 = node.equity2(duration2);
-            
-            System.out.println(node);
-            System.out.println("  " + e1);
-            System.out.println("  " + e2);
-            
-            sum1 += e1;
-            sum2 += e2;
-        }
-        
-        System.out.println("Sum 1: " + sum1);
-        System.out.println("Sum 2: " + sum2);
     }
 }

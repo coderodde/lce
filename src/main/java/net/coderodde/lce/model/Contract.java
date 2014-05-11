@@ -1,7 +1,6 @@
 package net.coderodde.lce.model;
 
-import static net.coderodde.lce.Utils.checkCompoundingPeriods;import static net.coderodde.lce.Utils.checkDebtCut;
-;
+import static net.coderodde.lce.Utils.checkCompoundingPeriods;
 import static net.coderodde.lce.Utils.checkInterestRate;
 import static net.coderodde.lce.Utils.checkNotNull;
 import static net.coderodde.lce.Utils.checkPrincipal;
@@ -42,20 +41,43 @@ public abstract class Contract {
      */
     protected double timestamp;
     
+    /**
+     * Constructs a new contract with a given name.
+     * 
+     * @param name the name of a new contract
+     */
     public Contract(final String name) {
         checkNotNull(name, "The name of a contract is null.");
         this.name = name;
     }
     
+    /**
+     * Returns a textual description of this contract.
+     * 
+     * @return a textual description.
+     */
     @Override
     public final String toString() {
         return "[Contract " + getName() + "]";
     }
     
+    /**
+     * Returns a name of this contract.
+     * 
+     * @return a name of this contract. 
+     */
     public final String getName() {
         return name;
     }
     
+    /**
+     * Checks whether the two object are equal. 
+     * 
+     * @param o the object to test against.
+     * 
+     * @return <code>true</code> if <code>o</code> is also a contract, and holds
+     * the same data.
+     */
     @Override
     public boolean equals(Object o) {
         if (o == null) {
@@ -75,11 +97,25 @@ public abstract class Contract {
                 && epsilonEquals(timestamp, c.timestamp, e);
     }
     
+    /**
+     * Returns the hash of this contract.
+     * 
+     * @return the hash of this contract.
+     */
     @Override
     public int hashCode() {
         return name.hashCode();
     }
     
+    /**
+     * Returns a contract that results from applying a debt cut to this 
+     * contract.
+     * 
+     * @param dca the debt cut assignment object.
+     * @param time the time point at which to apply the cut.
+     * 
+     * @return a new contract.
+     */
     public Contract applyDebtCut(final DebtCutAssignment dca, 
                                  final double time) {
         Contract c;
@@ -93,22 +129,48 @@ public abstract class Contract {
         return c;
     }
     
+    /**
+     * Returns the principal of this contract.
+     * 
+     * @return the principal of this contract.
+     */
     public double getPrincipal() {
         return this.principal;
     }
     
+    /**
+     * Returns the interest rate of this contract.
+     * 
+     * @return the interest rate of this contract.
+     */
     public double getInterestRate() {
         return this.interestRate;
     }
     
+    /**
+     * Returns the compounding periods of this contract.
+     * 
+     * @return the compounding periods of this contract.
+     */
     public double getCompoundingPeriods() {
         return this.compoundingPeriods;
     }
     
+    /**
+     * Returns the timestamp of this contract.
+     * 
+     * @return the timestamp of this contract.
+     */
     public double getTimestamp() {
         return this.timestamp;
     }
     
+    /**
+     * Checks whether this contract has contiguous compounding scheme.
+     * 
+     * @return <code>true</code> if this contract is a continuous contract;
+     * <code>false</code> otherwise.
+     */
     public abstract boolean isContiguous();
     
     /**
@@ -152,18 +214,10 @@ public abstract class Contract {
     }
     
     /**
-     * Applies a debt cut to this contract.
-     * @param debtCut
-     * @param time 
+     * Clones this contact.
+     * 
+     * @return a clone contract.
      */
-    public void applyDebtCut(final double debtCut, final double time) {
-        checkTimestamp(this.timestamp, time);
-        double equityAtTime = this.evaluate(time);
-        checkDebtCut(debtCut, equityAtTime);
-        setPrincipal(equityAtTime - debtCut);
-        setTimestamp(time);
-    }
-    
     public Contract clone() {
         return ContractFactory.newContract()
                               .withPrincipal(this.getPrincipal())
@@ -182,5 +236,13 @@ public abstract class Contract {
      */
     public abstract double evaluate(final double time);
     
-    public abstract double getGrowthFactor(final double time);
+    /**
+     * Returns the growth factor of this contract with duration 
+     * <code>time</code>.
+     * 
+     * @param duration the duration.
+     * 
+     * @return the growth factor at <code>duration</code>.
+     */
+    public abstract double getGrowthFactor(final double duration);
 }

@@ -1,7 +1,5 @@
 package net.coderodde.lce.model;
 
-import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
-
 /**
  * This interface defines the API for algorithms computing equilibrial debt
  * cuts. 
@@ -25,7 +23,17 @@ public interface EquilibrialDebtCutFinder {
                                      final TimeAssignment timeAssignment, 
                                      final double equilibriumTime);
     
+    /**
+     * Queries for the time in milliseconds spent on matrix reduction.
+     * 
+     * @return time in milliseconds.
+     */
     public long getMatrixReductionTime();
     
+    /**
+     * Queries for the time in milliseconds spent on minimizing the cuts.
+     * 
+     * @return time in milliseconds.
+     */
     public long getMinimizationTime();
 }
