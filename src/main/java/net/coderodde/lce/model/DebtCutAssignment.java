@@ -51,4 +51,11 @@ public abstract class DebtCutAssignment {
      * @return the equilibrium time.
      */
     public abstract double getEquilibriumTime();
+    
+    /**
+     * Returns the sum of all debt cuts.
+     * 
+     * @return the sum of all debt cuts. 
+     */
+    public abstract double sum();
 }

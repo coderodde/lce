@@ -357,4 +357,22 @@ public class Utils {
 
         return ta;
     }
+    
+    public static void title(final String text) {
+        final int before = (80 - text.length() - 2) / 2;
+        final int after = 80 - 2 - text.length() - before;
+        final StringBuilder sb = new StringBuilder(80);
+        
+        for (int i = 0; i < before; ++i) {
+            sb.append('*');
+        }
+        
+        sb.append(' ').append(text).append(' ');
+        
+        for (int i = 0; i < after; ++i) {
+            sb.append('*');
+        }
+        
+        System.out.println(sb);
+    }
 }

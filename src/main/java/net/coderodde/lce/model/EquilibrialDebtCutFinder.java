@@ -36,4 +36,5 @@ public interface EquilibrialDebtCutFinder {
      * @return time in milliseconds.
      */
     public long getMinimizationTime();
+    
 }

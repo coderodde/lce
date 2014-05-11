@@ -22,6 +22,7 @@ public class DefaultDebtCutAssignment extends DebtCutAssignment {
     
     private final Map<Contract, Double> map;
     private final double equilibriumTime;
+    private double sum;
     
     /**
      * Constructs a new debt cut assignment object.
@@ -77,6 +78,7 @@ public class DefaultDebtCutAssignment extends DebtCutAssignment {
         checkNotInfinite(debtCut, "The debt cut may not be infinite.");
         checkNotNegative(debtCut, "The debt cut may not be negative.");
         this.map.put(contract, debtCut);
+        this.sum += debtCut;
     }
     
     /**
@@ -98,5 +100,9 @@ public class DefaultDebtCutAssignment extends DebtCutAssignment {
      */
     public final double getEquilibriumTime() {
         return equilibriumTime;
+    }
+    
+    public final double sum() {
+        return this.sum;
     }
 }
