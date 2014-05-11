@@ -138,7 +138,6 @@ implements EquilibrialDebtCutFinder {
         this.buildMaps();
         
         this.m = loadMatrix();
-        m.debugPrint();
         this.variableAmount = m.getColumnAmount() - 1;
         
         long ta = System.currentTimeMillis();
@@ -146,14 +145,12 @@ implements EquilibrialDebtCutFinder {
         long tb = System.currentTimeMillis();
         this.matrixReductionDuration = tb - ta;
         
+        m.debugPrint();
+        
         if (m.hasSolution() == false) {
+            // This should not happen.
             return NO_SOLUTION;
         }
-        
-        // OK until here.
-        
-        System.out.println("---");
-        m.debugPrint();
         
         OptimizationData[] lp = convertMatrixToLinearProgram(m);
         ta = System.currentTimeMillis();
@@ -164,16 +161,21 @@ implements EquilibrialDebtCutFinder {
     }
     
     /**
-     * Returns the time spent reducing the matrix. The return value makes
+     * Returns the time spent on reducing the matrix. The return value makes
      * sense only after at least one run of this finder.
      * 
-     * @return the time spent reducing the matrix.
+     * @return the time spent on reducing the matrix.
      */
     @Override
     public final long getMatrixReductionTime() {
         return this.matrixReductionDuration;
     }
     
+    /**
+     * Returns the time spent on minimizing the debt cuts.
+     * 
+     * @return the time spent on minimizing the debt cuts.
+     */
     @Override
     public final long getMinimizationTime() {
         return minimizationDuration;
@@ -182,12 +184,6 @@ implements EquilibrialDebtCutFinder {
     private final DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
         final DebtCutAssignment dca = 
                 new DefaultDebtCutAssignment(equilibriumTime);
-//        
-//        System.out.println("Funkeeh values: ");
-//        for (double d : pvp.getPointRef()) {
-//            System.out.println(d);
-//        }
-//        System.out.println("End of funkeeh values.");
         
         // Process independent variables. mivii maps appearance index to
         // column index.
@@ -353,6 +349,9 @@ implements EquilibrialDebtCutFinder {
         };
     }
     
+    /**
+     * Builds some of the maps.
+     */
     private final void buildMaps() {
         this.mci.clear();
         this.mcii.clear();
@@ -374,6 +373,11 @@ implements EquilibrialDebtCutFinder {
         }
     }
     
+    /**
+     * Loads the matrix.
+     * 
+     * @return a set up matrix. 
+     */
     private final Matrix loadMatrix() {
         // +1 for the result matrix is augmented.
         double[][] m = new double[graph.size()][graph.getContractAmount() + 1];

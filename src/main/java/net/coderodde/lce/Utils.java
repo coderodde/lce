@@ -61,7 +61,7 @@ public class Utils {
     public static final void checkNotNegative
         (final double d, final String message) {
         if (d < 0.0) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(message + " : " + d);
         }
     }
         
@@ -219,7 +219,7 @@ public class Utils {
         final TimeAssignment ta = new TimeAssignment();
 
         for (final Node node : graph.getNodes()) {
-            ta.put(node, 10 * r.nextDouble() + node.getMaximumTimestamp());
+            ta.put(node, +3 + 10 * r.nextDouble() + node.getMaximumTimestamp());
         }
 
         return ta;

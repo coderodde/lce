@@ -141,6 +141,24 @@ public class Node {
         
         return equity;
     }
+    
+    public final double equity2(final double duration) {
+        double equity = 0;
+        
+        for (final List<Contract> contractList : out.values()) {
+            for (final Contract c : contractList) {
+                equity += c.evaluate(duration);
+            }
+        }
+        
+        for (final List<Contract> contractList : in.values()) {
+            for (final Contract c : contractList) {
+                equity -= c.evaluate(duration);
+            }
+        }
+        
+        return equity;
+    }
  
     /**
      * Returns unmodifiable view of this node's debtor nodes.
@@ -215,7 +233,7 @@ public class Node {
         
         for (final List<Contract> contractList : out.values()) {
             for (final Contract contract : contractList) {
-                d += contract.evaluate(time);
+                d += contract.evaluate(time - contract.getTimestamp());
             }
         }
         

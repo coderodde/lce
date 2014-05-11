@@ -213,6 +213,16 @@ public class Graph {
         return true;
     }
         
+    public final TimeAssignment copy(final Graph g, final TimeAssignment ta) {
+        final TimeAssignment ret = new TimeAssignment();
+        
+        for (final Node node : this.getNodes()) {
+            ret.put(g.getNode(node.getName()), ta.get(node));
+        }
+        
+        return ret;
+    }
+    
     /**
      * Returns the total flow of this graph at moment <code>time</code>.
      * 
@@ -258,7 +268,42 @@ public class Graph {
     }
     
     public final double getMaximumTimestamp() {
-        return this.maximumTimestamp;
+        return maximumTimestamp;
+    }
+    
+    public final String describe(final double time) {
+        final StringBuilder sb = new StringBuilder();
+        
+        for (final Node node : this.getNodes()) {
+            sb.append(node)
+              .append("\n  Debtors:");
+            
+            for (final Node debtor : node.getDebtors()) {
+                sb.append("\n    ")
+                  .append(debtor);
+                
+                for (final Contract c : node.getContractsTo(debtor)) {
+                    sb.append("\n      ")
+                      .append(c.evaluate(time - c.getTimestamp()));
+                }
+            }
+            
+            sb.append("\n  Lenders:");
+            
+            for (final Node lender : node.getLenders()) {
+                sb.append("\n    ")
+                  .append(lender);
+                
+                for (final Contract c : lender.getContractsTo(node)) {
+                    sb.append("\n      ")
+                      .append(c.evaluate(time - c.getTimestamp()));
+                }
+            }
+            
+            sb.append("\n\n");
+        }
+        
+        return sb.append('\n').toString();
     }
     
     final void setMaximumTimestamp(final double timestamp) {
