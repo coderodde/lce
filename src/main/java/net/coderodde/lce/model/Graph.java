@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import net.coderodde.lce.Utils;
 import static net.coderodde.lce.Utils.checkNotNull;
 import static net.coderodde.lce.Utils.epsilonEquals;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;

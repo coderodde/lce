@@ -17,9 +17,21 @@ import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
  */
 public class Utils {
     
+    /**
+     * Defines the default epsilon.
+     */
     private static double EPSILON = 0.001;
+    
+    /**
+     * Defines the maximum epsilon.
+     */
     private static double MAX_EPSILON = 1.0;
     
+    /**
+     * Attempts to set a new epsilon.
+     * 
+     * @param epsilon the epsilon to set.
+     */
     public static final void setEpsilon(final double epsilon) {
         if (Double.isInfinite(epsilon)
                 || Double.isNaN(epsilon)
@@ -31,6 +43,14 @@ public class Utils {
         EPSILON = epsilon;
     }
     
+    /**
+     * Checks whether the reference is null.
+     * 
+     * @param o the reference to check.
+     * @param message the message to an exception possibly thrown.
+     * 
+     * @throws IllegalArgumentException if the reference is <code>null</code>.
+     */
     public static final void checkNotNull
         (final Object o, final String message) {
         if (o == null) {
@@ -38,12 +58,28 @@ public class Utils {
         }
     }
     
+    /**
+     * Checks whether the number is NaN.
+     * 
+     * @param d the number to check.
+     * @param message the message to an exception possibly thrown.
+     * 
+     * @throws IllegalArgumentException if d is NaN.
+     */    
     public static final void checkNotNaN(final double d, final String message) {
         if (Double.isNaN(d)) {
             throw new IllegalArgumentException(message);
         }
     }
     
+    /**
+     * Checks whether the number is infinite in absolute value.
+     * 
+     * @param d the number to check.
+     * @param message the message passed to an exception object upon failure.
+     * 
+     * @throws IllegalArgumentException if d is infinite.
+     */
     public static final void checkNotInfinite
         (final double d, final String message) {
         if (Double.isInfinite(d)) {
@@ -51,6 +87,14 @@ public class Utils {
         }
     }
         
+    /**
+     * Checks whether a number is above 0.
+     * 
+     * @param d the number to check.
+     * @param message the message passed to the exception object upon failure.
+     * 
+     * @throws IllegalArgumentException if d is at most 0.
+     */
     public static final void checkPositive
         (final double d, final String message) {
         if (d <= 0.0) {
@@ -58,6 +102,14 @@ public class Utils {
         }
     }
     
+    /**
+     * Checks whether a number is at least 0.
+     * 
+     * @param d the number to check.
+     * @param message the message passed to exception upon failure.
+     * 
+     * @throws IllegalArgumentException if <code>d</code> is less than 0.
+     */
     public static final void checkNotNegative
         (final double d, final String message) {
         if (d < 0.0) {
@@ -83,12 +135,22 @@ public class Utils {
         }
     }
     
+    /**
+     * Validates a principal investment.
+     * 
+     * @param principal the principal to validate.
+     */
     public static final void checkPrincipal(final double principal) {
         checkNotNaN(principal, "The principal may not be NaN.");
         checkNotInfinite(principal, "The principal may not be infinite.");
         checkNotNegative(principal, "The principal must be at least 0.");
     }
         
+    /**
+     * Validates the interest rate.
+     * 
+     * @param interestRate the interest rate to validate.
+     */
     public static final void checkInterestRate(final double interestRate) {
         checkNotNaN(interestRate, "The interest rate may not be NaN.");
         checkNotInfinite(interestRate, 
@@ -96,6 +158,11 @@ public class Utils {
         checkNotNegative(interestRate, "The interest rate must be at least 0.");
     }
     
+    /**
+     * Validates compounding periods.
+     * 
+     * @param compoundingPeriods compounding periods to check.
+     */
     public static final void checkCompoundingPeriods
         (final double compoundingPeriods) {
         checkNotNaN(compoundingPeriods, "The compouding periods are NaN.");
@@ -103,11 +170,22 @@ public class Utils {
                       "The compounding periods setting must be above zero.");
     }
         
+    /**
+     * Validates a timestamp.
+     * 
+     * @param timestamp timestamp to validate.
+     */
     public static final void checkTimestamp(final double timestamp) {
         checkNotNaN(timestamp, "The timestamp is NaN.");
         checkNotInfinite(timestamp, "The timestamp is infinite.");
     }
     
+    /**
+     * Validates the time assignment for a graph.
+     * 
+     * @param graph graph.
+     * @param timeAssignment time assignment object.
+     */
     public static final void checkTimeAssignment
         (final Graph graph, final TimeAssignment timeAssignment) {
         if (timeAssignment.size() != graph.size()) {
@@ -130,6 +208,12 @@ public class Utils {
         }
     }
         
+    /**
+     * Validates a contract against a debt cut assignment.
+     * 
+     * @param contract the contract to validate.
+     * @param debtCutAssignment the debt cut assignment.
+     */
     public static final void checkContract
         (final Contract contract, final DefaultDebtCutAssignment debtCutAssignment) {
         checkNotNull(contract, "Contract is null.");
@@ -138,7 +222,13 @@ public class Utils {
             throw new IllegalStateException("The contract is missing.");
         }
     }
-        
+     
+    /**
+     * Validates a debt cut.
+     * 
+     * @param debtCut the debt cut.
+     * @param equity the equity.
+     */
     public static final void checkDebtCut
         (final double debtCut, final double equity) {
         checkNotNaN(debtCut, "The debt cut is NaN.");
@@ -154,14 +244,41 @@ public class Utils {
         }
     }
         
+    /**
+     * Performs an epsilon-comparison.
+     * 
+     * @param a first number.
+     * @param b second number.
+     * 
+     * @return <code>true</code> if <code>a</code> and <code>b</code> are
+     * within <code>epsilon</cod> to each other.
+     */
     public static final boolean epsilonEquals(final double a, final double b) {
         return Math.abs(a - b) <= EPSILON;
     }
     
+    /**
+     * Performs an epsilon-comparison.
+     * 
+     * @param a first number.
+     * @param b second number.
+     * @param e epsilon value.
+     * 
+     * @return <code>true</code> or <code>false</code> 
+     */
     public static final boolean epsilonEquals(final double a, final double b, final double e) {
         return Math.abs(a - b) <= e;
     }
     
+    /**
+     * Creates a random financial graph.
+     * 
+     * @param size the amount of nodes in the output graph.
+     * @param seed the seed for PRNG.
+     * @param edgeLoadFactor edge load factor (should be between 0 and 1).
+     * 
+     * @return a random graph.
+     */
     public static final Graph createRandomGraph(int size,
                                                 final long seed,
                                                 final float edgeLoadFactor) {
@@ -195,24 +312,40 @@ public class Utils {
         return g;
     }
     
-    public static final Contract createRandomContract(final Random r, 
-                                                      final String name) {
+    /**
+     * Creates a random contract.
+     * 
+     * @param r the PRNG.
+     * @param name the name of a new contract.
+     * 
+     * @return a new random contract.
+     */
+    private static final Contract createRandomContract(final Random r, 
+                                                       final String name) {
         if (r.nextFloat() < 0.75f) {
             // Basic contract.
             return new BasicContract(name,
-                                     10.0 * r.nextDouble(),
+                                     1.0 * r.nextDouble(),
                                      0.25 * r.nextDouble(),
                                      12.0 * r.nextDouble(),
                                      5.0 * r.nextDouble());
         } else {
             // Contiguous contract.
             return new ContinuousContract(name,
-                                          10.0 * r.nextDouble(),
+                                          1.0 * r.nextDouble(),
                                           0.25 * r.nextDouble(),
                                           5.0 * r.nextDouble());
         }
     }
     
+    /**
+     * Creates a random time assignment.
+     * 
+     * @param seed the seed for PRNG.
+     * @param graph the graph for which to create a time assignment.
+     * 
+     * @return a random time assignment object. 
+     */
     public static final TimeAssignment 
     createRandomTimeAssignment(final long seed, final Graph graph) {
         final Random r = new Random(seed);
