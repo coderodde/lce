@@ -65,6 +65,33 @@ public class Node {
     }
     
     /**
+     * Checks whether the two nodes are equal.
+     * 
+     * @param o the object to compare against.
+     * 
+     * @return <code>true</code> if the input object represents the same node;
+     * <code>false</code> otherwise.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Node)) {
+            return false;
+        }
+        
+        return ((Node) o).getName().equals(this.getName());
+    }
+    
+    /**
+     * Returns the hash code of this node.
+     * 
+     * @return the hash code of this node. 
+     */
+    @Override
+    public int hashCode() {
+        return getName().hashCode();
+    }
+    
+    /**
      * Returns textual description of this node.
      * 
      * @return textual description.
@@ -89,7 +116,6 @@ public class Node {
         if (maximumTimestamp < contract.getTimestamp()) {
             maximumTimestamp = contract.getTimestamp();
         }
-        
         
         if (debtor.getMaximumTimestamp() < contract.getTimestamp()) {
             debtor.setMaximumTimestamp(maximumTimestamp);

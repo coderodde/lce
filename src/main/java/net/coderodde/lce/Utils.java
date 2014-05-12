@@ -2,6 +2,7 @@ package net.coderodde.lce;
 
 import java.util.Random;
 import net.coderodde.lce.model.Contract;
+import net.coderodde.lce.model.ContractFactory;
 import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
@@ -190,7 +191,8 @@ public class Utils {
         (final Graph graph, final TimeAssignment timeAssignment) {
         if (timeAssignment.size() != graph.size()) {
             throw new IllegalArgumentException(
-                    "The size of time map and graph differ.");
+                    "The size of time map and graph differ." + timeAssignment.size() +
+                            " versus " + graph.size());
         }
         
         for (Node node : timeAssignment.getNodes()) {
@@ -350,15 +352,28 @@ public class Utils {
     createRandomTimeAssignment(final long seed, final Graph graph) {
         final Random r = new Random(seed);
         final TimeAssignment ta = new TimeAssignment();
-
+        final Contract DUMMY_CONTRACT = ContractFactory
+                                        .newContract()
+                                        .withPrincipal(0)
+                                        .withCompoundingPeriods(1.0)
+                                        .withInterestRate(0.01)
+                                        .withTimestamp(0.0)
+                                        .create("Dummy contract");
+        
         for (final Node node : graph.getNodes()) {
             for (final Contract contract : node.getIncomingContracts()) {
                 ta.put(node, 
                        contract, 
                        10 * r.nextDouble() + node.getMaximumTimestamp());
             }
+            
+            if (ta.containsNode(node) == false) {
+                ta.put(node, 
+                       DUMMY_CONTRACT, 
+                       10 * r.nextDouble() + node.getMaximumTimestamp());
+            }
         }
-
+        
         return ta;
     }
     

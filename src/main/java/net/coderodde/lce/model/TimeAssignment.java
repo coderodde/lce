@@ -53,6 +53,7 @@ public class TimeAssignment {
     public final void put
         (final Node node, final Contract c, final double time) {
         checkNotNull(node, "Node is null.");
+        checkNotNull(c, "Contract is null.");
         checkTimestamp(time);
         
         if (this.map.containsKey(node) == false) {
