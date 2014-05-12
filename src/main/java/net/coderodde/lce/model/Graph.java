@@ -207,9 +207,9 @@ public class Graph {
                 
                 for (final Contract c : node.getContractsTo(debtorOfNode)) {
                     if (dca.containsFor(c)) {
-                        target.addDebtor(targetDebtor,
-                                         c.applyDebtCut(dca, 
-                                                        ta.get(debtorOfNode)));
+                        target.addDebtor(
+                               targetDebtor,
+                               c.applyDebtCut(dca, ta.get(debtorOfNode, c)));
                     }
                 }
             }
@@ -248,7 +248,11 @@ public class Graph {
         final TimeAssignment ret = new TimeAssignment();
         
         for (final Node node : this.getNodes()) {
-            ret.put(g.getNode(node.getName()), ta.get(node));
+            for (final Node debtor : node.getDebtors()) {
+                for (final Contract contract : node.getContractsTo(debtor)) {
+                    ret.put(debtor, contract, ta.get(debtor, contract));
+                }
+            }
         }
         
         return ret;

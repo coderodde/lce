@@ -20,8 +20,8 @@ import static net.coderodde.lce.Utils.title;
 public class Demo {
     
     public static void main(final String... args) {
-//        profile();
-//        profile2();
+        profile();
+        profile2();
         profileLarge();
     }
    

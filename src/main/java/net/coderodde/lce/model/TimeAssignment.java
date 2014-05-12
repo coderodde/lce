@@ -19,7 +19,7 @@ public class TimeAssignment {
     /**
      * The map mapping each node to their debt cut timestamps.
      */
-    private final Map<Node, Double> map;
+    private final Map<Node, Map<Contract, Double>> map;
     
     /**
      * Caches the maximum timestamp.
@@ -47,12 +47,20 @@ public class TimeAssignment {
      * Assigns the timestamp <code>time</code> to node <code>node</code>.
      * 
      * @param node the node.
+     * @param c the contract.
      * @param time the timestamp.
      */
-    public final void put(final Node node, final double time) {
+    public final void put
+        (final Node node, final Contract c, final double time) {
         checkNotNull(node, "Node is null.");
         checkTimestamp(time);
-        this.map.put(node, time);
+        
+        if (this.map.containsKey(node) == false) {
+            this.map.put(node, new HashMap<Contract, Double>());
+        }
+        
+        Map<Contract, Double> m = this.map.get(node);
+        m.put(c, time);
         this.maxTimestamp = Math.max(this.maxTimestamp, time);
     }
     
@@ -77,7 +85,7 @@ public class TimeAssignment {
      * 
      * @return the timestamp. 
      */
-    public final double get(final Node node) {
+    public final double get(final Node node, final Contract contract) {
         checkNotNull(node, "Node is null.");
         
         if (this.map.containsKey(node) == false) {
@@ -85,7 +93,7 @@ public class TimeAssignment {
                     "The node is not contained in this TimeAssignment.");
         }
         
-        return this.map.get(node);
+        return this.map.get(node).get(contract);
     }
     
     /**

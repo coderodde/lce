@@ -155,15 +155,6 @@ implements EquilibrialDebtCutFinder {
         PointValuePair pvp = new SimplexSolver().optimize(lp);
         tb = System.currentTimeMillis();
         minimizationDuration = tb - ta;
-        
-        double sum = 0;
-        
-        for (final double d : pvp.getPointRef()) {
-            sum += d;
-        }
-        
-        System.out.println("Minimum: " + sum);
-        
         return extractDebtCuts(pvp);
     }
     
@@ -323,7 +314,8 @@ implements EquilibrialDebtCutFinder {
             double[] constraintCoefficients2 = constraintCoefficients.clone();
             Contract contract = mcii.get(leadingEntryIndex);
             Node node = c2n.get(contract);
-            double duration = timeAssignment.get(node) - contract.getTimestamp();
+            double duration = timeAssignment.get(node, contract) - 
+                              contract.getTimestamp();
             
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients2,
@@ -345,20 +337,12 @@ implements EquilibrialDebtCutFinder {
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
                                    Relationship.LEQ,
-                                   c.evaluate(timeAssignment.get(node) -
+                                   c.evaluate(timeAssignment.get(node, c) -
                                               c.getTimestamp())));
             
             coefficients[mivi.get(i)] += 1.0;
         }
-        
-        System.out.print("Obj. function factors: ");
-        
-        for (final double d : coefficients) {
-            System.out.print(d + " ");
-        }
-        
-        System.out.println();
-        
+       
         // Build the objective function.
         final LinearObjectiveFunction of = 
                 new LinearObjectiveFunction(coefficients, 0);
@@ -425,14 +409,14 @@ implements EquilibrialDebtCutFinder {
             for (final Contract c : node.getContractsTo(debtor)) {
                 row[mci.get(c)] += 
                         c.getGrowthFactor(equilibriumTime -
-                                          timeAssignment.get(debtor));
+                                          timeAssignment.get(debtor, c));
             }
         }
         
         for (final Contract c : node.getIncomingContracts()) {
             row[mci.get(c)] -=
                         c.getGrowthFactor(equilibriumTime -
-                                          timeAssignment.get(node));
+                                          timeAssignment.get(node, c));
         }
     }
     
@@ -451,20 +435,24 @@ implements EquilibrialDebtCutFinder {
         for (final Node debtor : node.getDebtors()) {
             for (final Contract contract : node.getContractsTo(debtor)) {
                 tmp = contract.clone();
-                tmp.setPrincipal(contract.evaluate(timeAssignment.get(debtor) - 
-                                                   contract.getTimestamp()));
+                tmp.setPrincipal(contract.
+                                 evaluate(timeAssignment.get(debtor, contract) - 
+                                          contract.getTimestamp()));
+                
                 sum += tmp.evaluate(equilibriumTime - 
-                                    timeAssignment.get(debtor));
+                                    timeAssignment.get(debtor, contract));
             }
         }
         
         for (final Node lender : node.getLenders()) {
             for (final Contract contract : lender.getContractsTo(node)) {
                 tmp = contract.clone();
-                tmp.setPrincipal(contract.evaluate(timeAssignment.get(node) -
-                                                   contract.getTimestamp()));
+                tmp.setPrincipal(contract.
+                                 evaluate(timeAssignment.get(node, contract) -
+                                          contract.getTimestamp()));
                 
-                sum -= tmp.evaluate(equilibriumTime - timeAssignment.get(node));
+                sum -= tmp.evaluate(equilibriumTime - 
+                                    timeAssignment.get(node, contract));
                 
             }
         }

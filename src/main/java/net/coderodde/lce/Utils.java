@@ -352,7 +352,11 @@ public class Utils {
         final TimeAssignment ta = new TimeAssignment();
 
         for (final Node node : graph.getNodes()) {
-            ta.put(node, 10 * r.nextDouble() + node.getMaximumTimestamp());
+            for (final Contract contract : node.getIncomingContracts()) {
+                ta.put(node, 
+                       contract, 
+                       10 * r.nextDouble() + node.getMaximumTimestamp());
+            }
         }
 
         return ta;
