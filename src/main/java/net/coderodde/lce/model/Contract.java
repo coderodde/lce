@@ -119,12 +119,14 @@ public abstract class Contract {
     public Contract applyDebtCut(final DebtCutAssignment dca, 
                                  final double time) {
         Contract c;
-        c = ContractFactory.newContract()
-                           .withCompoundingPeriods(this.compoundingPeriods)
-                           .withInterestRate(this.interestRate)
-                           .withTimestamp(time)
-                           .withPrincipal(this.evaluate(time - this.getTimestamp()) - dca.get(this))
-                           .create("Copy of " + this.getName());
+        c = ContractFactory
+                .newContract()
+                .withCompoundingPeriods(this.compoundingPeriods)
+                .withInterestRate(this.interestRate)
+                .withTimestamp(time)
+                .withPrincipal(this.evaluate(time - this.getTimestamp()) 
+                               - dca.get(this))
+                .create("Copy of " + this.getName());
         
         return c;
     }
@@ -219,12 +221,13 @@ public abstract class Contract {
      * @return a clone contract.
      */
     public Contract clone() {
-        return ContractFactory.newContract()
-                              .withPrincipal(this.getPrincipal())
-                              .withInterestRate(this.getInterestRate())
-                              .withCompoundingPeriods(this.getCompoundingPeriods())
-                              .withTimestamp(this.getTimestamp())
-                              .create("Clone of " + this.getName());
+        return ContractFactory
+                .newContract()
+                .withPrincipal(this.getPrincipal())
+                .withInterestRate(this.getInterestRate())
+                .withCompoundingPeriods(this.getCompoundingPeriods())
+                .withTimestamp(this.getTimestamp())
+                .create("Clone of " + this.getName());
     }
     
     /**
@@ -245,4 +248,15 @@ public abstract class Contract {
      * @return the growth factor at <code>duration</code>.
      */
     public abstract double getGrowthFactor(final double duration);
+    
+    /**
+     * If the implementation does not have contiguous compounding, returns
+     * a time interval needed to be subtracted from the time stamp; otherwise
+     * returns zero (0).
+     * 
+     * @param time for applying a debt cut.
+     * 
+     * @return shift correction. 
+     */
+    public abstract double getShiftCorrection(final double time); 
 }

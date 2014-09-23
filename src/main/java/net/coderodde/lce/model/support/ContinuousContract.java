@@ -81,8 +81,27 @@ public class ContinuousContract extends Contract {
         return Math.pow(Math.E, this.getInterestRate() * time);
     }
     
+    /**
+     * {@inheritDoc}
+     * 
+     * @return <code>true</code> if the implementing contract type has a
+     * contiguous compounding scheme.
+     */
     @Override
     public boolean isContiguous() {
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     * 
+     * @param time the time to apply the debt cut.
+     * 
+     * @return the shift correction which in the case of a contiguous 
+     * compounding equals zero (0).
+     */
+    @Override
+    public double getShiftCorrection(double time) {
+        return 0.0;
     }
 }

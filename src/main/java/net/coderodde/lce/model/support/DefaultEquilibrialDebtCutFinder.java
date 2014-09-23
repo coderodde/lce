@@ -383,7 +383,7 @@ implements EquilibrialDebtCutFinder {
      * @return a set up matrix. 
      */
     private final Matrix loadMatrix() {
-        // +1 for the result matrix is augmented.
+        // +1 because the result matrix is augmented.
         double[][] m = new double[graph.size()][graph.getContractAmount() + 1];
         int row = 0;
         
@@ -458,5 +458,9 @@ implements EquilibrialDebtCutFinder {
         }
         
         return sum;
+    }
+    
+    private static final double g(final double d) {
+        return d - Math.floor(d);
     }
 }

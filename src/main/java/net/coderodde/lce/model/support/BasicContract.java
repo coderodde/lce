@@ -64,4 +64,10 @@ public class BasicContract extends Contract {
     public boolean isContiguous() {
         return false;
     }
+
+    @Override
+    public double getShiftCorrection(double time) {
+        final double tmp = compoundingPeriods * (time - timestamp);
+        return tmp - Math.floor(tmp);
+    }
 }

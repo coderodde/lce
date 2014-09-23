@@ -44,7 +44,11 @@ public class Demo {
         final List<Double> inlist = new ArrayList<>(10);
         final List<Double> outlist = new ArrayList<>(10);
         
-        for (int i = 0; i != 10; ++i) {
+        Utils.setEpsilon(1e-6);
+        
+        for (int i = 0; i != 30; ++i) {
+            // Keep computing with the equilibrium time increasing from
+            // iteration to iteration.
             final double equilibriumTime = 
                     ta.getMaximumTimestamp() + 2 * (i + 1);
             
@@ -55,7 +59,10 @@ public class Demo {
             
             if (output.isInEquilibriumAt(equilibriumTime) == false) {
                 // Should not happen.
-                System.out.println("Equilibrium failed: " + i);
+                System.out.println(
+                        "Equilibrium failed: " + i + 
+                        ", max absolute equity: " + 
+                        output.maxEquity(equilibriumTime));
                 return;
             }
             
@@ -65,7 +72,7 @@ public class Demo {
         
         for (int i = 0; i != inlist.size(); ++i) {
             System.out.printf("%2d % 5.3f : % 5.3f ; %-2.3f\n", 
-                              (i + 1), 
+                              2 * (i + 1), 
                               outlist.get(i),
                               inlist.get(i),
                               1.0 * outlist.get(i) / inlist.get(i));
@@ -111,7 +118,7 @@ public class Demo {
     private static final void profileLarge() {
         title("profileLarge()");
         final long SEED = 1399819244048L;//System.currentTimeMillis();
-        final int N = 10;
+        final int N = 50;
         
         System.out.println("Seed: " + SEED);
         

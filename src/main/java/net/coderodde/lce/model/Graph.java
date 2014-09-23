@@ -227,13 +227,23 @@ public class Graph {
      * <code>time</code>.
      */
     public boolean isInEquilibriumAt(final double time) {
-        for (Node node : map.values()) {
+        for (final Node node : map.values()) {
             if (epsilonEquals(node.equity(time), 0.0) == false) {
                 return false;
             }
         }
         
         return true;
+    }
+    
+    public double maxEquity(final double time) {
+        double max = 0.0;
+        
+        for (final Node node : map.values()) {
+            max = Math.max(max, Math.abs(node.equity(time)));
+        }
+        
+        return max;
     }
     
     /**
