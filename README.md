@@ -1,5 +1,5 @@
 # lce (loan cut equilibrium)
-A library for computing debt cuts in a financial graph leading to global zero-equity.
+A library for computing debt cuts in  financial graphs leading to global zero-equity.
 
 First of all, you need a graph:
 ```java
@@ -63,7 +63,7 @@ System.out.println("Is in equilibrium at " + eqTime + ": " +
                    output.isInEquilibriumAt(5.0));
 ```
 
-See for yoursefl:
+See for yourself:
 ```java
 System.out.println(output.describe(5.0));
 ```
