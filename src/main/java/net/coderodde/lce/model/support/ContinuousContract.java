@@ -104,4 +104,12 @@ public class ContinuousContract extends Contract {
     public double getShiftCorrection(double time) {
         return 0.0;
     }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public String toString() {
+        return "[" + principal + ", " + interestRate + ", " + timestamp + "]";
+    }
 }

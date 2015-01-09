@@ -57,9 +57,7 @@ public abstract class Contract {
      * @return a textual description.
      */
     @Override
-    public final String toString() {
-        return "[Contract " + getName() + "]";
-    }
+    public abstract String toString();
     
     /**
      * Returns a name of this contract.

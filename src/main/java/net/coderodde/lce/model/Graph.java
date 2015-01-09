@@ -357,10 +357,10 @@ public class Graph {
                 }
             }
             
-            sb.append("\n\n");
+            sb.append("\n");
         }
         
-        return sb.append('\n').toString();
+        return sb.toString();
     }
     
     /**

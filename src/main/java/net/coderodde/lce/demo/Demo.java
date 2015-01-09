@@ -25,9 +25,9 @@ public class Demo {
     
     public static void main(final String... args) {
         profileSmall();
-//        profile();
-//        profile2();
-//        profileLarge();
+        profile();
+        profile2();
+        profileLarge();
     }
    
     private static final void profileSmall() {
@@ -43,12 +43,16 @@ public class Demo {
         final Contract k_u = new BasicContract("k_u", 2.0, 0.1, 3.0, -1.0);
         final Contract k_v = new ContinuousContract("k_v", 1.0, 0.12, 0.0);
         
+        System.out.println("k_u: " + k_u);
+        System.out.println("k_v: " + k_v);
+        
         u.addDebtor(v, k_u);
         v.addDebtor(u, k_v);
         
         // u issues a contract k_u to v
         // v issues a contract k_v to u
         final TimeAssignment ta = new TimeAssignment();
+        
         ta.put(u, k_v, 3.1);
         ta.put(v, k_u, 2.5);
         
@@ -60,9 +64,20 @@ public class Demo {
         final DebtCutAssignment dca = input.findEquilibrialDebtCuts(eqTime, ta);
         final Graph output = input.applyDebtCuts(dca, ta);
         
-        System.out.println("Is in equilibrium at " + eqTime + ": " + output.isInEquilibriumAt(5.0));
+        System.out.println("Is in equilibrium at " + eqTime + ": " + 
+                           output.isInEquilibriumAt(5.0));
+        
         System.out.println(output.describe(5.0));
         System.out.println("Debt cut sum: " + dca.sum());
+        
+        System.out.println("k_u: " + k_u);
+        System.out.println("k_v: " + k_v);
+        
+        final double t = 2.5 - k_u.getTimestamp();
+        System.out.println(k_u.evaluate(t + 1.998 / k_u.getCompoundingPeriods()));
+        System.out.println(k_u.evaluate(t + 1.999 / k_u.getCompoundingPeriods()));
+        System.out.println(k_u.evaluate(t + 2.000 / k_u.getCompoundingPeriods()));
+        System.out.println(k_u.evaluate(t + 2.001 / k_u.getCompoundingPeriods()));
     }
     
     private static final void profile() {

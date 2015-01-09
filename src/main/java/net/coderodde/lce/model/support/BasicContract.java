@@ -70,4 +70,13 @@ public class BasicContract extends Contract {
         final double tmp = compoundingPeriods * (time - timestamp);
         return tmp - Math.floor(tmp);
     }
+    
+    /**
+     * {@inheritDoc }
+     */
+    @Override
+    public String toString() {
+        return "[" + principal + ", " + interestRate + ", " + 
+               compoundingPeriods + ", " + timestamp + "]";
+    }
 }

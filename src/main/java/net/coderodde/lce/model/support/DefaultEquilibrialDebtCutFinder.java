@@ -186,7 +186,7 @@ implements EquilibrialDebtCutFinder {
      * 
      * @return debt cut assignment object.
      */
-    private final DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
+    private DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
         final DebtCutAssignment dca = 
                 new DefaultDebtCutAssignment(equilibriumTime);
         
@@ -232,8 +232,7 @@ implements EquilibrialDebtCutFinder {
      * 
      * @return a linear program.
      */
-    private final OptimizationData[]
-        convertMatrixToLinearProgram(final Matrix m) {
+    private OptimizationData[] convertMatrixToLinearProgram(final Matrix m) {
         final OptimizationData[] od = getLPData(m);
         final NonNegativeConstraint nnc = new NonNegativeConstraint(true);
         return new OptimizationData[]{od[0], od[1], nnc};
@@ -246,7 +245,7 @@ implements EquilibrialDebtCutFinder {
      * 
      * @return an objective function.
      */
-    private final OptimizationData[] getLPData(final Matrix m) {
+    private OptimizationData[] getLPData(final Matrix m) {
         int index = 0;
         
         this.mivi.clear();
@@ -356,14 +355,14 @@ implements EquilibrialDebtCutFinder {
     /**
      * Builds some of the maps.
      */
-    private final void buildMaps() {
+    private void buildMaps() {
         this.mci.clear();
         this.mcii.clear();
         this.c2n.clear();
         
         int index = 0;
             
-        for (final Node node : this.graph.getNodes()) {
+        for (final Node node : graph.getNodes()) {
             for (final Contract contract : node.getOutgoingContracts()) {
                 this.mci.put(contract, index);
                 this.mcii.put(index++, contract);
@@ -382,29 +381,48 @@ implements EquilibrialDebtCutFinder {
      * 
      * @return a set up matrix. 
      */
-    private final Matrix loadMatrix() {
+    private Matrix loadMatrix() {
         // +1 because the result matrix is augmented.
-        double[][] m = new double[graph.size()][graph.getContractAmount() + 1];
-        int row = 0;
+        final int ROWS = graph.size();
+        final int COLS = graph.getContractAmount() + 1;
+        
+        double[][] matrix = new double[ROWS][COLS];
         
         for (final Node node : graph.getNodes()) {
-            loadRow(node, m[row++]);
+            for (final Node debtor : node.getDebtors()) {
+                for (final Contract contract : node.getContractsTo(debtor)) {
+                    contract.setTimestamp( 
+                             contract.getTimestamp() - 
+                             contract.getShiftCorrection(
+                                     timeAssignment.get(debtor, contract)));
+                }
+            }
         }
         
-        return new Matrix(m);
+        int row = 0;
+        
+        // Load the constant entries.
+        for (final Node node : graph.getNodes()) {
+            matrix[row++][COLS - 1] = computeConstantEntry(node);
+        }
+        
+        row = 0;
+        
+        // Load everything else.
+        for (Node node : graph.getNodes()) {
+            loadRow(node, matrix[row++]);
+        }
+        
+        return new Matrix(matrix);
     }
     
     /**
      * Loads a row for node <code>node</code>.
      * 
      * @param node the node whose row to fill up.
-     * @param row the row to fill.
+     * @param row  the row to fill.
      */
-    private final void loadRow(final Node node, final double[] row) {
-        // Compute the constant factor.
-        row[row.length - 1] = computeConstantEntry(node);
-        
-        // Compute everything else.
+    private void loadRow(final Node node, final double[] row) {
         for (final Node debtor : node.getDebtors()) {
             for (final Contract c : node.getContractsTo(debtor)) {
                 row[mci.get(c)] += 
@@ -428,7 +446,7 @@ implements EquilibrialDebtCutFinder {
      * 
      * @return the constant entry belonging the node <code>node</code>.
      */
-    private final double computeConstantEntry(final Node node) {
+    private double computeConstantEntry(final Node node) {
         double sum = 0;
         Contract tmp;
         
@@ -458,9 +476,5 @@ implements EquilibrialDebtCutFinder {
         }
         
         return sum;
-    }
-    
-    private static final double g(final double d) {
-        return d - Math.floor(d);
     }
 }
