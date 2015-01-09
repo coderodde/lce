@@ -9,6 +9,10 @@ import net.coderodde.lce.model.Graph;
 import net.coderodde.lce.model.TimeAssignment;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 import static net.coderodde.lce.Utils.title;
+import net.coderodde.lce.model.Contract;
+import net.coderodde.lce.model.Node;
+import net.coderodde.lce.model.support.BasicContract;
+import net.coderodde.lce.model.support.ContinuousContract;
 
 /**
  * This class comprises the demo showing the performance of loan cut equilibrium
@@ -20,11 +24,47 @@ import static net.coderodde.lce.Utils.title;
 public class Demo {
     
     public static void main(final String... args) {
-        profile();
-        profile2();
-        profileLarge();
+        profileSmall();
+//        profile();
+//        profile2();
+//        profileLarge();
     }
    
+    private static final void profileSmall() {
+        title("profileSmall()");
+        final double eqTime = 5.0;
+        final Graph input = new Graph("Small graph");
+        final Node u = new Node("u");
+        final Node v = new Node("v");
+        
+        input.add(u);
+        input.add(v);
+        
+        final Contract k_u = new BasicContract("k_u", 2.0, 0.1, 3.0, -1.0);
+        final Contract k_v = new ContinuousContract("k_v", 1.0, 0.12, 0.0);
+        
+        u.addDebtor(v, k_u);
+        v.addDebtor(u, k_v);
+        
+        // u issues a contract k_u to v
+        // v issues a contract k_v to u
+        final TimeAssignment ta = new TimeAssignment();
+        ta.put(u, k_v, 3.1);
+        ta.put(v, k_u, 2.5);
+        
+        final EquilibrialDebtCutFinder finder = 
+                new DefaultEquilibrialDebtCutFinder();
+        
+        input.setDebtCutFinder(finder);
+        
+        final DebtCutAssignment dca = input.findEquilibrialDebtCuts(eqTime, ta);
+        final Graph output = input.applyDebtCuts(dca, ta);
+        
+        System.out.println("Is in equilibrium at " + eqTime + ": " + output.isInEquilibriumAt(5.0));
+        System.out.println(output.describe(5.0));
+        System.out.println("Debt cut sum: " + dca.sum());
+    }
+    
     private static final void profile() {
         title("profile()");
         final long SEED = System.currentTimeMillis();
@@ -117,7 +157,7 @@ public class Demo {
      */
     private static final void profileLarge() {
         title("profileLarge()");
-        final long SEED = 1399819244048L;//System.currentTimeMillis();
+        final long SEED = System.currentTimeMillis();
         final int N = 50;
         
         System.out.println("Seed: " + SEED);
