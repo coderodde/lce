@@ -60,12 +60,12 @@ final Graph output = input.applyDebtCuts(dca, ta);
 Check for equilibrium:
 ```java
 System.out.println("Is in equilibrium at " + eqTime + ": " + 
-                   output.isInEquilibriumAt(5.0));
+                   output.isInEquilibriumAt(eqTime));
 ```
 
 See for yourself:
 ```java
-System.out.println(output.describe(5.0));
+System.out.println(output.describe(eqTime));
 ```
 
 The sum of all debt cuts:
