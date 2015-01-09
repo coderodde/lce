@@ -13,7 +13,7 @@ import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
  * to other nodes.
  * 
  * @author Rodion Efremov
- * @version 1.6
+ * @version 1.618
  */
 public class Graph {
     
@@ -50,7 +50,7 @@ public class Graph {
     /**
      * Constructs a graph with the specified name and finder.
      * 
-     * @param name the name of this graph.
+     * @param name   the name of this graph.
      * @param finder the finder used by this graph.
      */
     public Graph(final String name, final EquilibrialDebtCutFinder finder) {
@@ -177,7 +177,7 @@ public class Graph {
      * Computes the debt cut assignment object.
      * 
      * @param equilibriumTime the moment at which to attain equilibrium.
-     * @param ta the time assignment.
+     * @param ta              the time assignment.
      * 
      * @return the debt cut assignment object.
      */
@@ -190,7 +190,7 @@ public class Graph {
      * Creates a clone graph and applies the debt cuts to it.
      * 
      * @param dca the debt cut assignment object.
-     * @param ta the time assignment object.
+     * @param ta  the time assignment object.
      * 
      * @return a new graph resulting from applying the cuts to this graph. 
      */
@@ -236,6 +236,13 @@ public class Graph {
         return true;
     }
     
+    /**
+     * Returns the maximum absolute value of a node's equity.
+     * 
+     * @param time the time at which to evaluate equities.
+     * 
+     * @return the maximum absolute value of a node's equity.
+     */
     public double maxEquity(final double time) {
         double max = 0.0;
         
@@ -249,7 +256,7 @@ public class Graph {
     /**
      * Copies the input time assignment object to another graph <code>g</code>.
      * 
-     * @param g the target graph.
+     * @param g  the target graph.
      * @param ta the source time assignment object.
      * 
      * @return a new time assignment object for graph <code>g</code>.

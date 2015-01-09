@@ -5,15 +5,15 @@ package net.coderodde.lce.model;
  * cuts. 
  * 
  * @author Rodion Efremov
- * @version 
+ * @version 1.618
  */
 public interface EquilibrialDebtCutFinder {
     
     /**
      * The entry point into a debt cut finder.
      * 
-     * @param graph the graph to work on.
-     * @param timeAssignment the time assignment object.
+     * @param graph           the graph to work on.
+     * @param timeAssignment  the time assignment object.
      * @param equilibriumTime the time at which the graph should be in
      * equilibrium.
      * 

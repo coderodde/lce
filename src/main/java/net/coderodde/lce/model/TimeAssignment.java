@@ -12,7 +12,7 @@ import static net.coderodde.lce.Utils.checkTimestamp;
  * to pay their debt cuts.
  * 
  * @author Rodion Efremov
- * @versioin 1.6
+ * @version 1.618
  */
 public class TimeAssignment {
     
@@ -47,7 +47,7 @@ public class TimeAssignment {
      * Assigns the timestamp <code>time</code> to node <code>node</code>.
      * 
      * @param node the node.
-     * @param c the contract.
+     * @param c    the contract.
      * @param time the timestamp.
      */
     public final void put
@@ -80,9 +80,11 @@ public class TimeAssignment {
     }
     
     /**
-     * Returns the time assignment of the node <code>node</code>.
+     * Returns the time assignment of the node's <code>node</code> contract
+     * <code>contract</code>.
      * 
-     * @param node the node to query.
+     * @param node     the node to query.
+     * @param contract the contract to query. 
      * 
      * @return the timestamp. 
      */

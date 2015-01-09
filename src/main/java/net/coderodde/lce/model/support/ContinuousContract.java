@@ -8,16 +8,17 @@ import net.coderodde.lce.model.Contract;
  * This class models the contracts having continuous compounding scheme.
  * 
  * @author Rodion Efremov
- * @version 1.6
+ * @version 1.618
  */
 public class ContinuousContract extends Contract {
     
     /**
      * Constructs a new contract with contiguous compounding scheme.
      * 
-     * @param principal the initial investment.
+     * @param name         the name of the contract.
+     * @param principal    the initial investment.
      * @param interestRate the annual interest rate.
-     * @param timestamp the timestamp of this contract.
+     * @param timestamp    the timestamp of this contract.
      */
     public ContinuousContract(final String name,
                               final double principal,
@@ -82,13 +83,13 @@ public class ContinuousContract extends Contract {
     }
     
     /**
-     * {@inheritDoc}
+     * Returns always <code>true</code> as this contract has continuous
+     * compounding scheme.
      * 
-     * @return <code>true</code> if the implementing contract type has a
-     * contiguous compounding scheme.
+     * @return <code>true</code>.
      */
     @Override
-    public boolean isContiguous() {
+    public boolean isContinuous() {
         return true;
     }
 

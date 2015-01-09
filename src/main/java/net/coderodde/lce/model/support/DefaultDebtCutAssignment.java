@@ -16,12 +16,23 @@ import net.coderodde.lce.model.DebtCutAssignment;
  * their respective debt cuts.
  *  
  * @author Rodion Efremov
- * @version 1.6
+ * @version 1.618
  */
 public class DefaultDebtCutAssignment extends DebtCutAssignment {
     
+    /**
+     * The map mapping a contract to its debt cut.
+     */
     private final Map<Contract, Double> map;
+    
+    /**
+     * The equilibrium time point.
+     */
     private final double equilibriumTime;
+    
+    /**
+     * The sum of all debt cuts.
+     */
     private double sum;
     
     /**
@@ -102,6 +113,11 @@ public class DefaultDebtCutAssignment extends DebtCutAssignment {
         return equilibriumTime;
     }
     
+    /**
+     * Returns the sum of all the debt cuts in this assignment object.
+     * 
+     * @return the sum of debt cuts.
+     */
     public final double sum() {
         return this.sum;
     }

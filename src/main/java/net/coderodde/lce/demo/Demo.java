@@ -19,7 +19,7 @@ import net.coderodde.lce.model.support.ContinuousContract;
  * method.
  * 
  * @author Rodion Efremov
- * @version 0.1
+ * @version 1.618
  */
 public class Demo {
     

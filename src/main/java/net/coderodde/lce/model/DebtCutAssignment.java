@@ -6,7 +6,7 @@ import java.util.Collection;
  * This interface defines the API of a debt cut assignment.
  * 
  * @author Rodion Efremov
- * @version 1.6
+ * @version 1.618
  */
 public abstract class DebtCutAssignment {
     
@@ -30,7 +30,7 @@ public abstract class DebtCutAssignment {
      * Maps the contract <code>contract</code> to the debt cut <code>cut</code>.
      * 
      * @param contract the contract to map.
-     * @param cut the debt cut to associate with <code>contract</code>.
+     * @param cut      the debt cut to associate with <code>contract</code>.
      */
     public abstract void put(final Contract contract, final double cut);
     

@@ -7,18 +7,18 @@ import static net.coderodde.lce.Utils.checkNotNegative;
  * This class models a contract with periodical compounding scheme.
  * 
  * @author Rodion Efremov
- * @version 1.6
+ * @version 1.618
  */
 public class BasicContract extends Contract {
     
     /**
      * Constructs a new <code>BasicContract</code>.
      * 
-     * @param name the name of this contract.
-     * @param principal the initial investment.
-     * @param interestRate the annual interest rate.
+     * @param name               the name of this contract.
+     * @param principal          the initial investment.
+     * @param interestRate       the annual interest rate.
      * @param compoundingPeriods the amount of compounding periods.
-     * @param timestamp the timestamp of this contract.
+     * @param timestamp          the timestamp of this contract.
      */
     public BasicContract(final String name,
                          final double principal,
@@ -60,11 +60,26 @@ public class BasicContract extends Contract {
                               Math.floor(this.getCompoundingPeriods() * time));
     }
    
+    /**
+     * Returns always <code>false</code> as this contract has no continuous
+     * compounding scheme.
+     * 
+     * @return <code>false</code>.
+     */
     @Override
-    public boolean isContiguous() {
+    public boolean isContinuous() {
         return false;
     }
 
+    /**
+     * Returns the amount of time shift backwards as to keep the compounding 
+     * time points at their former time locations prior to cutting this 
+     * contract.
+     * 
+     * @param time the debt cut moment.
+     * 
+     * @return the time shift amount.
+     */
     @Override
     public double getShiftCorrection(double time) {
         final double tmp = compoundingPeriods * (time - timestamp);

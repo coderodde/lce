@@ -11,7 +11,7 @@ import static net.coderodde.lce.Utils.epsilonEquals;
  * This abstract class defines the common API for contracts.
  * 
  * @author Rodion Efremov
- * @version 1.6
+ * @version 1.618
  */
 public abstract class Contract {
     
@@ -109,7 +109,7 @@ public abstract class Contract {
      * Returns a contract that results from applying a debt cut to this 
      * contract.
      * 
-     * @param dca the debt cut assignment object.
+     * @param dca  the debt cut assignment object.
      * @param time the time point at which to apply the cut.
      * 
      * @return a new contract.
@@ -171,7 +171,7 @@ public abstract class Contract {
      * @return <code>true</code> if this contract is a continuous contract;
      * <code>false</code> otherwise.
      */
-    public abstract boolean isContiguous();
+    public abstract boolean isContinuous();
     
     /**
      * Sets the principal of this contract.
@@ -218,6 +218,7 @@ public abstract class Contract {
      * 
      * @return a clone contract.
      */
+    @Override
     public Contract clone() {
         return ContractFactory
                 .newContract()

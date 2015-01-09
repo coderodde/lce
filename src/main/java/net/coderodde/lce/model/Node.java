@@ -12,7 +12,7 @@ import static net.coderodde.lce.Utils.checkNotNull;
  * This class models a node (a party) in a financial graph.
  * 
  * @author Rodion Efremov
- * @version 1.6
+ * @version 1.618
  */
 public class Node {
     
@@ -104,7 +104,7 @@ public class Node {
     /**
      * Adds a contract from this node to <code>debtor</code>.
      * 
-     * @param debtor the receiving party.
+     * @param debtor   the receiving party.
      * @param contract the contract.
      */
     public final void addDebtor(final Node debtor, final Contract contract) {

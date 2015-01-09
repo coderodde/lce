@@ -26,7 +26,7 @@ import org.apache.commons.math3.optim.linear.Relationship;
  * on serial simplex method for optimizing the debt cuts.
  * 
  * @author Rodion Efremove
- * @version 1.6
+ * @version 1.618
  */
 public class DefaultEquilibrialDebtCutFinder 
 implements EquilibrialDebtCutFinder {

@@ -48,7 +48,7 @@ class Matrix {
      * Constructs a matrix with <code>rowAmount</code> rows and
      * <code>columnAmount</code> columns (with the augmentation column).
      * 
-     * @param rowAmount the row amount in this matrix.
+     * @param rowAmount    the row amount in this matrix.
      * @param columnAmount the column amount in this matrix.
      */
     Matrix(final int rowAmount, final int columnAmount) {
@@ -115,8 +115,8 @@ class Matrix {
     /**
      * Sets the entry at (<code>x</code>, <code>y</code>) to <code>value</code>.
      * 
-     * @param x the column coordinate starting from 0.
-     * @param y the row coordinate starting from 0.
+     * @param x     the column coordinate starting from 0.
+     * @param y     the row coordinate starting from 0.
      * @param value the value to set.
      */
     void set(final int x, final int y, final double value) {
@@ -131,7 +131,7 @@ class Matrix {
     boolean hasSolution() {
         if (solved == false) {
             throw new IllegalStateException(
-                    "Solution check is allowed only straight after reduction.");
+                    "Solution check is allowed only after reduction.");
         }
         
         outer:
@@ -192,7 +192,7 @@ class Matrix {
      * 
      * @param targetRow the target row.
      * @param sourceRow the source row.
-     * @param factor the factor scaling the source row.
+     * @param factor    the factor scaling the source row.
      */
     void addToRowMultipleOfAnotherRow(final int targetRow, 
                                       final int sourceRow,
@@ -219,7 +219,7 @@ class Matrix {
      * Scales the row <code>rowNumber</code> by <code>factor</code>.
      * 
      * @param rowNumber the y-coordinate of the row to scale.
-     * @param factor the scaling factor.
+     * @param factor    the scaling factor.
      */
     void scaleRow(final int rowNumber, final double factor) {
         checkFactor(factor);
@@ -234,7 +234,7 @@ class Matrix {
      * <code>columnIndex</code>. First <code>after</code> rows are skipped.
      * 
      * @param columnIndex the column being checked.
-     * @param after the amount of topmost rows being skipped.
+     * @param after       the amount of topmost rows being skipped.
      * 
      * @return the row index if an entry is found, <code>ROW_NOT_FOUND</code> 
      * otherwise.

@@ -14,7 +14,7 @@ import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
  * This class contains the bear necessities.
  * 
  * @author Rodion Efremov
- * @version 0.1
+ * @version 1.618
  */
 public class Utils {
     
@@ -45,24 +45,24 @@ public class Utils {
     }
     
     /**
-     * Checks whether the reference is null.
+     * Checks whether the reference is <code>null</code>.
      * 
-     * @param o the reference to check.
+     * @param o       the reference to check.
      * @param message the message to an exception possibly thrown.
      * 
-     * @throws IllegalArgumentException if the reference is <code>null</code>.
+     * @throws NullPointerException if the reference is <code>null</code>.
      */
     public static final void checkNotNull
         (final Object o, final String message) {
         if (o == null) {
-            throw new IllegalArgumentException(message);
+            throw new NullPointerException(message);
         }
     }
     
     /**
-     * Checks whether the number is NaN.
+     * Checks whether the number is <code>NaN</code>.
      * 
-     * @param d the number to check.
+     * @param d       the number to check.
      * @param message the message to an exception possibly thrown.
      * 
      * @throws IllegalArgumentException if d is NaN.
@@ -76,7 +76,7 @@ public class Utils {
     /**
      * Checks whether the number is infinite in absolute value.
      * 
-     * @param d the number to check.
+     * @param d       the number to check.
      * @param message the message passed to an exception object upon failure.
      * 
      * @throws IllegalArgumentException if d is infinite.
@@ -91,7 +91,7 @@ public class Utils {
     /**
      * Checks whether a number is above 0.
      * 
-     * @param d the number to check.
+     * @param d       the number to check.
      * @param message the message passed to the exception object upon failure.
      * 
      * @throws IllegalArgumentException if d is at most 0.
@@ -106,7 +106,7 @@ public class Utils {
     /**
      * Checks whether a number is at least 0.
      * 
-     * @param d the number to check.
+     * @param d       the number to check.
      * @param message the message passed to exception upon failure.
      * 
      * @throws IllegalArgumentException if <code>d</code> is less than 0.
@@ -119,10 +119,10 @@ public class Utils {
     }
         
     /**
-     * Checks that a is less than b.
+     * Checks that <code>a</code> is less than <code>b</code>.
      * 
-     * @param a first time point.
-     * @param b second time point.
+     * @param a first number.
+     * @param b second number.
      */
     public static final void checkTimestamp
         (final double a, final double b) {
@@ -184,15 +184,15 @@ public class Utils {
     /**
      * Validates the time assignment for a graph.
      * 
-     * @param graph graph.
-     * @param timeAssignment time assignment object.
+     * @param graph          the graph.
+     * @param timeAssignment the time assignment object.
      */
     public static final void checkTimeAssignment
         (final Graph graph, final TimeAssignment timeAssignment) {
         if (timeAssignment.size() != graph.size()) {
             throw new IllegalArgumentException(
-                    "The size of time map and graph differ." + timeAssignment.size() +
-                            " versus " + graph.size());
+                    "The size of time map and graph differ. " + 
+                    timeAssignment.size() + " versus " + graph.size());
         }
         
         for (Node node : timeAssignment.getNodes()) {
@@ -213,7 +213,7 @@ public class Utils {
     /**
      * Validates a contract against a debt cut assignment.
      * 
-     * @param contract the contract to validate.
+     * @param contract          the contract to validate.
      * @param debtCutAssignment the debt cut assignment.
      */
     public static final void checkContract
@@ -229,7 +229,7 @@ public class Utils {
      * Validates a debt cut.
      * 
      * @param debtCut the debt cut.
-     * @param equity the equity.
+     * @param equity  the equity.
      */
     public static final void checkDebtCut
         (final double debtCut, final double equity) {
@@ -253,7 +253,7 @@ public class Utils {
      * @param b second number.
      * 
      * @return <code>true</code> if <code>a</code> and <code>b</code> are
-     * within <code>epsilon</cod> to each other.
+     * within <code>epsilon</code> to each other.
      */
     public static final boolean epsilonEquals(final double a, final double b) {
         return Math.abs(a - b) <= EPSILON;
@@ -268,16 +268,18 @@ public class Utils {
      * 
      * @return <code>true</code> or <code>false</code> 
      */
-    public static final boolean epsilonEquals(final double a, final double b, final double e) {
+    public static final boolean epsilonEquals(final double a, 
+                                              final double b, 
+                                              final double e) {
         return Math.abs(a - b) <= e;
     }
     
     /**
      * Creates a random financial graph.
      * 
-     * @param size the amount of nodes in the output graph.
-     * @param seed the seed for PRNG.
-     * @param edgeLoadFactor edge load factor (should be between 0 and 1).
+     * @param size           the amount of nodes in the output graph.
+     * @param seed           the seed for PRNG.
+     * @param edgeLoadFactor the edge load factor (should be between 0 and 1).
      * 
      * @return a random graph.
      */
@@ -317,7 +319,7 @@ public class Utils {
     /**
      * Creates a random contract.
      * 
-     * @param r the PRNG.
+     * @param r    the PRNG.
      * @param name the name of a new contract.
      * 
      * @return a new random contract.
@@ -343,7 +345,7 @@ public class Utils {
     /**
      * Creates a random time assignment.
      * 
-     * @param seed the seed for PRNG.
+     * @param seed  the seed for PRNG.
      * @param graph the graph for which to create a time assignment.
      * 
      * @return a random time assignment object. 
@@ -377,6 +379,11 @@ public class Utils {
         return ta;
     }
     
+    /**
+     * Prints a nifty title.
+     * 
+     * @param text the text of the title.
+     */
     public static void title(final String text) {
         final int before = (80 - text.length() - 2) / 2;
         final int after = 80 - 2 - text.length() - before;

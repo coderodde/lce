@@ -8,7 +8,7 @@ import net.coderodde.lce.model.support.ContinuousContract;
  * This class provides a static method for uniform contract creation.
  * 
  * @author Rodion Efremov
- * @version 1.6
+ * @version 1.618
  */
 public class ContractFactory {
     
@@ -26,6 +26,9 @@ public class ContractFactory {
         return new ContractFactory();
     }
     
+    /**
+     * Creates a contract factory.
+     */
     private ContractFactory() {}
          
     /**
@@ -33,7 +36,7 @@ public class ContractFactory {
      * 
      * @param principal the principal to set.
      * 
-     * @return a contract factory.
+     * @return this contract factory.
      */
     public ContractFactory withPrincipal(final double principal) {
         this.principal = (epsilonEquals(principal, 0) ? 0 : principal);
@@ -45,7 +48,7 @@ public class ContractFactory {
      * 
      * @param interestRate the interest rate to set.
      * 
-     * @return a contract factory.
+     * @return this contract factory.
      */
     public ContractFactory withInterestRate(final double interestRate) {
         this.interestRate = interestRate;
@@ -57,7 +60,7 @@ public class ContractFactory {
      * 
      * @param compoundingPeriods the compounding periods to set.
      * 
-     * @return a contract factory.
+     * @return this contract factory.
      */
     public ContractFactory withCompoundingPeriods
         (final double compoundingPeriods) {
@@ -68,7 +71,7 @@ public class ContractFactory {
     /**
      * Sets the compounding periods to those of continuous contracts.
      * 
-     * @return a contract factory.
+     * @return this contract factory.
      */
     public ContractFactory withContiguous() {
         this.compoundingPeriods = Double.POSITIVE_INFINITY;
@@ -80,7 +83,7 @@ public class ContractFactory {
      * 
      * @param timestamp time stamp to set.
      * 
-     * @return a contract factory.
+     * @return this contract factory.
      */
     public ContractFactory withTimestamp(final double timestamp) {
         this.timestamp = timestamp;
