@@ -1,5 +1,6 @@
 package net.coderodde.lce.model.support;
 
+import net.coderodde.lce.model.DebtCutAssignment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,7 @@ implements EquilibrialDebtCutFinder {
      * This is a sentinel value to denote the fact that no solution found.
      */
     public static final DebtCutAssignment NO_SOLUTION =
-            new DefaultDebtCutAssignment(Double.NEGATIVE_INFINITY);
+            new DebtCutAssignment(Double.NEGATIVE_INFINITY);
     
     /**
      * The graph this finder is working on.
@@ -118,11 +119,11 @@ implements EquilibrialDebtCutFinder {
     /**
      * Computes the equilibrial debt cuts.
      * 
-     * @param graph the graph to work on.
-     * @param timeAssignment a map mapping each node <i>u</i> to the moment at 
-     * which <i>u</i> is ready to pay its debt cuts.
-     * @param equilibriumTime the time point at which the graph is supposed to be in 
-     * equilibrium.
+     * @param graph           the graph to work on.
+     * @param timeAssignment  a map mapping each node <i>u</i> to the moment at 
+     *                        which <i>u</i> is ready to pay its debt cuts.
+     * @param equilibriumTime the time point at which the graph is supposed to 
+     *                        be in equilibrium.
      * 
      * @return a map mapping each contract to its debt cut leading
      * to the global equilibrium.
@@ -188,7 +189,7 @@ implements EquilibrialDebtCutFinder {
      */
     private DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
         final DebtCutAssignment dca = 
-                new DefaultDebtCutAssignment(equilibriumTime);
+                new DebtCutAssignment(equilibriumTime);
         
         // Process independent variables. mivii maps appearance index to
         // column index.

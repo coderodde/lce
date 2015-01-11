@@ -65,7 +65,7 @@ public class Demo {
         final Graph output = input.applyDebtCuts(dca, ta);
         
         System.out.println("Is in equilibrium at " + eqTime + ": " + 
-                           output.isInEquilibriumAt(5.0));
+                           output.isInEquilibriumAt(dca.getEquilibriumTime()));
         
         System.out.println(output.describe(5.0));
         System.out.println("Debt cut sum: " + dca.sum());
@@ -82,6 +82,8 @@ public class Demo {
     
     private static final void profile() {
         title("profile()");
+        // INTERESTING SEEDS:
+        // 1420912594144L
         final long SEED = System.currentTimeMillis();
         final int N = 10;
         
@@ -99,6 +101,8 @@ public class Demo {
         final List<Double> inlist = new ArrayList<>(10);
         final List<Double> outlist = new ArrayList<>(10);
         
+        // If your demo fails at some i, try to tamper the comparison 
+        // epsilon below.
         Utils.setEpsilon(1e-6);
         
         for (int i = 0; i != 30; ++i) {
@@ -128,8 +132,8 @@ public class Demo {
         for (int i = 0; i != inlist.size(); ++i) {
             System.out.printf("%2d % 5.3f : % 5.3f ; %-2.3f\n", 
                               2 * (i + 1), 
-                              outlist.get(i),
                               inlist.get(i),
+                              outlist.get(i),
                               1.0 * outlist.get(i) / inlist.get(i));
         }
         
@@ -139,7 +143,7 @@ public class Demo {
     private static final void profile2() {
         title("profile2()");
         
-        final long SEED = System.currentTimeMillis();
+        final long SEED = 1420963655922L;//System.currentTimeMillis();
         final int N = 10;
         
         System.out.println("Seed: " + SEED);
@@ -151,8 +155,10 @@ public class Demo {
         
         input.setDebtCutFinder(finder);
         
+        Utils.setEpsilon(1e-5);
+        
         final TimeAssignment ta = Utils.createRandomTimeAssignment(SEED, input);
-        final double eqtime = ta.getMaximumTimestamp() + 10;
+        final double eqtime = ta.getMaximumTimestamp() + 25.0;
         final DebtCutAssignment dca = input.findEquilibrialDebtCuts(eqtime, ta);
         final Graph output = input.applyDebtCuts(dca, ta);
         

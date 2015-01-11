@@ -8,7 +8,7 @@ import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.TimeAssignment;
 import net.coderodde.lce.model.support.BasicContract;
 import net.coderodde.lce.model.support.ContinuousContract;
-import net.coderodde.lce.model.support.DefaultDebtCutAssignment;
+import net.coderodde.lce.model.DebtCutAssignment;
 
 /**
  * This class contains the bear necessities.
@@ -217,7 +217,7 @@ public class Utils {
      * @param debtCutAssignment the debt cut assignment.
      */
     public static final void checkContract
-        (final Contract contract, final DefaultDebtCutAssignment debtCutAssignment) {
+        (final Contract contract, final DebtCutAssignment debtCutAssignment) {
         checkNotNull(contract, "Contract is null.");
         checkNotNull(debtCutAssignment, "Debt cut assignment is null.");
         if (debtCutAssignment.getContracts().contains(contract) == false) {
