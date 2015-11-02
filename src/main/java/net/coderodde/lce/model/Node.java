@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static net.coderodde.lce.Utils.checkNotNull;
+import java.util.Objects;
 
 /**
  * This class models a node (a party) in a financial graph.
@@ -14,7 +14,7 @@ import static net.coderodde.lce.Utils.checkNotNull;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class Node {
+public final class Node {
     
     /**
      * The identity of this node. Must be unique in a graph.
@@ -24,12 +24,12 @@ public class Node {
     /**
      * The map from a lender to the list of contracts being lent.
      */
-    private final Map<Node, List<Contract>> in;
+    private final Map<Node, List<Contract>> in = new HashMap<>(); 
     
     /**
      * The map from a borrower to the list of contracts being admitted.
      */
-    private final Map<Node, List<Contract>> out;
+    private final Map<Node, List<Contract>> out = new HashMap<>();
     
     /**
      * The maximum timestamp of all contract timestamps. Used at validating
@@ -47,11 +47,9 @@ public class Node {
      * 
      * @param name the identity of this node.
      */
-    public Node(final String name) {
-        checkNotNull(name, "The name of a new node is null.");
+    public Node(String name) {
+        Objects.requireNonNull(name, "The name of a new node is null.");
         this.name = name;
-        this.in = new HashMap<>();
-        this.out = new HashMap<>();
         this.maximumTimestamp = Double.NEGATIVE_INFINITY;
     }
     
@@ -60,7 +58,7 @@ public class Node {
      * 
      * @return the name of this node.
      */
-    public final String getName() {
+    public String getName() {
         return name;
     }
     
@@ -97,7 +95,7 @@ public class Node {
      * @return textual description.
      */
     @Override
-    public final String toString() {
+    public String toString() {
         return "[Node " + getName() + "]";
     }
     
@@ -107,9 +105,9 @@ public class Node {
      * @param debtor   the receiving party.
      * @param contract the contract.
      */
-    public final void addDebtor(final Node debtor, final Contract contract) {
-        checkNotNull(debtor, "The lender is null.");
-        checkNotNull(contract, "The contract is null.");
+    public void addDebtor(Node debtor, Contract contract) {
+        Objects.requireNonNull(debtor, "The lender is null.");
+        Objects.requireNonNull(contract, "The contract is null.");
         checkOwnerGraph();
         checkOtherNode(debtor);
         
@@ -149,7 +147,7 @@ public class Node {
      * 
      * @return the largest timestamp in this node. 
      */
-    public final double getMaximumTimestamp() {
+    public double getMaximumTimestamp() {
         return maximumTimestamp;
     }
     
@@ -160,7 +158,7 @@ public class Node {
      * 
      * @return equity at moment <code>time</code>.
      */
-    public final double equity(final double time) {
+    public double equity(double time) {
         double equity = 0;
         
         for (List<Contract> contractList : out.values()) {
@@ -183,7 +181,7 @@ public class Node {
      * 
      * @return unmodifiable view of this node's debtor nodes.
      */
-    public final Collection<Node> getDebtors() {
+    public Collection<Node> getDebtors() {
         return Collections.<Node>unmodifiableSet(this.out.keySet());
     }
     
@@ -192,7 +190,7 @@ public class Node {
      * 
      * @return unmodifiable view of this node's lender nodes.
      */
-    public final Collection<Node> getLenders() {
+    public Collection<Node> getLenders() {
         return Collections.<Node>unmodifiableSet(this.in.keySet());
     }
     
@@ -205,7 +203,7 @@ public class Node {
      * @return unmodifiable view of all the contracts from this node to
      * <code>debtor</code>.
      */
-    public final Collection<Contract> getContractsTo(final Node debtor) {
+    public Collection<Contract> getContractsTo(Node debtor) {
         return Collections.unmodifiableCollection(this.out.get(debtor));
     }
     
@@ -214,7 +212,7 @@ public class Node {
      * 
      * @return view of outgoing contracts.
      */
-    public final Collection<Contract> getOutgoingContracts() {
+    public Collection<Contract> getOutgoingContracts() {
         List<Contract> contracts = new ArrayList<>();
         
         for (List<Contract> tmp : this.out.values()) {
@@ -229,7 +227,7 @@ public class Node {
      * 
      * @return view of incoming contracts.
      */
-    public final Collection<Contract> getIncomingContracts() {
+    public Collection<Contract> getIncomingContracts() {
         List<Contract> contracts = new ArrayList<>();
         
         for (List<Contract> tmp : this.in.values()) {
@@ -246,11 +244,11 @@ public class Node {
      * 
      * @return outgoing flow at the moment <code>time</code>.
      */
-    public final double getOutgoingFlowAt(final double time) {
+    public double getOutgoingFlowAt(double time) {
         double d = 0;
         
-        for (final List<Contract> contractList : out.values()) {
-            for (final Contract contract : contractList) {
+        for (List<Contract> contractList : out.values()) {
+            for (Contract contract : contractList) {
                 d += contract.evaluate(time - contract.getTimestamp());
             }
         }
@@ -263,7 +261,7 @@ public class Node {
      * 
      * @param graph the graph to set as an owner.
      */
-    final void setOwnerGraph(Graph graph) {
+    void setOwnerGraph(Graph graph) {
         in.clear();
         out.clear();
         this.ownerGraph = graph;
@@ -272,7 +270,7 @@ public class Node {
     /**
      * Removes all contracts having something to do with this node.
      */
-    final void clear() {
+    void clear() {
         int edges = 0;
         int contracts = 0;
         
@@ -304,7 +302,7 @@ public class Node {
      * 
      * @param time timestamp to set.
      */
-    final void setMaximumTimestamp(final double time) {
+    void setMaximumTimestamp(double time) {
         this.maximumTimestamp = time;
     }
     
@@ -324,7 +322,7 @@ public class Node {
      * 
      * @param node the second node.
      */
-    private void checkOtherNode(final Node node) {
+    private void checkOtherNode(Node node) {
         if (node.ownerGraph != this.ownerGraph) {
             throw new IllegalStateException(
                     "The node '" + node.getName() + "' is not in the same " +

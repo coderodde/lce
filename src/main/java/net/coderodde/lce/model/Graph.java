@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import static net.coderodde.lce.Utils.checkNotNull;
+import java.util.Objects;
 import static net.coderodde.lce.Utils.epsilonEquals;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 
@@ -15,7 +15,7 @@ import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class Graph {
+public final class Graph {
     
     /**
      * The name of this graph.
@@ -25,7 +25,7 @@ public class Graph {
     /**
      * Maps a name of a node to the node having that name.
      */
-    private final Map<String, Node> map;
+    private final Map<String, Node> map = new HashMap<>();
     
     /**
      * The amount of edges in this graph. Modified by <code>Node</code>.
@@ -53,11 +53,10 @@ public class Graph {
      * @param name   the name of this graph.
      * @param finder the finder used by this graph.
      */
-    public Graph(final String name, final EquilibrialDebtCutFinder finder) {
-        checkNotNull(name, "The graph name is null.");
-        checkNotNull(finder, "The finder is null.");
+    public Graph(String name, EquilibrialDebtCutFinder finder) {
+        Objects.requireNonNull(name, "The graph name is null.");
+        Objects.requireNonNull(finder, "The finder is null.");
         this.name = name;
-        this.map = new HashMap<>();
     }
     
     /**
@@ -65,7 +64,7 @@ public class Graph {
      * 
      * @param name the name of this graph.
      */
-    public Graph(final String name) {
+    public Graph(String name) {
         this(name, new DefaultEquilibrialDebtCutFinder());
     }
     
@@ -74,13 +73,12 @@ public class Graph {
      * 
      * @param toCopy source object.
      */
-    public Graph(final Graph toCopy) {
-        checkNotNull(toCopy, "The input graph is null.");
+    public Graph(Graph toCopy) {
+        Objects.requireNonNull(toCopy, "The input graph is null.");
         this.name = toCopy.name;
-        this.map = new HashMap<>();
         
-        for (final Node node : toCopy.getNodes()) {
-            final Node other = new Node(node.getName());
+        for (Node node : toCopy.getNodes()) {
+            Node other = new Node(node.getName());
             this.add(other);
         }
     }
@@ -90,8 +88,8 @@ public class Graph {
      * 
      * @param node the node to add.
      */
-    public void add(final Node node) {
-        checkNotNull(node, "The node is null.");
+    public void add(Node node) {
+        Objects.requireNonNull(node, "The node is null.");
         checkUnique(node);
         node.clear();
         node.setOwnerGraph(this);
@@ -106,8 +104,8 @@ public class Graph {
      * @return <code>true</code> if <code>node</code> is in this graph;
      * <code>false</code> otherwise.
      */
-    public boolean contains(final Node node) {
-        checkNotNull(node, "The node is null.");
+    public boolean contains(Node node) {
+        Objects.requireNonNull(node, "The node is null.");
         return map.containsKey(node.getName());
     }
     
@@ -119,8 +117,8 @@ public class Graph {
      * @return the node or <code>null</code> if there is no node with name
      * <code>name</code> in this graph.
      */
-    public Node getNode(final String name) {
-        checkNotNull(name, "The name for a node is null.");
+    public Node getNode(String name) {
+        Objects.requireNonNull(name, "The name for a node is null.");
         return map.get(name);
     }
     
@@ -132,8 +130,8 @@ public class Graph {
      * @return the node with the same name as <code>node</code>, or 
      * <code>null</code> if there is no such.
      */
-    public Node getNode(final Node node) {
-        checkNotNull(node, "The node is null.");
+    public Node getNode(Node node) {
+        Objects.requireNonNull(node, "The node is null.");
         return map.get(node.getName());
     }
     
@@ -142,8 +140,8 @@ public class Graph {
      * 
      * @param node the node to remove. 
      */
-    public void remove(final Node node) {
-        checkNotNull(node, "The node is null.");
+    public void remove(Node node) {
+        Objects.requireNonNull(node, "The node is null.");
         
         if (map.containsKey(node.getName())) {
             node.clear();
@@ -157,7 +155,7 @@ public class Graph {
      * 
      * @return unmodifiable view of this graph's nodes.
      */
-    public final Collection<Node> getNodes() {
+    public Collection<Node> getNodes() {
         return Collections.unmodifiableCollection(this.map.values());
     }
     
@@ -168,7 +166,7 @@ public class Graph {
      * 
      * @return return this for chaining.
      */
-    public final Graph setDebtCutFinder(final EquilibrialDebtCutFinder finder) {
+    public Graph setDebtCutFinder(EquilibrialDebtCutFinder finder) {
         this.finder = finder;
         return this;
     }
@@ -181,8 +179,8 @@ public class Graph {
      * 
      * @return the debt cut assignment object.
      */
-    public final DebtCutAssignment findEquilibrialDebtCuts
-        (final double equilibriumTime, final TimeAssignment ta) {
+    public DebtCutAssignment findEquilibrialDebtCuts(double equilibriumTime, 
+                                                     TimeAssignment ta) {
         return finder.compute(this, ta, equilibriumTime);
     }
     
@@ -194,18 +192,17 @@ public class Graph {
      * 
      * @return a new graph resulting from applying the cuts to this graph. 
      */
-    public final Graph applyDebtCuts
-        (final DebtCutAssignment dca, final TimeAssignment ta) {
+    public Graph applyDebtCuts(DebtCutAssignment dca, TimeAssignment ta) {
         Graph other = new Graph(this);
         
         // Apply debt cuts.
-        for (final Node node : this.getNodes()) {
-            final Node target = other.getNode(node.getName());
+        for (Node node : this.getNodes()) {
+            Node target = other.getNode(node.getName());
             
-            for (final Node debtorOfNode : node.getDebtors()) {
-                final Node targetDebtor = other.getNode(debtorOfNode.getName());
+            for (Node debtorOfNode : node.getDebtors()) {
+                Node targetDebtor = other.getNode(debtorOfNode.getName());
                 
-                for (final Contract c : node.getContractsTo(debtorOfNode)) {
+                for (Contract c : node.getContractsTo(debtorOfNode)) {
                     if (dca.containsFor(c)) {
                         target.addDebtor(
                                targetDebtor,
@@ -226,8 +223,8 @@ public class Graph {
      * @return <code>true</code> if this graph attains equilibrium at moment
      * <code>time</code>.
      */
-    public boolean isInEquilibriumAt(final double time) {
-        for (final Node node : map.values()) {
+    public boolean isInEquilibriumAt(double time) {
+        for (Node node : map.values()) {
             if (epsilonEquals(node.equity(time), 0.0) == false) {
                 return false;
             }
@@ -243,10 +240,10 @@ public class Graph {
      * 
      * @return the maximum absolute value of a node's equity.
      */
-    public double maxEquity(final double time) {
+    public double maxEquity(double time) {
         double max = 0.0;
         
-        for (final Node node : map.values()) {
+        for (Node node : map.values()) {
             max = Math.max(max, Math.abs(node.equity(time)));
         }
         
@@ -261,12 +258,12 @@ public class Graph {
      * 
      * @return a new time assignment object for graph <code>g</code>.
      */
-    public final TimeAssignment copy(final Graph g, final TimeAssignment ta) {
-        final TimeAssignment ret = new TimeAssignment();
+    public TimeAssignment copy(Graph g, TimeAssignment ta) {
+        TimeAssignment ret = new TimeAssignment();
         
-        for (final Node node : this.getNodes()) {
-            for (final Node debtor : node.getDebtors()) {
-                for (final Contract contract : node.getContractsTo(debtor)) {
+        for (Node node : this.getNodes()) {
+            for (Node debtor : node.getDebtors()) {
+                for (Contract contract : node.getContractsTo(debtor)) {
                     ret.put(debtor, contract, ta.get(debtor, contract));
                 }
             }
@@ -282,10 +279,10 @@ public class Graph {
      * 
      * @return the total flow of this graph at moment <code>time</code>.
      */
-    public final double getTotalFlowAt(final double time) {
+    public double getTotalFlowAt(double time) {
         double d = 0;
         
-        for (final Node node : map.values()) {
+        for (Node node : map.values()) {
             d += node.getOutgoingFlowAt(time);
         }
         
@@ -324,7 +321,7 @@ public class Graph {
      * 
      * @return the maximum timestamp.
      */
-    public final double getMaximumTimestamp() {
+    public double getMaximumTimestamp() {
         return maximumTimestamp;
     }
     
@@ -335,18 +332,18 @@ public class Graph {
      * 
      * @return textual description of this graph.
      */
-    public final String describe(final double time) {
-        final StringBuilder sb = new StringBuilder();
+    public String describe(double time) {
+        StringBuilder sb = new StringBuilder();
         
-        for (final Node node : this.getNodes()) {
+        for (Node node : getNodes()) {
             sb.append(node)
               .append("\n  Debtors:");
             
-            for (final Node debtor : node.getDebtors()) {
+            for (Node debtor : node.getDebtors()) {
                 sb.append("\n    ")
                   .append(debtor);
                 
-                for (final Contract c : node.getContractsTo(debtor)) {
+                for (Contract c : node.getContractsTo(debtor)) {
                     sb.append("\n      ")
                       .append(c.evaluate(time - c.getTimestamp()));
                 }
@@ -354,11 +351,11 @@ public class Graph {
             
             sb.append("\n  Lenders:");
             
-            for (final Node lender : node.getLenders()) {
+            for (Node lender : node.getLenders()) {
                 sb.append("\n    ")
                   .append(lender);
                 
-                for (final Contract c : lender.getContractsTo(node)) {
+                for (Contract c : lender.getContractsTo(node)) {
                     sb.append("\n      ")
                       .append(c.evaluate(time - c.getTimestamp()));
                 }
@@ -375,7 +372,7 @@ public class Graph {
      * 
      * @param timestamp the timestamp to set.
      */
-    final void setMaximumTimestamp(final double timestamp) {
+    void setMaximumTimestamp(double timestamp) {
         this.maximumTimestamp = timestamp;
     }
     
@@ -384,7 +381,7 @@ public class Graph {
      * 
      * @param edgeAmount the edge amount to set.
      */
-    final void setEdgeAmount(final int edgeAmount) {
+    void setEdgeAmount(int edgeAmount) {
         this.edgeAmount = edgeAmount;
     }
     
@@ -393,7 +390,7 @@ public class Graph {
      * 
      * @param contractAmount the contract amount to set.
      */
-    final void setContractAmount(final int contractAmount) {
+    void setContractAmount(int contractAmount) {
         this.contractAmount = contractAmount;
     }
     

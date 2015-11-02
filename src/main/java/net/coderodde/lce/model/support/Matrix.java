@@ -51,7 +51,7 @@ class Matrix {
      * @param rowAmount    the row amount in this matrix.
      * @param columnAmount the column amount in this matrix.
      */
-    Matrix(final int rowAmount, final int columnAmount) {
+    Matrix(int rowAmount, int columnAmount) {
         this.m = new double[rowAmount][columnAmount];
         this.rows = rowAmount;
         this.columns = columnAmount;
@@ -63,7 +63,7 @@ class Matrix {
      * 
      * @param m the input 2D-array.
      */
-    Matrix(final double[][] m) {
+    Matrix(double[][] m) {
         this.rows = m.length;
         int cols = 0;
         
@@ -108,7 +108,7 @@ class Matrix {
      * 
      * @return returns the entry at (x, y). 
      */
-    double get(final int x, final int y) {
+    double get(int x, int y) {
         return m[y][x];
     }
     
@@ -119,7 +119,7 @@ class Matrix {
      * @param y     the row coordinate starting from 0.
      * @param value the value to set.
      */
-    void set(final int x, final int y, final double value) {
+    void set(int x, int y, double value) {
         solved = false;
         m[y][x] = value;
     }
@@ -194,10 +194,11 @@ class Matrix {
      * @param sourceRow the source row.
      * @param factor    the factor scaling the source row.
      */
-    void addToRowMultipleOfAnotherRow(final int targetRow, 
-                                      final int sourceRow,
-                                      final double factor) {
+    void addToRowMultipleOfAnotherRow(int targetRow, 
+                                      int sourceRow,
+                                      double factor) {
         checkFactor(factor);
+        
         for (int k = 0; k != columns; ++k) {
             m[targetRow][k] += m[sourceRow][k] * factor;
         }
@@ -209,7 +210,7 @@ class Matrix {
      * @param r1 the index of a row.
      * @param r2 the index of another row.
      */
-    void swapRows(final int r1, final int r2) {
+    void swapRows(int r1, int r2) {
         double[] tmp = m[r1];
         m[r1] = m[r2];
         m[r2] = tmp;
@@ -221,9 +222,10 @@ class Matrix {
      * @param rowNumber the y-coordinate of the row to scale.
      * @param factor    the scaling factor.
      */
-    void scaleRow(final int rowNumber, final double factor) {
+    void scaleRow(int rowNumber, double factor) {
         checkFactor(factor);
         double[] row = m[rowNumber];
+        
         for (int i = 0; i != row.length; ++i) {
             row[i] *= factor;
         }
@@ -239,8 +241,7 @@ class Matrix {
      * @return the row index if an entry is found, <code>ROW_NOT_FOUND</code> 
      * otherwise.
      */
-    int findUpmostRowWithAPivotAtColumn(final int columnIndex,
-                                        final int after) {
+    int findUpmostRowWithAPivotAtColumn(int columnIndex, int after) {
         for (int i = after; i < rows; ++i) {
             if (!epsilonEquals(m[i][columnIndex], 0.0, epsilon)) {
                 return i;
@@ -255,7 +256,7 @@ class Matrix {
      * 
      * @param epsilon the epsilon value to set.
      */
-    void setEpsilon(final double epsilon) {
+    void setEpsilon(double epsilon) {
         checkNotNaN(epsilon, "'epsilon' is NaN.");
         checkNotInfinite(epsilon, "'epsilon' is infinite in absolute value.");
         checkPositive(epsilon, "'epsilon' is at most +0.0.");
@@ -267,7 +268,7 @@ class Matrix {
      * 
      * @param factor the factor to check.
      */
-    private final void checkFactor(final double factor) {
+    private void checkFactor(double factor) {
         checkNotNaN(factor, "'factor' is NaN.");
         checkNotInfinite(factor, "'factor' is infinite.");
     }

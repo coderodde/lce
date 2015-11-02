@@ -10,7 +10,7 @@ import net.coderodde.lce.model.Contract;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class ContinuousContract extends Contract {
+public final class ContinuousContract extends Contract {
     
     /**
      * Constructs a new contract with contiguous compounding scheme.
@@ -20,10 +20,10 @@ public class ContinuousContract extends Contract {
      * @param interestRate the annual interest rate.
      * @param timestamp    the timestamp of this contract.
      */
-    public ContinuousContract(final String name,
-                              final double principal,
-                              final double interestRate,
-                              final double timestamp) {
+    public ContinuousContract(String name,
+                              double principal,
+                              double interestRate,
+                              double timestamp) {
         super(name);
         setPrincipal(principal);
         setInterestRate(interestRate);
@@ -50,7 +50,7 @@ public class ContinuousContract extends Contract {
         }
         
         ContinuousContract other = (ContinuousContract) o;
-        final double e = 0.001;
+        double e = 0.001;
         
         return epsilonEquals(this.principal, other.principal, e)
                 && epsilonEquals(this.interestRate, other.interestRate, e)
@@ -65,7 +65,7 @@ public class ContinuousContract extends Contract {
      * @return the value of this contract at time <code>time</code>.
      */
     @Override
-    public final double evaluate(final double time) {
+    public double evaluate(double time) {
         checkNotNegative(time, "Duration is not allowed to be negative.");
         return principal * Math.pow(Math.E, interestRate * time);
     }
@@ -78,7 +78,7 @@ public class ContinuousContract extends Contract {
      * @return the growth factor. 
      */
     @Override
-    public final double getGrowthFactor(final double time) {
+    public double getGrowthFactor(double time) {
         return Math.pow(Math.E, this.getInterestRate() * time);
     }
     

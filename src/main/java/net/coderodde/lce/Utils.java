@@ -1,5 +1,6 @@
 package net.coderodde.lce;
 
+import java.util.Objects;
 import java.util.Random;
 import net.coderodde.lce.model.Contract;
 import net.coderodde.lce.model.ContractFactory;
@@ -16,7 +17,7 @@ import net.coderodde.lce.model.DebtCutAssignment;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class Utils {
+public final class Utils {
     
     /**
      * Defines the default epsilon.
@@ -26,14 +27,14 @@ public class Utils {
     /**
      * Defines the maximum epsilon.
      */
-    private static double MAX_EPSILON = 1.0;
+    private static final double MAX_EPSILON = 1.0;
     
     /**
      * Attempts to set a new epsilon.
      * 
      * @param epsilon the epsilon to set.
      */
-    public static final void setEpsilon(final double epsilon) {
+    public static void setEpsilon(double epsilon) {
         if (Double.isInfinite(epsilon)
                 || Double.isNaN(epsilon)
                 || epsilon > MAX_EPSILON
@@ -45,21 +46,6 @@ public class Utils {
     }
     
     /**
-     * Checks whether the reference is <code>null</code>.
-     * 
-     * @param o       the reference to check.
-     * @param message the message to an exception possibly thrown.
-     * 
-     * @throws NullPointerException if the reference is <code>null</code>.
-     */
-    public static final void checkNotNull
-        (final Object o, final String message) {
-        if (o == null) {
-            throw new NullPointerException(message);
-        }
-    }
-    
-    /**
      * Checks whether the number is <code>NaN</code>.
      * 
      * @param d       the number to check.
@@ -67,7 +53,7 @@ public class Utils {
      * 
      * @throws IllegalArgumentException if d is NaN.
      */    
-    public static final void checkNotNaN(final double d, final String message) {
+    public static void checkNotNaN(double d, String message) {
         if (Double.isNaN(d)) {
             throw new IllegalArgumentException(message);
         }
@@ -81,8 +67,7 @@ public class Utils {
      * 
      * @throws IllegalArgumentException if d is infinite.
      */
-    public static final void checkNotInfinite
-        (final double d, final String message) {
+    public static void checkNotInfinite(double d, String message) {
         if (Double.isInfinite(d)) {
             throw new IllegalArgumentException(message);
         }
@@ -96,8 +81,7 @@ public class Utils {
      * 
      * @throws IllegalArgumentException if d is at most 0.
      */
-    public static final void checkPositive
-        (final double d, final String message) {
+    public static void checkPositive(double d, String message) {
         if (d <= 0.0) {
             throw new IllegalArgumentException(message);
         }
@@ -111,8 +95,7 @@ public class Utils {
      * 
      * @throws IllegalArgumentException if <code>d</code> is less than 0.
      */
-    public static final void checkNotNegative
-        (final double d, final String message) {
+    public static void checkNotNegative(double d, String message) {
         if (d < 0.0) {
             throw new IllegalArgumentException(message + " : " + d);
         }
@@ -124,8 +107,7 @@ public class Utils {
      * @param a first number.
      * @param b second number.
      */
-    public static final void checkTimestamp
-        (final double a, final double b) {
+    public static void checkTimestamp(double a, double b) {
         checkNotNaN(a, "'cmp' is NaN.");
         checkNotNaN(b, "'timestamp' is NaN.");
         checkNotInfinite(a, "'cmp' is infinite.");
@@ -141,7 +123,7 @@ public class Utils {
      * 
      * @param principal the principal to validate.
      */
-    public static final void checkPrincipal(final double principal) {
+    public static void checkPrincipal(double principal) {
         checkNotNaN(principal, "The principal may not be NaN.");
         checkNotInfinite(principal, "The principal may not be infinite.");
         checkNotNegative(principal, "The principal must be at least 0.");
@@ -152,7 +134,7 @@ public class Utils {
      * 
      * @param interestRate the interest rate to validate.
      */
-    public static final void checkInterestRate(final double interestRate) {
+    public static void checkInterestRate(double interestRate) {
         checkNotNaN(interestRate, "The interest rate may not be NaN.");
         checkNotInfinite(interestRate, 
                          "The interest rate may not be infinite.");
@@ -164,8 +146,7 @@ public class Utils {
      * 
      * @param compoundingPeriods compounding periods to check.
      */
-    public static final void checkCompoundingPeriods
-        (final double compoundingPeriods) {
+    public static void checkCompoundingPeriods(double compoundingPeriods) {
         checkNotNaN(compoundingPeriods, "The compouding periods are NaN.");
         checkPositive(compoundingPeriods, 
                       "The compounding periods setting must be above zero.");
@@ -176,7 +157,7 @@ public class Utils {
      * 
      * @param timestamp timestamp to validate.
      */
-    public static final void checkTimestamp(final double timestamp) {
+    public static void checkTimestamp(double timestamp) {
         checkNotNaN(timestamp, "The timestamp is NaN.");
         checkNotInfinite(timestamp, "The timestamp is infinite.");
     }
@@ -187,8 +168,8 @@ public class Utils {
      * @param graph          the graph.
      * @param timeAssignment the time assignment object.
      */
-    public static final void checkTimeAssignment
-        (final Graph graph, final TimeAssignment timeAssignment) {
+    public static void checkTimeAssignment(Graph graph, 
+                                           TimeAssignment timeAssignment) {
         if (timeAssignment.size() != graph.size()) {
             throw new IllegalArgumentException(
                     "The size of time map and graph differ. " + 
@@ -216,10 +197,12 @@ public class Utils {
      * @param contract          the contract to validate.
      * @param debtCutAssignment the debt cut assignment.
      */
-    public static final void checkContract
-        (final Contract contract, final DebtCutAssignment debtCutAssignment) {
-        checkNotNull(contract, "Contract is null.");
-        checkNotNull(debtCutAssignment, "Debt cut assignment is null.");
+    public static void checkContract(Contract contract, 
+                                     DebtCutAssignment debtCutAssignment) {
+        Objects.requireNonNull(contract, "Contract is null.");
+        Objects.requireNonNull(debtCutAssignment, 
+                               "Debt cut assignment is null.");
+        
         if (debtCutAssignment.getContracts().contains(contract) == false) {
             throw new IllegalStateException("The contract is missing.");
         }
@@ -231,8 +214,7 @@ public class Utils {
      * @param debtCut the debt cut.
      * @param equity  the equity.
      */
-    public static final void checkDebtCut
-        (final double debtCut, final double equity) {
+    public static void checkDebtCut(double debtCut, double equity) {
         checkNotNaN(debtCut, "The debt cut is NaN.");
         checkNotInfinite(debtCut, "The debt cut is infinite.");
         checkNotNegative(debtCut, "The debt cut is negative.");
@@ -255,7 +237,7 @@ public class Utils {
      * @return <code>true</code> if <code>a</code> and <code>b</code> are
      * within <code>epsilon</code> to each other.
      */
-    public static final boolean epsilonEquals(final double a, final double b) {
+    public static boolean epsilonEquals(double a, double b) {
         return Math.abs(a - b) <= EPSILON;
     }
     
@@ -268,9 +250,7 @@ public class Utils {
      * 
      * @return <code>true</code> or <code>false</code> 
      */
-    public static final boolean epsilonEquals(final double a, 
-                                              final double b, 
-                                              final double e) {
+    public static boolean epsilonEquals(double a, double b, double e) {
         return Math.abs(a - b) <= e;
     }
     
@@ -283,9 +263,9 @@ public class Utils {
      * 
      * @return a random graph.
      */
-    public static final Graph createRandomGraph(int size,
-                                                final long seed,
-                                                final float edgeLoadFactor) {
+    public static Graph createRandomGraph(int size, 
+                                          long seed, 
+                                          float edgeLoadFactor) {
         if (size < 1) {
             size = 1;
         }
@@ -299,14 +279,16 @@ public class Utils {
         Random r = new Random(seed);
         int contractCount = 0;
         
-        for (final Node lender : g.getNodes()) {
-            for (final Node debtor : g.getNodes()) {
+        for (Node lender : g.getNodes()) {
+            for (Node debtor : g.getNodes()) {
                 if (r.nextFloat() < edgeLoadFactor && lender != debtor) {
                     int contracts = r.nextInt(4);
+                    
                     for (int i = 0; i != contracts; ++i) {
-                        lender.addDebtor(debtor,
-                                         createRandomContract(r, 
-                                                              "" + contractCount));
+                        lender.addDebtor(
+                                debtor,
+                                createRandomContract(r, "" + contractCount));
+                        
                         ++contractCount;
                     }
                 }
@@ -324,8 +306,7 @@ public class Utils {
      * 
      * @return a new random contract.
      */
-    private static final Contract createRandomContract(final Random r, 
-                                                       final String name) {
+    private static Contract createRandomContract(Random r, String name) {
         if (r.nextFloat() < 0.75f) {
             // Basic contract.
             return new BasicContract(name,
@@ -350,11 +331,11 @@ public class Utils {
      * 
      * @return a random time assignment object. 
      */
-    public static final TimeAssignment 
-    createRandomTimeAssignment(final long seed, final Graph graph) {
-        final Random r = new Random(seed);
-        final TimeAssignment ta = new TimeAssignment();
-        final Contract DUMMY_CONTRACT = ContractFactory
+    public static TimeAssignment 
+    createRandomTimeAssignment(long seed, Graph graph) {
+        Random r = new Random(seed);
+        TimeAssignment ta = new TimeAssignment();
+        Contract DUMMY_CONTRACT = ContractFactory
                                         .newContract()
                                         .withPrincipal(0)
                                         .withCompoundingPeriods(1.0)
@@ -362,8 +343,8 @@ public class Utils {
                                         .withTimestamp(0.0)
                                         .create("Dummy contract");
         
-        for (final Node node : graph.getNodes()) {
-            for (final Contract contract : node.getIncomingContracts()) {
+        for (Node node : graph.getNodes()) {
+            for (Contract contract : node.getIncomingContracts()) {
                 ta.put(node, 
                        contract, 
                        10 * r.nextDouble() + node.getMaximumTimestamp());
@@ -384,10 +365,10 @@ public class Utils {
      * 
      * @param text the text of the title.
      */
-    public static void title(final String text) {
-        final int before = (80 - text.length() - 2) / 2;
-        final int after = 80 - 2 - text.length() - before;
-        final StringBuilder sb = new StringBuilder(80);
+    public static void title(String text) {
+        int before = (80 - text.length() - 2) / 2;
+        int after = 80 - 2 - text.length() - before;
+        StringBuilder sb = new StringBuilder(80);
         
         for (int i = 0; i < before; ++i) {
             sb.append('*');

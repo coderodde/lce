@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import static net.coderodde.lce.Utils.checkNotNull;
+import java.util.Objects;
 import static net.coderodde.lce.Utils.checkTimestamp;
 
 /**
@@ -14,12 +14,12 @@ import static net.coderodde.lce.Utils.checkTimestamp;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class TimeAssignment {
+public final class TimeAssignment {
     
     /**
      * The map mapping each node to their debt cut timestamps.
      */
-    private final Map<Node, Map<Contract, Double>> map;
+    private final Map<Node, Map<Contract, Double>> map = new HashMap<>();
     
     /**
      * Caches the maximum timestamp.
@@ -30,7 +30,6 @@ public class TimeAssignment {
      * Constructs an empty time assignment object.
      */
     public TimeAssignment() {
-        this.map = new HashMap<>();
         this.maxTimestamp = Double.NEGATIVE_INFINITY;
     }
     
@@ -39,7 +38,7 @@ public class TimeAssignment {
      * 
      * @return the number of nodes mapped.
      */
-    public final int size() {
+    public int size() {
         return map.size();
     }
     
@@ -50,10 +49,9 @@ public class TimeAssignment {
      * @param c    the contract.
      * @param time the timestamp.
      */
-    public final void put
-        (final Node node, final Contract c, final double time) {
-        checkNotNull(node, "Node is null.");
-        checkNotNull(c, "Contract is null.");
+    public void put(Node node, Contract c, double time) {
+        Objects.requireNonNull(node, "Node is null.");
+        Objects.requireNonNull(c, "Contract is null.");
         checkTimestamp(time);
         
         if (this.map.containsKey(node) == false) {
@@ -74,8 +72,8 @@ public class TimeAssignment {
      * @return <code>true</code> if this time assignment object contains 
      * <code>node</code>, <code>false</code> otherwise.
      */
-    public final boolean containsNode(final Node node) {
-        checkNotNull(node, "Node is null.");
+    public boolean containsNode(Node node) {
+        Objects.requireNonNull(node, "Node is null.");
         return this.map.containsKey(node);
     }
     
@@ -88,8 +86,8 @@ public class TimeAssignment {
      * 
      * @return the timestamp. 
      */
-    public final double get(final Node node, final Contract contract) {
-        checkNotNull(node, "Node is null.");
+    public double get(Node node, Contract contract) {
+        Objects.requireNonNull(node, "Node is null.");
         
         if (this.map.containsKey(node) == false) {
             throw new IllegalArgumentException(
@@ -104,7 +102,7 @@ public class TimeAssignment {
      * 
      * @return an unmodifiable view of all the nodes in this assignment.
      */
-    public final Collection<Node> getNodes() {
+    public Collection<Node> getNodes() {
         return Collections.<Node>unmodifiableCollection(this.map.keySet());
     }
     
@@ -114,7 +112,7 @@ public class TimeAssignment {
      * 
      * @return the timestamp.
      */
-    public final double getMaximumTimestamp() {
+    public double getMaximumTimestamp() {
         return this.maxTimestamp;
     }
 }

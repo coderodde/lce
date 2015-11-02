@@ -9,7 +9,7 @@ import static net.coderodde.lce.Utils.checkNotNegative;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class BasicContract extends Contract {
+public final class BasicContract extends Contract {
     
     /**
      * Constructs a new <code>BasicContract</code>.
@@ -20,11 +20,11 @@ public class BasicContract extends Contract {
      * @param compoundingPeriods the amount of compounding periods.
      * @param timestamp          the timestamp of this contract.
      */
-    public BasicContract(final String name,
-                         final double principal,
-                         final double interestRate,
-                         final double compoundingPeriods,
-                         final double timestamp) {
+    public BasicContract(String name,
+                         double principal,
+                         double interestRate,
+                         double compoundingPeriods,
+                         double timestamp) {
         super(name);
         setPrincipal(principal);
         setInterestRate(interestRate);
@@ -40,7 +40,7 @@ public class BasicContract extends Contract {
      * @return the value of this contract at time <code>time</code>. 
      */
     @Override
-    public final double evaluate(final double time) {
+    public double evaluate(double time) {
         checkNotNegative(time, "Duration is not allowed to be negative.");
         return principal * Math.pow(1.0 + interestRate / compoundingPeriods, 
                            Math.floor(compoundingPeriods * time));
@@ -54,7 +54,7 @@ public class BasicContract extends Contract {
      * @return the growth factor. 
      */
     @Override
-    public final double getGrowthFactor(final double time) {
+    public double getGrowthFactor(double time) {
         return Math.pow(1.0 + this.getInterestRate() / 
                               this.getCompoundingPeriods(),
                               Math.floor(this.getCompoundingPeriods() * time));
@@ -82,7 +82,7 @@ public class BasicContract extends Contract {
      */
     @Override
     public double getShiftCorrection(double time) {
-        final double tmp = compoundingPeriods * (time - timestamp);
+        double tmp = compoundingPeriods * (time - timestamp);
         return tmp - Math.floor(tmp);
     }
     

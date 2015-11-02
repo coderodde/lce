@@ -1,8 +1,8 @@
 package net.coderodde.lce.model;
 
+import java.util.Objects;
 import static net.coderodde.lce.Utils.checkCompoundingPeriods;
 import static net.coderodde.lce.Utils.checkInterestRate;
-import static net.coderodde.lce.Utils.checkNotNull;
 import static net.coderodde.lce.Utils.checkPrincipal;
 import static net.coderodde.lce.Utils.checkTimestamp;
 import static net.coderodde.lce.Utils.epsilonEquals;
@@ -46,8 +46,8 @@ public abstract class Contract {
      * 
      * @param name the name of a new contract
      */
-    public Contract(final String name) {
-        checkNotNull(name, "The name of a contract is null.");
+    public Contract(String name) {
+        Objects.requireNonNull(name, "The name of a contract is null.");
         this.name = name;
     }
     
@@ -87,7 +87,7 @@ public abstract class Contract {
         }
         
         Contract c = (Contract) o;
-        final double e = 0.001;
+        double e = 0.001;
         
         return epsilonEquals(principal, c.principal, e) 
                 && epsilonEquals(interestRate, c.interestRate, e)
@@ -114,8 +114,7 @@ public abstract class Contract {
      * 
      * @return a new contract.
      */
-    public Contract applyDebtCut(final DebtCutAssignment dca, 
-                                 final double time) {
+    public Contract applyDebtCut(DebtCutAssignment dca, double time) {
         Contract c;
         c = ContractFactory
                 .newContract()
@@ -178,7 +177,7 @@ public abstract class Contract {
      * 
      * @param principal the principal to set.
      */
-    public void setPrincipal(final double principal) {
+    public void setPrincipal(double principal) {
         checkPrincipal(principal);
         this.principal = principal;
     }
@@ -188,7 +187,7 @@ public abstract class Contract {
      * 
      * @param interestRate the interest rate to set.
      */
-    public void setInterestRate(final double interestRate) {
+    public void setInterestRate(double interestRate) {
         checkInterestRate(interestRate);
         this.interestRate = interestRate;
     }
@@ -198,7 +197,7 @@ public abstract class Contract {
      * 
      * @param compoundingPeriods the compounding periods.
      */
-    public void setCompoundingPeriods(final double compoundingPeriods) {
+    public void setCompoundingPeriods(double compoundingPeriods) {
         checkCompoundingPeriods(compoundingPeriods);
         this.compoundingPeriods = compoundingPeriods;
     }
@@ -208,7 +207,7 @@ public abstract class Contract {
      * 
      * @param timestamp the timestamp to set. 
      */
-    public void setTimestamp(final double timestamp) {
+    public void setTimestamp(double timestamp) {
         checkTimestamp(timestamp);
         this.timestamp = timestamp;
     }
@@ -236,7 +235,7 @@ public abstract class Contract {
      * 
      * @return the equity of this contract at time <code>time</code>.
      */
-    public abstract double evaluate(final double time);
+    public abstract double evaluate(double time);
     
     /**
      * Returns the growth factor of this contract with duration 
@@ -246,7 +245,7 @@ public abstract class Contract {
      * 
      * @return the growth factor at <code>duration</code>.
      */
-    public abstract double getGrowthFactor(final double duration);
+    public abstract double getGrowthFactor(double duration);
     
     /**
      * If the implementation does not have contiguous compounding, returns
@@ -257,5 +256,5 @@ public abstract class Contract {
      * 
      * @return shift correction. 
      */
-    public abstract double getShiftCorrection(final double time); 
+    public abstract double getShiftCorrection(double time); 
 }

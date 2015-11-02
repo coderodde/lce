@@ -10,7 +10,7 @@ import net.coderodde.lce.model.support.ContinuousContract;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class ContractFactory {
+public final class ContractFactory {
     
     private double principal;
     private double interestRate;
@@ -38,7 +38,7 @@ public class ContractFactory {
      * 
      * @return this contract factory.
      */
-    public ContractFactory withPrincipal(final double principal) {
+    public ContractFactory withPrincipal(double principal) {
         this.principal = (epsilonEquals(principal, 0) ? 0 : principal);
         return this;
     }
@@ -50,7 +50,7 @@ public class ContractFactory {
      * 
      * @return this contract factory.
      */
-    public ContractFactory withInterestRate(final double interestRate) {
+    public ContractFactory withInterestRate(double interestRate) {
         this.interestRate = interestRate;
         return this;
     }
@@ -62,8 +62,7 @@ public class ContractFactory {
      * 
      * @return this contract factory.
      */
-    public ContractFactory withCompoundingPeriods
-        (final double compoundingPeriods) {
+    public ContractFactory withCompoundingPeriods(double compoundingPeriods) {
         this.compoundingPeriods = compoundingPeriods;
         return this;
     }
@@ -85,7 +84,7 @@ public class ContractFactory {
      * 
      * @return this contract factory.
      */
-    public ContractFactory withTimestamp(final double timestamp) {
+    public ContractFactory withTimestamp(double timestamp) {
         this.timestamp = timestamp;
         return this;
     }
@@ -97,8 +96,8 @@ public class ContractFactory {
      * 
      * @return a new contract.
      */
-    public Contract create(final String name) {
-        Contract c = null;
+    public Contract create(String name) {
+        Contract c;
         
         if (Double.isInfinite(compoundingPeriods) && compoundingPeriods > 0.0) {
             c = new ContinuousContract(name, 

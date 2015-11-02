@@ -19,9 +19,9 @@ public interface EquilibrialDebtCutFinder {
      * 
      * @return the debt cut assignment object.
      */
-    public DebtCutAssignment compute(final Graph graph,
-                                     final TimeAssignment timeAssignment, 
-                                     final double equilibriumTime);
+    public DebtCutAssignment compute(Graph graph,
+                                     TimeAssignment timeAssignment, 
+                                     double equilibriumTime);
     
     /**
      * Queries for the time in milliseconds spent on matrix reduction.

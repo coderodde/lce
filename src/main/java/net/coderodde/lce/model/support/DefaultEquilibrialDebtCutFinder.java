@@ -28,7 +28,7 @@ import org.apache.commons.math3.optim.linear.Relationship;
  * @author Rodion Efremov
  * @version 1.618
  */
-public strictfp class DefaultEquilibrialDebtCutFinder 
+public final strictfp class DefaultEquilibrialDebtCutFinder 
 implements EquilibrialDebtCutFinder {
 
     /**
@@ -55,29 +55,29 @@ implements EquilibrialDebtCutFinder {
     /**
      * This map maps contract to unique (column) indices.
      */
-    private final Map<Contract, Integer> mci;
+    private final Map<Contract, Integer> mci = new HashMap<>();
     
     /**
      * This is the inverse map of <code>mci</code>.
      */
-    private final Map<Integer, Contract> mcii;
+    private final Map<Integer, Contract> mcii = new HashMap<>();
     
     /**
      * This map maps a column index to the appearance index of an independent
      * variable.
      */
-    private final Map<Integer, Integer> mivi;
+    private final Map<Integer, Integer> mivi = new HashMap<>();
     
     /**
      * This map is the inverse of <code>mivi</code>; i.e., it maps appearance
      * index to the column index.
      */
-    private final Map<Integer, Integer> mivii;
+    private final Map<Integer, Integer> mivii = new HashMap<>();
     
     /**
      * Maps a contract to the node it was issued to.
      */
-    private final Map<Contract, Node> c2n;
+    private final Map<Contract, Node> c2n = new HashMap<>();
     
     /**
      * The duration of matrix reduction.
@@ -105,17 +105,6 @@ implements EquilibrialDebtCutFinder {
     private Matrix m;
     
     /**
-     * Constructs this finder.
-     */
-    public DefaultEquilibrialDebtCutFinder() {
-        this.mci = new HashMap<>();
-        this.mcii = new HashMap<>();
-        this.mivi = new HashMap<>();
-        this.mivii = new HashMap<>();
-        this.c2n = new HashMap<>();
-    }
-    
-    /**
      * Computes the equilibrial debt cuts.
      * 
      * @param graph           the graph to work on.
@@ -128,9 +117,9 @@ implements EquilibrialDebtCutFinder {
      * to the global equilibrium.
      */
     @Override
-    public DebtCutAssignment compute(final Graph graph, 
-                                     final TimeAssignment timeAssignment,
-                                     final double equilibriumTime) {
+    public DebtCutAssignment compute(Graph graph, 
+                                     TimeAssignment timeAssignment,
+                                     double equilibriumTime) {
         checkTimeAssignment(graph, timeAssignment);
         this.graph = graph;
         this.timeAssignment = timeAssignment;
@@ -165,7 +154,7 @@ implements EquilibrialDebtCutFinder {
      * @return the time spent on reducing the matrix.
      */
     @Override
-    public final long getMatrixReductionTime() {
+    public long getMatrixReductionTime() {
         return this.matrixReductionDuration;
     }
     
@@ -175,7 +164,7 @@ implements EquilibrialDebtCutFinder {
      * @return the time spent on minimizing the debt cuts.
      */
     @Override
-    public final long getMinimizationTime() {
+    public long getMinimizationTime() {
         return minimizationDuration;
     }
     
@@ -187,12 +176,12 @@ implements EquilibrialDebtCutFinder {
      * @return debt cut assignment object.
      */
     private DebtCutAssignment extractDebtCuts(PointValuePair pvp) {
-        final DebtCutAssignment dca = 
+        DebtCutAssignment dca = 
                 new DebtCutAssignment(equilibriumTime);
         
         // Process independent variables. mivii maps appearance index to
         // column index.
-        for (final Map.Entry<Integer, Integer> e : this.mivii.entrySet()) {
+        for (Map.Entry<Integer, Integer> e : this.mivii.entrySet()) {
             // e.key ~ appearance index,
             // e.value ~ column index
             dca.put(this.mcii.get(e.getValue()), pvp.getPointRef()[e.getKey()]);
@@ -232,9 +221,9 @@ implements EquilibrialDebtCutFinder {
      * 
      * @return a linear program.
      */
-    private OptimizationData[] convertMatrixToLinearProgram(final Matrix m) {
-        final OptimizationData[] od = getLPData(m);
-        final NonNegativeConstraint nnc = new NonNegativeConstraint(true);
+    private OptimizationData[] convertMatrixToLinearProgram(Matrix m) {
+        OptimizationData[] od = getLPData(m);
+        NonNegativeConstraint nnc = new NonNegativeConstraint(true);
         return new OptimizationData[]{od[0], od[1], nnc};
     }
     
@@ -245,7 +234,7 @@ implements EquilibrialDebtCutFinder {
      * 
      * @return an objective function.
      */
-    private OptimizationData[] getLPData(final Matrix m) {
+    private OptimizationData[] getLPData(Matrix m) {
         int index = 0;
         
         this.mivi.clear();
@@ -281,8 +270,8 @@ implements EquilibrialDebtCutFinder {
         
         // The length of the objective function is exactly the amount of
         // independent variables.
-        final double[] coefficients = new double[mivi.size()];
-        final List<LinearConstraint> constraintList = 
+        double[] coefficients = new double[mivi.size()];
+        List<LinearConstraint> constraintList = 
                 new ArrayList<>(2 * variableAmount);
         
         // Create constraints for dependent variables.
@@ -325,13 +314,12 @@ implements EquilibrialDebtCutFinder {
         
         // Create constraints for independent variables.
         for (Integer i : mivi.keySet()) {
-            final double[] constraintCoefficients = 
-                    new double[mivi.size()];
+            double[] constraintCoefficients = new double[mivi.size()];
             
             constraintCoefficients[mivi.get(i)] = 1.0;
             
-            final Contract c = mcii.get(i);
-            final Node node = c2n.get(c);
+            Contract c = mcii.get(i);
+            Node node = c2n.get(c);
             
             constraintList.add(new LinearConstraint(
                                    constraintCoefficients,
@@ -343,7 +331,7 @@ implements EquilibrialDebtCutFinder {
         }
        
         // Build the objective function.
-        final LinearObjectiveFunction of = 
+        LinearObjectiveFunction of = 
                 new LinearObjectiveFunction(coefficients, 0);
         
         return new OptimizationData[]{
@@ -362,15 +350,15 @@ implements EquilibrialDebtCutFinder {
         
         int index = 0;
             
-        for (final Node node : graph.getNodes()) {
-            for (final Contract contract : node.getOutgoingContracts()) {
+        for (Node node : graph.getNodes()) {
+            for (Contract contract : node.getOutgoingContracts()) {
                 this.mci.put(contract, index);
                 this.mcii.put(index++, contract);
             }
         }
         
-        for (final Node node : graph.getNodes()) {
-            for (final Contract c : node.getIncomingContracts()) {
+        for (Node node : graph.getNodes()) {
+            for (Contract c : node.getIncomingContracts()) {
                 this.c2n.put(c, node);
             }
         }
@@ -383,14 +371,14 @@ implements EquilibrialDebtCutFinder {
      */
     private Matrix loadMatrix() {
         // +1 because the result matrix is augmented.
-        final int ROWS = graph.size();
-        final int COLS = graph.getContractAmount() + 1;
+        int COLS = graph.getContractAmount() + 1;
+        int ROWS = graph.size();
         
         double[][] matrix = new double[ROWS][COLS];
         
-        for (final Node node : graph.getNodes()) {
-            for (final Node debtor : node.getDebtors()) {
-                for (final Contract contract : node.getContractsTo(debtor)) {
+        for (Node node : graph.getNodes()) {
+            for (Node debtor : node.getDebtors()) {
+                for (Contract contract : node.getContractsTo(debtor)) {
                     contract.setTimestamp( 
                              contract.getTimestamp() - 
                              contract.getShiftCorrection(
@@ -402,7 +390,7 @@ implements EquilibrialDebtCutFinder {
         int row = 0;
         
         // Load the constant entries.
-        for (final Node node : graph.getNodes()) {
+        for (Node node : graph.getNodes()) {
             matrix[row++][COLS - 1] = computeConstantEntry(node);
         }
         
@@ -422,16 +410,16 @@ implements EquilibrialDebtCutFinder {
      * @param node the node whose row to fill up.
      * @param row  the row to fill.
      */
-    private void loadRow(final Node node, final double[] row) {
-        for (final Node debtor : node.getDebtors()) {
-            for (final Contract c : node.getContractsTo(debtor)) {
+    private void loadRow(Node node, double[] row) {
+        for (Node debtor : node.getDebtors()) {
+            for (Contract c : node.getContractsTo(debtor)) {
                 row[mci.get(c)] += 
                         c.getGrowthFactor(equilibriumTime -
                                           timeAssignment.get(debtor, c));
             }
         }
         
-        for (final Contract c : node.getIncomingContracts()) {
+        for (Contract c : node.getIncomingContracts()) {
             row[mci.get(c)] -=
                         c.getGrowthFactor(equilibriumTime -
                                           timeAssignment.get(node, c));
@@ -446,12 +434,12 @@ implements EquilibrialDebtCutFinder {
      * 
      * @return the constant entry belonging the node <code>node</code>.
      */
-    private double computeConstantEntry(final Node node) {
+    private double computeConstantEntry(Node node) {
         double sum = 0;
         Contract tmp;
         
-        for (final Node debtor : node.getDebtors()) {
-            for (final Contract contract : node.getContractsTo(debtor)) {
+        for (Node debtor : node.getDebtors()) {
+            for (Contract contract : node.getContractsTo(debtor)) {
                 tmp = contract.clone();
                 tmp.setPrincipal(contract.
                                  evaluate(timeAssignment.get(debtor, contract) - 
@@ -462,8 +450,8 @@ implements EquilibrialDebtCutFinder {
             }
         }
         
-        for (final Node lender : node.getLenders()) {
-            for (final Contract contract : lender.getContractsTo(node)) {
+        for (Node lender : node.getLenders()) {
+            for (Contract contract : lender.getContractsTo(node)) {
                 tmp = contract.clone();
                 tmp.setPrincipal(contract.
                                  evaluate(timeAssignment.get(node, contract) -

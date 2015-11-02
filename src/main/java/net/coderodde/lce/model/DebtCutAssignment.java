@@ -4,10 +4,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import static net.coderodde.lce.Utils.checkNotInfinite;
 import static net.coderodde.lce.Utils.checkNotNaN;
 import static net.coderodde.lce.Utils.checkNotNegative;
-import static net.coderodde.lce.Utils.checkNotNull;
 
 /**
  * This class represents the debt cut assignments as a map from contracts to 
@@ -16,12 +16,12 @@ import static net.coderodde.lce.Utils.checkNotNull;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class DebtCutAssignment {
+public final class DebtCutAssignment {
     
     /**
      * The map mapping a contract to its debt cut.
      */
-    private final Map<Contract, Double> map;
+    private final Map<Contract, Double> map = new HashMap<>();
     
     /**
      * The equilibrium time point.
@@ -38,8 +38,7 @@ public class DebtCutAssignment {
      * 
      * @param equilibriumTime the equilibrium time.
      */
-    public DebtCutAssignment(final double equilibriumTime) {
-        this.map = new HashMap<>();
+    public DebtCutAssignment(double equilibriumTime) {
         this.equilibriumTime = equilibriumTime;
     }
     
@@ -52,8 +51,8 @@ public class DebtCutAssignment {
      * 
      * @throws IllegalArgumentException if unknown contract is passed.
      */
-    public final double get(final Contract contract) {
-        checkNotNull(contract, "The contract may not be null.");
+    public double get(Contract contract) {
+        Objects.requireNonNull(contract, "The contract may not be null.");
         
         if (this.map.containsKey(contract) == false) {
             throw new IllegalArgumentException(
@@ -68,7 +67,7 @@ public class DebtCutAssignment {
      * 
      * @return an unmodifiable view of all contracts in this assignment. 
      */
-    public final Collection<Contract> getContracts() {
+    public Collection<Contract> getContracts() {
         return Collections.<Contract>unmodifiableCollection(this.map.keySet());
     }
     
@@ -79,8 +78,8 @@ public class DebtCutAssignment {
      * @param contract the contract as a key.
      * @param debtCut the debt cut as a value.
      */
-    public final void put(final Contract contract, final double debtCut) {
-        checkNotNull(contract, "The contract may not be null.");
+    public void put(Contract contract, double debtCut) {
+        Objects.requireNonNull(contract, "The contract may not be null.");
         checkNotNaN(debtCut, "The debt cut may not be NaN.");
         checkNotInfinite(debtCut, "The debt cut may not be infinite.");
         checkNotNegative(debtCut, "The debt cut may not be negative.");
@@ -96,7 +95,7 @@ public class DebtCutAssignment {
      * 
      * @return <code>true</code> or <code>false</code>.
      */
-    public final boolean containsFor(final Contract contract) {
+    public boolean containsFor(Contract contract) {
         return map.containsKey(contract);
     }
     
@@ -105,7 +104,7 @@ public class DebtCutAssignment {
      * 
      * @return the equilibrium time.
      */
-    public final double getEquilibriumTime() {
+    public double getEquilibriumTime() {
         return equilibriumTime;
     }
     
@@ -114,7 +113,7 @@ public class DebtCutAssignment {
      * 
      * @return the sum of debt cuts.
      */
-    public final double sum() {
+    public double sum() {
         return this.sum;
     }
 }
