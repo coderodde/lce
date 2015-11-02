@@ -15,10 +15,6 @@ public class NodeTest {
     private Node b = new Node("B");
     private Node c = new Node("C");
     
-    public NodeTest() {
-        
-    }
-
     @Test
     public void testGetName() {
         assertEquals("A", a.getName());

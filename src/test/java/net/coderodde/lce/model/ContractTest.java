@@ -121,26 +121,5 @@ public class ContractTest {
     @Test(expected = IllegalArgumentException.class) 
     public void testTimestampNegativeInfinity() {
         c1.setCompoundingPeriods(Double.NEGATIVE_INFINITY);
-    }
-    
-    @Test
-    public void testSetInterestRate() {
-        
-    }
-
-    @Test
-    public void testSetTimestamp() {
-    }
-
-    @Test
-    public void testEvaluate() {
-    }
-
-    @Test
-    public void testGetTimestamp() {
-    }
-
-    @Test
-    public void testApplyDebtCut() {
-    }    
+    }   
 }

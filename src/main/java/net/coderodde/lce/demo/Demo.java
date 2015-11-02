@@ -10,6 +10,7 @@ import net.coderodde.lce.model.TimeAssignment;
 import net.coderodde.lce.model.support.DefaultEquilibrialDebtCutFinder;
 import static net.coderodde.lce.Utils.title;
 import net.coderodde.lce.model.Contract;
+import net.coderodde.lce.model.ContractFactory;
 import net.coderodde.lce.model.Node;
 import net.coderodde.lce.model.support.BasicContract;
 import net.coderodde.lce.model.support.ContinuousContract;
@@ -40,8 +41,17 @@ public final class Demo {
         input.add(u);
         input.add(v);
         
-        Contract k_u = new BasicContract("k_u", 2.0, 0.1, 3.0, -1.0);
-        Contract k_v = new ContinuousContract("k_v", 1.0, 0.12, 0.0);
+        Contract k_u = ContractFactory.newContract("k_u")
+                                      .withPrincipal(2.0)
+                                      .withInterestRateSelector(0.1)
+                                      .withCompoundingPeriods(3.0)
+                                      .withTimestamp(-1.0);
+        
+        Contract k_v = ContractFactory.newContract("k_v")
+                                      .withPrincipal(1.0)
+                                      .withInterestRateSelector(0.12)
+                                      .withContinuousCompounding()
+                                      .withTimestamp(0.0);
         
         System.out.println("k_u: " + k_u);
         System.out.println("k_v: " + k_v);

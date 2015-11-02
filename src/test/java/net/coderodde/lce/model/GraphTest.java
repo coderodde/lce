@@ -112,10 +112,6 @@ public class GraphTest {
     }
 
     @Test
-    public void testFindEquilibrialDebtCuts() {
-    }
-
-    @Test
     public void testIsInEquilibriumAt() {
         graph.add(a);
         graph.add(b);
