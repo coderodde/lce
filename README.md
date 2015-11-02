@@ -16,10 +16,17 @@ input.add(v);
 
 Create contracts:
 ```java
-// Basic contract: name, principal, interest rate, amount of compounding periods, time stamp.
-final Contract c_u = new BasicContract("c_u", 2.0, 0.1, 3.0, -1.0); 
-// Continuous contract: name, principal, interest rate, time stamp.
-final Contract c_v = new ContinuousContract("c_v", 1.0, 0.12, 0.0);
+Contract k_u = ContractFactory.newContract("k_u")
+                              .withPrincipal(2.0)
+                              .withInterestRateSelector(0.1)
+                              .withCompoundingPeriods(3.0)
+                              .withTimestamp(-1.0);
+        
+Contract k_v = ContractFactory.newContract("k_v")
+                              .withPrincipal(1.0)
+                              .withInterestRateSelector(0.12)
+                              .withContinuousCompounding()
+                              .withTimestamp(0.0);
 ```
 
 Link the nodes with contracts:
