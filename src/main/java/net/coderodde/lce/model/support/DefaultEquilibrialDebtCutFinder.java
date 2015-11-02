@@ -1,6 +1,5 @@
 package net.coderodde.lce.model.support;
 
-import net.coderodde.lce.model.DebtCutAssignment;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +28,7 @@ import org.apache.commons.math3.optim.linear.Relationship;
  * @author Rodion Efremov
  * @version 1.618
  */
-public class DefaultEquilibrialDebtCutFinder 
+public strictfp class DefaultEquilibrialDebtCutFinder 
 implements EquilibrialDebtCutFinder {
 
     /**

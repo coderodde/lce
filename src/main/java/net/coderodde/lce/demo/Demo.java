@@ -82,8 +82,6 @@ public class Demo {
     
     private static final void profile() {
         title("profile()");
-        // INTERESTING SEEDS:
-        // 1420912594144L
         final long SEED = System.currentTimeMillis();
         final int N = 10;
         
@@ -143,7 +141,7 @@ public class Demo {
     private static final void profile2() {
         title("profile2()");
         
-        final long SEED = 1420963655922L;//System.currentTimeMillis();
+        final long SEED = System.currentTimeMillis();
         final int N = 10;
         
         System.out.println("Seed: " + SEED);
@@ -185,7 +183,10 @@ public class Demo {
         
         final Graph g = Utils.createRandomGraph(N, SEED, 5.0f / N);
         final TimeAssignment ta = Utils.createRandomTimeAssignment(SEED, g);
-        final double eqtime = ta.getMaximumTimestamp() + 10;
+        
+        Utils.setEpsilon(1e-5);
+        
+        final double eqtime = ta.getMaximumTimestamp() + 25;
         
         final EquilibrialDebtCutFinder finder = 
                 new DefaultEquilibrialDebtCutFinder();
@@ -216,5 +217,22 @@ public class Demo {
                            " is " + other.getTotalFlowAt(eqtime));
         
         System.out.println();
+    }
+    
+    private static final void profileEarnings() {
+        title("profileEarnings()");
+        final long SEED = System.currentTimeMillis();
+        final int N = 30;
+        
+        System.out.println("Seed: " + SEED);
+        
+        final Graph g = Utils.createRandomGraph(N, SEED, 5.0f / N);
+        final TimeAssignment timeAssignment = 
+                Utils.createRandomTimeAssignment(SEED, g);
+        
+        // The idea to test is following: suppose we buy at particular moments 
+        // loans with prices slightly exceeding them. After bying them, is it 
+        // possible to earn money by using the algorithm?
+        
     }
 }
