@@ -12,8 +12,6 @@ import static net.coderodde.lce.Utils.title;
 import net.coderodde.lce.model.Contract;
 import net.coderodde.lce.model.ContractFactory;
 import net.coderodde.lce.model.Node;
-import net.coderodde.lce.model.support.BasicContract;
-import net.coderodde.lce.model.support.ContinuousContract;
 
 /**
  * This class comprises the demo showing the performance of loan cut equilibrium
@@ -78,6 +76,13 @@ public final class Demo {
         
         System.out.println(output.describe(5.0));
         System.out.println("Debt cut sum: " + dca.sum());
+        
+        System.out.println();
+        
+        System.out.println("u debt cut: " + dca.get(k_u));
+        System.out.println("v debt cut: " + dca.get(k_v));
+        
+        System.out.println();
         
         System.out.println("k_u: " + k_u);
         System.out.println("k_v: " + k_v);
